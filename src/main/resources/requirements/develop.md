@@ -6,9 +6,11 @@
 
 ​	**WhaleTide 鲸浪商城** 是一个单商家多用户的电商平台，旨在为用户提供便捷的在线购物体验。商家可以在平台上发布商品，用户可以通过浏览商品、加入购物车、下单购买等操作完成购物流程。平台支持用户与商家之间的互动，包括消息通知、订单状态更新、退货申请等功能。系统设计简洁，功能模块清晰，适合中小型电商业务。
 
-目前现有表包括，详细情况可查看mall-tiny 原开源项目，这是mall-tiny地址
+目前现有表包括，详细情况可查看mall-tiny 原开源项目，这是mall-tiny项目的地址[mall-tiny](https://github.com/macrozheng/mall-tiny)
 
-[mall-tiny]: https://github.com/macrozheng/mall-tiny
+
+
+
 
 <img src="C:\Users\20526\AppData\Roaming\Typora\typora-user-images\image-20250310105330991.png" alt="image-20250310105330991" style="zoom:50%;" />
 
@@ -379,17 +381,265 @@ CREATE TABLE `user_notification` (
 
 **product_sku表（Stock Keeping Unit，库存量单位）**主要用于管理同一商品的不同属性组合**，例如颜色、尺寸、版本等。
 
+------
 
 
 
+#### 二、任务需求，接口设定
 
-#### 二、任务需求
+***所有接口实现统一规定使用如下样式,以用户注册为例.***
 
+***Controller层统一加上@RestController和@RequestMapping注解，具体方法再加上对应的具体路径。***
 
+***Service层注意加入@Service注解，根据接口实现对应的方法，注意返回的结果类型...***
 
+***Mapper 层全部采用MybatisPlus，注意加入@Mapper注解***
 
+​		***不要修改其他部分代码，每个人完成自己的任务即可，防止错的覆盖push,目前接口部分会根据需求不断更新，后面会根据需求不断添加新的接口...注意及时更新仓库，查看新的需求***
 
+```java
+@RestController
+@RequestMapping("/api/user")
+public class UserController {
+    
+    @PostMapping("/login")
+    public String login(String username, String password) {
+        return null;
+    }
+}
+```
 
+```java
+public interface IUserService {
+    void register(String username, String password);// 注册
+}
+```
 
+```java
+@Service
+public class UserServiceImpl implements IUserService {
+    @Override
+    public void register(String username, String password) {
 
+    }
+}
+```
+
+##### 1.用户相关
+
+###### 1.1 用户注册
+
+- 接口名称：用户注册
+
+- URL: **/api/user/register**
+
+- 接口方法定义（service层接口）：
+
+  ```java
+  void register(String username,String phone, String password);//支持手机号注册
+  ```
+
+- 请求方法: `POST`
+
+- 请求参数：
+
+```json
+{
+  "phone": "12345678901", // 手机号（必填）
+  "nickname": "jafh", // 昵称（必填）
+  "password": "123456"  // 密码（必填）
+}
+```
+
+- 响应数据：
+
+```json
+{
+  "code": 200,
+  "message": "登录成功",
+  "data": {
+    "token": "string", // JWT Token
+    "user": {
+      "id": 1,
+      "phone": "12345678901",
+      "nickname": "User One"
+    }
+  }
+}
+```
+
+###### 1.2用户登录
+
+- 接口名称：用户登录
+
+- URL：**/api/user/register**
+
+- 接口方法定义：
+
+- ```java
+  void login( String phone,String password);// 支持手机号登录
+  ```
+
+- 请求方法：POST
+
+- 请求参数：
+
+```json
+{
+  "phone": "string",    // 手机号
+  "password": "string"  // 密码
+}
+```
+
+- 响应数据：
+
+```json
+{
+  "code": 200,
+  "message": "登录成功",
+  "data": {
+    "token": "string", // JWT Token
+    "user": {
+      "id": 1,
+      "phone": "12345678901",
+      "nickname": "User One"
+    }
+  }
+}
+```
+
+###### 1.3 更新用户信息
+
+- 接口名称: 更新用户信息
+- URL: **`/api/user/update`**
+- 接口定义：
+
+```java
+void update(User user); //用于更新用户信息
+```
+
+- 请求方法: POST
+- 请求参数:
+
+```json
+{
+  "email": "string",    // 邮箱（可选）
+  "gender": "int",      // 性别：0-未知，1-男，2-女（可选）
+  "avatar": "string"    // 头像URL（可选）
+   ....				//省略，对应User实体类
+}
+```
+
+- 响应数据
+
+```json
+{
+  "code": 200,
+  "message": "更新成功",
+  "data": null
+}
+```
+
+**以下接口同上格式，简略的写了*
+
+###### 1.4 更新用户密码
+
+- 接口方法名称：
+
+```java
+void updatePassword(String phone,String password);//用于更新用户密码
+```
+
+URL: **/api/user/updatePassword**
+
+请求方式：POST
+
+###### 1.6 更新用户地址
+
+- 接口方法名称：
+
+```java
+void updateAddress(UserAddress userAddress);//用于更新用户地址
+```
+
+- URL:  **/api/user/updateAddress**
+- 请求方式：POST
+- 注意：*UserAddress 对应用户地址实体类*
+
+###### 1.7  获取所有用户列表
+
+- 接口方法名称：
+
+```java
+List<User> getUserList(); //用于获取用户列表
+```
+
+- URL：/api/user/getUserList
+- 请求方式：GET
+- 注意：*采用分页插件查询，每页显示15条数据*
+
+###### 1.8 删除用户信息
+
+- 接口方法名称：
+
+```Java
+void deleteUserById(int id); //用于删除用户信息
+```
+
+- URL : **/api/user/deleteUser**
+- 请求方式：POST
+
+###### 1.9  根据ID查询用户信息
+
+- 接口方法名称：
+
+```Java
+User getUserById(int id); //用于根据id获取用户信息
+```
+
+URL：**/api/user/getUserById**
+
+请求方式：GET
+
+###### 1.10 根据用户手机号查询订单
+
+- 接口方法名称：
+
+```java
+Order getOrderByUserPhone(String phone); //用于根据手机号获取订单信息
+```
+
+​	URL：**/api/user/getOrderByUserId**
+
+请求方式：GET
+
+###### 1.11 根据用户ID查询 购物车信息
+
+- 接口方法名称：
+
+```java
+Cart getCartByUserId(int userId); //用于根据用户id获取购物车信息
+```
+
+URL：**/api/user/getOrderByUserId**
+
+请求方式：GET
+
+###### 1.12 设置用户默认地址
+
+- 接口方法名称：
+
+```java
+int  setDefalutAddress(User user,int addressId) ;   //设置用户的默认地址，返回int  0-否 1-是
+```
+
+- URL：**/api/user/setDefalutAddress**
+
+- 请求方式：POST 
+
+##### 2.商品相关
+
+###### 2.1 添加商品
+
+接口方法名称：
 
