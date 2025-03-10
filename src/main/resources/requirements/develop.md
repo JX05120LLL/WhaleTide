@@ -1,5 +1,11 @@
 ### whaleTide  鲸浪商城
 
+
+
+目标要求：
+
+**单商家多用户模式商城**
+
 目前现有表包括，详细情况可查看mall-tiny 原开源项目，这是mall-tiny地址
 
 [mall-tiny]: https://github.com/macrozheng/mall-tiny
@@ -15,6 +21,7 @@ whaleTide是一款基于开源项目 mall-tiny进行二次开发的商城系统�
 ###### 1.1 user用户表
 
 ```sql
+-- 用户表
 CREATE TABLE `user` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `username` varchar(64) NOT NULL COMMENT '用户名',
@@ -26,8 +33,10 @@ CREATE TABLE `user` (
   `avatar` varchar(500) DEFAULT NULL COMMENT '头像',
   `status` tinyint DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
   `create_time` datetime DEFAULT NULL COMMENT '注册时间',
+  `is_merchant` tinyint DEFAULT 0 COMMENT '是否为商家：0-否，1-是',
+  `merchant_info` json DEFAULT NULL COMMENT '商家信息（JSON格式）',
   PRIMARY KEY (`id`)
-) COMMENT='普通用户表';
+) COMMENT='用户表';
 ```
 
 ###### 1.2 user_address 用户地址表
@@ -68,11 +77,13 @@ CREATE TABLE `user_coupon` (
 ###### 2.1product 商品表
 
 ```sql
+-- 商品表
 CREATE TABLE `product` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(200) NOT NULL COMMENT '商品名称',
   `category_id` bigint NOT NULL COMMENT '分类ID',
   `brand_id` bigint DEFAULT NULL COMMENT '品牌ID',
+  `merchant_id` bigint NOT NULL COMMENT '商家ID（关联user.id）',
   `price` decimal(10,2) NOT NULL COMMENT '商品价格',
   `stock` int DEFAULT 0 COMMENT '库存',
   `sales` int DEFAULT 0 COMMENT '销量',
@@ -133,10 +144,12 @@ CREATE TABLE `product_comment` (
 ###### 3.1  order 订单表
 
 ```sql
+-- 订单表（注意 ORDER 是保留字，需用反引号包裹）
 CREATE TABLE `order` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `order_sn` varchar(64) NOT NULL COMMENT '订单号',
   `user_id` bigint NOT NULL COMMENT '用户ID',
+  `merchant_id` bigint NOT NULL COMMENT '商家ID（关联user.id）',
   `total_amount` decimal(10,2) NOT NULL COMMENT '订单总金额',
   `status` tinyint DEFAULT 0 COMMENT '订单状态：0-待付款，1-待发货，2-已发货，3-已完成，4-已关闭',
   `pay_type` tinyint DEFAULT 0 COMMENT '支付方式：0-未支付，1-支付宝，2-微信',
@@ -319,7 +332,20 @@ CREATE TABLE `flash_sale` (
 ) COMMENT='秒杀活动表';
 ```
 
+###### 6.5 user_notification 消息通知表
 
+```sql
+CREATE TABLE `user_notification` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `title` varchar(200) NOT NULL COMMENT '通知标题',
+  `content` text NOT NULL COMMENT '通知内容',
+  `is_read` tinyint DEFAULT 0 COMMENT '是否已读：0-未读，1-已读',
+  `create_time` datetime DEFAULT NULL COMMENT '发送时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`)
+) COMMENT='用户消息通知表';
+```
 
 **外键关联**： 在订单、商品等表中，通过外键（如 `user_id`、`product_id`）与用户表和商品表关联，确保数据一致性。
 
@@ -328,6 +354,10 @@ CREATE TABLE `flash_sale` (
 **JSON字段**： 在 `product_sku` 表中，使用 `specs` 字段（JSON类型）存储商品规格，灵活支持多种属性组合。
 
 **扩展性**： 可根据需求添加更多表（如优惠券、评论、物流信息等），或扩展现有表的字段（如订单增加运费字段）。
+
+**product_sku表（Stock Keeping Unit，库存量单位）**主要用于管理同一商品的不同属性组合**，例如颜色、尺寸、版本等。
+
+
 
 
 

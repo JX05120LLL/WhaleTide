@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 10/03/2025 13:55:55
+ Date: 10/03/2025 15:23:31
 */
 
 SET NAMES utf8mb4;
@@ -93,6 +93,7 @@ CREATE TABLE `order`  (
   `receiver_address` int(0) NOT NULL COMMENT '关联收获地址主键',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
   `payment_time` datetime(0) NULL DEFAULT NULL COMMENT '支付时间',
+  `merchant_id` bigint(0) NOT NULL COMMENT '商家ID（关联user.id）',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uniq_order_sn`(`order_sn`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE
@@ -107,8 +108,7 @@ CREATE TABLE `order_delivery`  (
   `order_id` bigint(0) NOT NULL COMMENT '订单ID',
   `delivery_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '物流单号',
   `delivery_company` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '物流公司',
-  `receiver_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货人',
-  `receiver_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货电话',
+  `address_id` int(0) NOT NULL COMMENT '收货地址id',
   `delivery_status` tinyint(0) NULL DEFAULT 0 COMMENT '物流状态：0-未发货，1-运输中，2-已签收',
   `delivery_time` datetime(0) NULL DEFAULT NULL COMMENT '发货时间',
   PRIMARY KEY (`id`) USING BTREE,
@@ -196,6 +196,7 @@ CREATE TABLE `product`  (
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '商品描述',
   `status` tinyint(0) NULL DEFAULT 1 COMMENT '状态：0-下架，1-上架',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `merchant_id` bigint(0) NOT NULL COMMENT '商家ID（关联user.id）',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   INDEX `idx_brand_id`(`brand_id`) USING BTREE
@@ -621,6 +622,8 @@ CREATE TABLE `user`  (
   `avatar` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '头像',
   `status` tinyint(0) NULL DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '注册时间',
+  `is_merchant` tinyint(0) NULL DEFAULT 0 COMMENT '是否为商家：0-否，1-是',
+  `merchant_info` json NULL COMMENT '商家信息（JSON格式）',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '普通用户表' ROW_FORMAT = Dynamic;
 
@@ -656,5 +659,20 @@ CREATE TABLE `user_coupon`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券领取记录表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user_notification
+-- ----------------------------
+DROP TABLE IF EXISTS `user_notification`;
+CREATE TABLE `user_notification`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '通知标题',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '通知内容',
+  `is_read` tinyint(0) NULL DEFAULT 0 COMMENT '是否已读：0-未读，1-已读',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '发送时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户消息通知表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
