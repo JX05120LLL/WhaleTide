@@ -11,11 +11,255 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 10/03/2025 10:48:05
+ Date: 10/03/2025 13:55:55
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for brand
+-- ----------------------------
+DROP TABLE IF EXISTS `brand`;
+CREATE TABLE `brand`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '品牌名称',
+  `logo` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '品牌Logo',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '品牌描述',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '品牌表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for cart
+-- ----------------------------
+DROP TABLE IF EXISTS `cart`;
+CREATE TABLE `cart`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `product_id` bigint(0) NOT NULL COMMENT '商品ID',
+  `sku_id` bigint(0) NOT NULL COMMENT 'SKU ID',
+  `quantity` int(0) NULL DEFAULT 1 COMMENT '数量',
+  `selected` tinyint(0) NULL DEFAULT 1 COMMENT '是否选中：0-否，1-是',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购物车表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for coupon
+-- ----------------------------
+DROP TABLE IF EXISTS `coupon`;
+CREATE TABLE `coupon`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '优惠券名称',
+  `type` tinyint(0) NULL DEFAULT 1 COMMENT '类型：1-满减，2-折扣',
+  `amount` decimal(10, 2) NOT NULL COMMENT '优惠金额/折扣比例',
+  `min_amount` decimal(10, 2) NULL DEFAULT NULL COMMENT '最低消费金额',
+  `start_time` datetime(0) NOT NULL COMMENT '生效时间',
+  `end_time` datetime(0) NOT NULL COMMENT '过期时间',
+  `total` int(0) NULL DEFAULT 0 COMMENT '发放总量',
+  `used` int(0) NULL DEFAULT 0 COMMENT '已使用数量',
+  `status` tinyint(0) NULL DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券信息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for flash_sale
+-- ----------------------------
+DROP TABLE IF EXISTS `flash_sale`;
+CREATE TABLE `flash_sale`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '活动名称',
+  `product_id` bigint(0) NOT NULL COMMENT '商品ID',
+  `price` decimal(10, 2) NOT NULL COMMENT '秒杀价',
+  `stock` int(0) NULL DEFAULT 0 COMMENT '秒杀库存',
+  `start_time` datetime(0) NOT NULL COMMENT '开始时间',
+  `end_time` datetime(0) NOT NULL COMMENT '结束时间',
+  `status` tinyint(0) NULL DEFAULT 0 COMMENT '状态：0-未开始，1-进行中，2-已结束',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_product_id`(`product_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '秒杀活动表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for order
+-- ----------------------------
+DROP TABLE IF EXISTS `order`;
+CREATE TABLE `order`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `order_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '订单号',
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `total_amount` decimal(10, 2) NOT NULL COMMENT '订单总金额',
+  `status` tinyint(0) NULL DEFAULT 0 COMMENT '订单状态：0-待付款，1-待发货，2-已发货，3-已完成，4-已关闭',
+  `pay_type` tinyint(0) NULL DEFAULT 0 COMMENT '支付方式：0-未支付，1-支付宝，2-微信',
+  `receiver_address` int(0) NOT NULL COMMENT '关联收获地址主键',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `payment_time` datetime(0) NULL DEFAULT NULL COMMENT '支付时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uniq_order_sn`(`order_sn`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for order_delivery
+-- ----------------------------
+DROP TABLE IF EXISTS `order_delivery`;
+CREATE TABLE `order_delivery`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `order_id` bigint(0) NOT NULL COMMENT '订单ID',
+  `delivery_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '物流单号',
+  `delivery_company` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '物流公司',
+  `receiver_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货人',
+  `receiver_phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货电话',
+  `delivery_status` tinyint(0) NULL DEFAULT 0 COMMENT '物流状态：0-未发货，1-运输中，2-已签收',
+  `delivery_time` datetime(0) NULL DEFAULT NULL COMMENT '发货时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_order_id`(`order_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单物流信息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for order_item
+-- ----------------------------
+DROP TABLE IF EXISTS `order_item`;
+CREATE TABLE `order_item`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `order_id` bigint(0) NOT NULL COMMENT '订单ID',
+  `product_id` bigint(0) NOT NULL COMMENT '商品ID',
+  `sku_id` bigint(0) NOT NULL COMMENT 'SKU ID',
+  `quantity` int(0) NOT NULL COMMENT '购买数量',
+  `price` decimal(10, 2) NOT NULL COMMENT '商品单价',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_order_id`(`order_id`) USING BTREE,
+  INDEX `idx_product_id`(`product_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单商品项表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for order_operation_log
+-- ----------------------------
+DROP TABLE IF EXISTS `order_operation_log`;
+CREATE TABLE `order_operation_log`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `order_id` bigint(0) NOT NULL COMMENT '订单ID',
+  `operator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '操作人（用户或管理员）',
+  `action` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '操作内容（如修改地址、取消订单）',
+  `note` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '操作时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_order_id`(`order_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单操作日志表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for order_return_apply
+-- ----------------------------
+DROP TABLE IF EXISTS `order_return_apply`;
+CREATE TABLE `order_return_apply`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `order_id` bigint(0) NOT NULL COMMENT '订单ID',
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `reason` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '退货原因',
+  `status` tinyint(0) NULL DEFAULT 0 COMMENT '处理状态：0-待处理，1-已同意，2-已拒绝',
+  `handle_note` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '处理备注',
+  `handle_time` datetime(0) NULL DEFAULT NULL COMMENT '处理时间',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '申请时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_order_id`(`order_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单退货申请表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for payment_record
+-- ----------------------------
+DROP TABLE IF EXISTS `payment_record`;
+CREATE TABLE `payment_record`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `order_id` bigint(0) NOT NULL COMMENT '订单ID',
+  `payment_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '支付流水号',
+  `amount` decimal(10, 2) NOT NULL COMMENT '支付金额',
+  `pay_type` tinyint(0) NULL DEFAULT 1 COMMENT '支付方式：1-支付宝，2-微信',
+  `status` tinyint(0) NULL DEFAULT 0 COMMENT '状态：0-未支付，1-支付成功，2-支付失败',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `pay_time` datetime(0) NULL DEFAULT NULL COMMENT '支付时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uniq_payment_sn`(`payment_sn`) USING BTREE,
+  INDEX `idx_order_id`(`order_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '支付记录表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for product
+-- ----------------------------
+DROP TABLE IF EXISTS `product`;
+CREATE TABLE `product`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品名称',
+  `category_id` bigint(0) NOT NULL COMMENT '分类ID',
+  `brand_id` bigint(0) NULL DEFAULT NULL COMMENT '品牌ID',
+  `price` decimal(10, 2) NOT NULL COMMENT '商品价格',
+  `stock` int(0) NULL DEFAULT 0 COMMENT '库存',
+  `sales` int(0) NULL DEFAULT 0 COMMENT '销量',
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '商品描述',
+  `status` tinyint(0) NULL DEFAULT 1 COMMENT '状态：0-下架，1-上架',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_category_id`(`category_id`) USING BTREE,
+  INDEX `idx_brand_id`(`brand_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for product_category
+-- ----------------------------
+DROP TABLE IF EXISTS `product_category`;
+CREATE TABLE `product_category`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `parent_id` bigint(0) NULL DEFAULT 0 COMMENT '父分类ID',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '分类名称',
+  `level` tinyint(0) NULL DEFAULT 1 COMMENT '分类层级',
+  `sort` int(0) NULL DEFAULT 0 COMMENT '排序',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for product_comment
+-- ----------------------------
+DROP TABLE IF EXISTS `product_comment`;
+CREATE TABLE `product_comment`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `product_id` bigint(0) NOT NULL COMMENT '商品ID',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '评论内容',
+  `rating` tinyint(0) NULL DEFAULT 5 COMMENT '评分：1-5分',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '评论时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_product_id`(`product_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评论表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for product_sku
+-- ----------------------------
+DROP TABLE IF EXISTS `product_sku`;
+CREATE TABLE `product_sku`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `product_id` bigint(0) NOT NULL COMMENT '商品ID',
+  `sku_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'SKU编码',
+  `price` decimal(10, 2) NOT NULL COMMENT '价格',
+  `stock` int(0) NULL DEFAULT 0 COMMENT '库存',
+  `specs` json NULL COMMENT '规格属性（JSON格式）',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_product_id`(`product_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品SKU表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for stock_log
+-- ----------------------------
+DROP TABLE IF EXISTS `stock_log`;
+CREATE TABLE `stock_log`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `product_id` bigint(0) NOT NULL COMMENT '商品ID',
+  `sku_id` bigint(0) NULL DEFAULT NULL COMMENT 'SKU ID',
+  `change_type` tinyint(0) NOT NULL COMMENT '变更类型：1-销售扣减，2-退货增加，3-手动调整',
+  `change_amount` int(0) NOT NULL COMMENT '变更数量',
+  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `operator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '操作人',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '操作时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_product_id`(`product_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存变更日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_admin
@@ -361,5 +605,56 @@ INSERT INTO `ums_role_resource_relation` VALUES (212, 8, 26);
 INSERT INTO `ums_role_resource_relation` VALUES (213, 8, 27);
 INSERT INTO `ums_role_resource_relation` VALUES (214, 8, 28);
 INSERT INTO `ums_role_resource_relation` VALUES (215, 8, 29);
+
+-- ----------------------------
+-- Table structure for user
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名',
+  `password` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码',
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '手机号',
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '邮箱',
+  `nickname` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '昵称',
+  `gender` tinyint(0) NULL DEFAULT 0 COMMENT '性别：0-未知，1-男，2-女',
+  `avatar` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '头像',
+  `status` tinyint(0) NULL DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '注册时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '普通用户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user_address
+-- ----------------------------
+DROP TABLE IF EXISTS `user_address`;
+CREATE TABLE `user_address`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货人',
+  `phone` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '联系电话',
+  `province` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '省',
+  `city` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '市',
+  `district` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '区',
+  `detail_address` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '详细地址',
+  `is_default` tinyint(0) NULL DEFAULT 0 COMMENT '是否默认地址：0-否，1-是',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user_coupon
+-- ----------------------------
+DROP TABLE IF EXISTS `user_coupon`;
+CREATE TABLE `user_coupon`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `coupon_id` bigint(0) NOT NULL COMMENT '优惠券ID',
+  `status` tinyint(0) NULL DEFAULT 0 COMMENT '状态：0-未使用，1-已使用，2-已过期',
+  `acquire_time` datetime(0) NULL DEFAULT NULL COMMENT '领取时间',
+  `use_time` datetime(0) NULL DEFAULT NULL COMMENT '使用时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券领取记录表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
