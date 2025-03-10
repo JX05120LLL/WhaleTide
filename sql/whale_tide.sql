@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 10/03/2025 15:23:31
+ Date: 10/03/2025 15:43:39
 */
 
 SET NAMES utf8mb4;
@@ -45,6 +45,15 @@ CREATE TABLE `cart`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户购物车表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of cart
+-- ----------------------------
+INSERT INTO `cart` VALUES (1, 1, 1, 1, 2, 1);
+INSERT INTO `cart` VALUES (2, 2, 2, 2, 1, 1);
+INSERT INTO `cart` VALUES (3, 3, 3, 3, 3, 1);
+INSERT INTO `cart` VALUES (4, 1, 4, 4, 1, 0);
+INSERT INTO `cart` VALUES (5, 2, 5, 5, 2, 1);
+
+-- ----------------------------
 -- Table structure for coupon
 -- ----------------------------
 DROP TABLE IF EXISTS `coupon`;
@@ -61,6 +70,15 @@ CREATE TABLE `coupon`  (
   `status` tinyint(0) NULL DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券信息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of coupon
+-- ----------------------------
+INSERT INTO `coupon` VALUES (1, 'Coupon A', 1, 10.00, 100.00, '2023-10-01 00:00:00', '2023-10-31 23:59:59', 100, 10, 1);
+INSERT INTO `coupon` VALUES (2, 'Coupon B', 2, 0.90, 200.00, '2023-10-01 00:00:00', '2023-10-31 23:59:59', 50, 5, 1);
+INSERT INTO `coupon` VALUES (3, 'Coupon C', 1, 20.00, 150.00, '2023-10-01 00:00:00', '2023-10-31 23:59:59', 80, 8, 1);
+INSERT INTO `coupon` VALUES (4, 'Coupon D', 2, 0.80, 300.00, '2023-10-01 00:00:00', '2023-10-31 23:59:59', 30, 3, 1);
+INSERT INTO `coupon` VALUES (5, 'Coupon E', 1, 15.00, 250.00, '2023-10-01 00:00:00', '2023-10-31 23:59:59', 60, 12, 1);
 
 -- ----------------------------
 -- Table structure for flash_sale
@@ -98,6 +116,15 @@ CREATE TABLE `order`  (
   UNIQUE INDEX `uniq_order_sn`(`order_sn`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of order
+-- ----------------------------
+INSERT INTO `order` VALUES (1, 'ORDER123456', 1, 100.00, 1, 1, 1, '2023-10-01 10:00:00', '2023-10-01 10:05:00', 4);
+INSERT INTO `order` VALUES (2, 'ORDER123457', 2, 200.00, 2, 2, 2, '2023-10-02 10:00:00', '2023-10-02 10:05:00', 4);
+INSERT INTO `order` VALUES (3, 'ORDER123458', 3, 150.00, 3, 1, 3, '2023-10-03 10:00:00', '2023-10-03 10:05:00', 5);
+INSERT INTO `order` VALUES (4, 'ORDER123459', 1, 300.00, 4, 2, 4, '2023-10-04 10:00:00', '2023-10-04 10:05:00', 5);
+INSERT INTO `order` VALUES (5, 'ORDER123460', 2, 250.00, 0, 1, 5, '2023-10-05 10:00:00', NULL, 4);
 
 -- ----------------------------
 -- Table structure for order_delivery
@@ -201,6 +228,15 @@ CREATE TABLE `product`  (
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   INDEX `idx_brand_id`(`brand_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of product
+-- ----------------------------
+INSERT INTO `product` VALUES (1, 'Product A', 1, 1, 100.00, 50, 10, 'Description for Product A', 1, '2023-10-01 10:00:00', 4);
+INSERT INTO `product` VALUES (2, 'Product B', 2, 2, 200.00, 30, 5, 'Description for Product B', 1, '2023-10-02 10:00:00', 4);
+INSERT INTO `product` VALUES (3, 'Product C', 3, 3, 150.00, 40, 8, 'Description for Product C', 1, '2023-10-03 10:00:00', 5);
+INSERT INTO `product` VALUES (4, 'Product D', 4, 4, 300.00, 20, 3, 'Description for Product D', 1, '2023-10-04 10:00:00', 5);
+INSERT INTO `product` VALUES (5, 'Product E', 5, 5, 250.00, 60, 12, 'Description for Product E', 1, '2023-10-05 10:00:00', 4);
 
 -- ----------------------------
 -- Table structure for product_category
@@ -628,6 +664,15 @@ CREATE TABLE `user`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '普通用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of user
+-- ----------------------------
+INSERT INTO `user` VALUES (1, 'user1', 'password1', '12345678901', 'user1@example.com', 'User One', 1, 'avatar1.jpg', 1, '2023-10-01 10:00:00', 0, NULL);
+INSERT INTO `user` VALUES (2, 'user2', 'password2', '12345678902', 'user2@example.com', 'User Two', 2, 'avatar2.jpg', 1, '2023-10-02 10:00:00', 0, NULL);
+INSERT INTO `user` VALUES (3, 'user3', 'password3', '12345678903', 'user3@example.com', 'User Three', 1, 'avatar3.jpg', 1, '2023-10-03 10:00:00', 0, NULL);
+INSERT INTO `user` VALUES (4, 'merchant1', 'password4', '12345678904', 'merchant1@example.com', 'Merchant One', 1, 'avatar4.jpg', 1, '2023-10-04 10:00:00', 1, '{\"address\": \"123 Main St\", \"shop_name\": \"Shop One\"}');
+INSERT INTO `user` VALUES (5, 'merchant2', 'password5', '12345678905', 'merchant2@example.com', 'Merchant Two', 2, 'avatar5.jpg', 1, '2023-10-05 10:00:00', 1, '{\"address\": \"456 Elm St\", \"shop_name\": \"Shop Two\"}');
+
+-- ----------------------------
 -- Table structure for user_address
 -- ----------------------------
 DROP TABLE IF EXISTS `user_address`;
@@ -644,6 +689,15 @@ CREATE TABLE `user_address`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_address
+-- ----------------------------
+INSERT INTO `user_address` VALUES (1, 1, 'User One', '12345678901', 'Beijing', 'Beijing', 'Haidian', '123 Main St', 1);
+INSERT INTO `user_address` VALUES (2, 2, 'User Two', '12345678902', 'Shanghai', 'Shanghai', 'Pudong', '456 Elm St', 1);
+INSERT INTO `user_address` VALUES (3, 3, 'User Three', '12345678903', 'Guangzhou', 'Guangzhou', 'Tianhe', '789 Oak St', 1);
+INSERT INTO `user_address` VALUES (4, 1, 'User One', '12345678901', 'Shenzhen', 'Shenzhen', 'Nanshan', '101 Pine St', 0);
+INSERT INTO `user_address` VALUES (5, 2, 'User Two', '12345678902', 'Hangzhou', 'Hangzhou', 'Xihu', '202 Maple St', 0);
 
 -- ----------------------------
 -- Table structure for user_coupon
