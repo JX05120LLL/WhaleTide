@@ -1,9 +1,9 @@
 server:
-  port: 8080
+  port: 9099
 
 spring:
   application:
-    name: mall-tiny
+    name: WhaleTide
   profiles:
     active: dev
 #  main:
