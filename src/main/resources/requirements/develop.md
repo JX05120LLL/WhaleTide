@@ -72,6 +72,28 @@ CREATE TABLE `user_coupon` (
 ) COMMENT='用户优惠券领取记录表';
 ```
 
+###### 1.4  user_notification用户信息通知表
+
+```sql
+CREATE TABLE `user_notification` (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT,
+  `sender_id` bigint(0) NOT NULL COMMENT '发送者ID（用户或商家）',
+  `receiver_id` bigint(0) NOT NULL COMMENT '接收者ID（用户或商家）',
+  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '通知标题',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '通知内容',
+  `message_type` tinyint(0) NOT NULL COMMENT '消息类型：1-系统通知，2-用户消息，3-商家消息',
+  `related_order_id` bigint(0) NULL DEFAULT NULL COMMENT '关联订单ID',
+  `is_read` tinyint(0) NULL DEFAULT 0 COMMENT '是否已读：0-未读，1-已读',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '发送时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_sender_id`(`sender_id`) USING BTREE,
+  INDEX `idx_receiver_id`(`receiver_id`) USING BTREE,
+  INDEX `idx_related_order_id`(`related_order_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户消息通知表' ROW_FORMAT = Dynamic;
+```
+
+
+
 ##### 2.商品相关
 
 ###### 2.1product 商品表

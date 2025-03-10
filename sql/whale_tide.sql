@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 10/03/2025 15:43:39
+ Date: 10/03/2025 16:31:34
 */
 
 SET NAMES utf8mb4;
@@ -720,13 +720,32 @@ CREATE TABLE `user_coupon`  (
 DROP TABLE IF EXISTS `user_notification`;
 CREATE TABLE `user_notification`  (
   `id` bigint(0) NOT NULL AUTO_INCREMENT,
-  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `sender_id` bigint(0) NOT NULL COMMENT '发送者ID（用户或商家）',
+  `receiver_id` bigint(0) NOT NULL COMMENT '接收者ID（用户或商家）',
   `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '通知标题',
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '通知内容',
+  `message_type` tinyint(0) NOT NULL COMMENT '消息类型：1-系统通知，2-用户消息，3-商家消息',
+  `related_order_id` bigint(0) NULL DEFAULT NULL COMMENT '关联订单ID',
   `is_read` tinyint(0) NULL DEFAULT 0 COMMENT '是否已读：0-未读，1-已读',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT '发送时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `idx_user_id`(`user_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户消息通知表' ROW_FORMAT = Dynamic;
+  INDEX `idx_sender_id`(`sender_id`) USING BTREE,
+  INDEX `idx_receiver_id`(`receiver_id`) USING BTREE,
+  INDEX `idx_related_order_id`(`related_order_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户消息通知表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of user_notification
+-- ----------------------------
+INSERT INTO `user_notification` VALUES (1, 4, 1, 'Order Confirmed', 'Your order ORDER123456 has been confirmed.', 1, 1, 1, '2023-10-01 10:05:00');
+INSERT INTO `user_notification` VALUES (2, 4, 2, 'Order Shipped', 'Your order ORDER123457 has been shipped.', 1, 2, 0, '2023-10-02 10:05:00');
+INSERT INTO `user_notification` VALUES (3, 5, 3, 'Order Delivered', 'Your order ORDER123458 has been delivered.', 1, 3, 1, '2023-10-03 10:05:00');
+INSERT INTO `user_notification` VALUES (4, 4, 1, 'Order Cancelled', 'Your order ORDER123459 has been cancelled.', 1, 4, 0, '2023-10-04 10:05:00');
+INSERT INTO `user_notification` VALUES (5, 5, 2, 'Order Pending', 'Your order ORDER123460 is pending payment.', 1, 5, 0, '2023-10-05 10:05:00');
+INSERT INTO `user_notification` VALUES (6, 1, 4, 'Question about Product A', 'I have a question about Product A.', 2, 1, 0, '2023-10-06 10:00:00');
+INSERT INTO `user_notification` VALUES (7, 2, 5, 'Question about Product B', 'I have a question about Product B.', 2, 2, 0, '2023-10-07 10:00:00');
+INSERT INTO `user_notification` VALUES (8, 4, 1, 'Reply to Question', 'Here is the answer to your question.', 3, 1, 0, '2023-10-08 10:00:00');
+INSERT INTO `user_notification` VALUES (9, 5, 2, 'Reply to Question', 'Here is the answer to your question.', 3, 2, 0, '2023-10-09 10:00:00');
+INSERT INTO `user_notification` VALUES (10, 1, 4, 'Thank you!', 'Thank you for your reply!', 2, 1, 0, '2023-10-10 10:00:00');
 
 SET FOREIGN_KEY_CHECKS = 1;
