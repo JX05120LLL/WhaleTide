@@ -425,6 +425,7 @@
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          alert('delte');
           let params = new URLSearchParams();
           params.append("ids",ids);
           deleteOrder(params).then(response=>{
