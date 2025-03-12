@@ -1,0 +1,284 @@
+package com.whale_tide.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.whale_tide.entity.AmsAdminRoleRelations;
+import com.whale_tide.entity.AmsAdmins;
+import com.whale_tide.mapper.AmsAdminRoleRelationsMapper;
+import com.whale_tide.mapper.AmsAdminsMapper;
+import com.whale_tide.service.IAdminService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * 管理员服务实现类
+ */
+@Service
+@Slf4j
+public class AdminServiceImpl implements IAdminService {
+
+    @Autowired
+    private AmsAdminsMapper adminsMapper;
+    
+    @Autowired
+    private AmsAdminRoleRelationsMapper adminRoleRelationsMapper;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    
+    // JWT相关服务会在后续实现
+    // @Autowired
+    // private JwtTokenUtil jwtTokenUtil;
+
+    @Override
+    public AmsAdmins getAdminByUsername(String username) {
+        if (!StringUtils.hasText(username)) {
+            return null;
+        }
+        
+        // 使用LambdaQueryWrapper查询
+        LambdaQueryWrapper<AmsAdmins> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AmsAdmins::getUsername, username);
+        
+        return adminsMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public AmsAdmins register(AmsAdmins admin) {
+        AmsAdmins existAdmin = getAdminByUsername(admin.getUsername());
+        if (existAdmin != null) {
+            // 用户名已存在
+            log.warn("注册失败，用户名已存在: {}", admin.getUsername());
+            return null;
+        }
+        
+        // 设置默认值
+        admin.setCreateTime(LocalDateTime.now());
+        admin.setStatus(1); // 默认启用
+        
+        // 加密密码
+        String encodePassword = passwordEncoder.encode(admin.getPassword());
+        admin.setPassword(encodePassword);
+        
+        // 保存管理员
+        int result = adminsMapper.insert(admin);
+        if (result > 0) {
+            log.info("管理员注册成功: {}", admin.getUsername());
+            return admin;
+        }
+        
+        return null;
+    }
+
+    @Override
+    public String login(String username, String password) {
+        // 获取管理员信息
+        AmsAdmins admin = getAdminByUsername(username);
+        if (admin == null) {
+            log.warn("登录失败，用户名不存在: {}", username);
+            return null;
+        }
+        
+        // 验证密码
+        if (!passwordEncoder.matches(password, admin.getPassword())) {
+            log.warn("登录失败，密码不正确，用户名: {}", username);
+            return null;
+        }
+        
+        // 更新登录时间
+        admin.setLoginTime(LocalDateTime.now());
+        adminsMapper.updateById(admin);
+        
+        log.info("管理员登录成功: {}", username);
+        
+        // 生成JWT token
+        // 由于JWT实现可能需要额外设置，这里先返回模拟token
+        // return jwtTokenUtil.generateToken(username);
+        return "mock_token_for_" + username;
+    }
+
+    @Override
+    public String refreshToken(String oldToken) {
+        // 刷新JWT token
+        // return jwtTokenUtil.refreshToken(oldToken);
+        log.info("刷新令牌: {}", oldToken);
+        return "refreshed_" + oldToken;
+    }
+
+    @Override
+    public AmsAdmins getAdminById(Long id) {
+        if (id == null) {
+            return null;
+        }
+        return adminsMapper.selectById(id);
+    }
+
+    @Override
+    public org.springframework.data.domain.Page<AmsAdmins> list(String keyword, Pageable pageable) {
+        log.info("查询管理员列表，关键字: {}, 页码: {}, 每页数量: {}", 
+            keyword, pageable.getPageNumber(), pageable.getPageSize());
+            
+        // 创建MyBatis-Plus分页对象
+        Page<AmsAdmins> page = new Page<>(pageable.getPageNumber(), pageable.getPageSize());
+        
+        // 构建查询条件
+        LambdaQueryWrapper<AmsAdmins> queryWrapper = new LambdaQueryWrapper<>();
+        if (StringUtils.hasText(keyword)) {
+            // 只检索用户名，如果有其他需要检索的字段可以在此添加
+            queryWrapper.like(AmsAdmins::getUsername, keyword);
+        }
+        
+        // 执行查询
+        Page<AmsAdmins> result = adminsMapper.selectPage(page, queryWrapper);
+        
+        // 转换为Spring Data Page
+        return new org.springframework.data.domain.PageImpl<>(
+            result.getRecords(), 
+            pageable, 
+            result.getTotal()
+        );
+    }
+
+    @Override
+    public boolean update(Long id, AmsAdmins admin) {
+        if (id == null || admin == null) {
+            return false;
+        }
+        
+        // 查询现有管理员
+        AmsAdmins existAdmin = getAdminById(id);
+        if (existAdmin == null) {
+            log.warn("更新管理员失败，ID不存在: {}", id);
+            return false;
+        }
+        
+        // 设置ID以确保更新而不是新增
+        admin.setId(id);
+        
+        // 如果没有设置密码，使用原密码
+        if (!StringUtils.hasText(admin.getPassword())) {
+            admin.setPassword(existAdmin.getPassword());
+        } else {
+            // 如果设置了新密码，需要加密
+            admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+        }
+        
+        // 保留创建时间
+        admin.setCreateTime(existAdmin.getCreateTime());
+        
+        // 更新
+        int result = adminsMapper.updateById(admin);
+        if (result > 0) {
+            log.info("管理员信息更新成功，ID: {}", id);
+            return true;
+        }
+        
+        log.warn("管理员信息更新失败，ID: {}", id);
+        return false;
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        if (id == null) {
+            return false;
+        }
+        
+        // 删除管理员
+        int result = adminsMapper.deleteById(id);
+        
+        // 删除关联的角色关系
+        LambdaQueryWrapper<AmsAdminRoleRelations> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AmsAdminRoleRelations::getAdminId, id);
+        adminRoleRelationsMapper.delete(queryWrapper);
+        
+        log.info("删除管理员及其角色关系，ID: {}, 结果: {}", id, result > 0);
+        return result > 0;
+    }
+
+    @Override
+    public boolean updateStatus(Long id, Integer status) {
+        if (id == null || status == null) {
+            return false;
+        }
+        
+        // 查询现有管理员
+        AmsAdmins existAdmin = getAdminById(id);
+        if (existAdmin == null) {
+            log.warn("更新管理员状态失败，ID不存在: {}", id);
+            return false;
+        }
+        
+        // 更新状态
+        existAdmin.setStatus(status);
+        int result = adminsMapper.updateById(existAdmin);
+        
+        log.info("更新管理员状态，ID: {}, 新状态: {}, 结果: {}", id, status, result > 0);
+        return result > 0;
+    }
+
+    @Override
+    public List<Long> getRoleList(Long adminId) {
+        if (adminId == null) {
+            return new ArrayList<>();
+        }
+        
+        // 查询管理员角色关系
+        LambdaQueryWrapper<AmsAdminRoleRelations> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AmsAdminRoleRelations::getAdminId, adminId);
+        List<AmsAdminRoleRelations> relations = adminRoleRelationsMapper.selectList(queryWrapper);
+        
+        // 转换为角色ID列表
+        List<Long> roleIds = relations.stream()
+                .map(AmsAdminRoleRelations::getRoleId)
+                .collect(Collectors.toList());
+                
+        log.info("获取管理员角色列表，管理员ID: {}, 角色数量: {}", adminId, roleIds.size());
+        return roleIds;
+    }
+
+    @Override
+    @Transactional
+    public boolean allocateRoles(Long adminId, List<Long> roleIds) {
+        if (adminId == null) {
+            return false;
+        }
+        
+        log.info("开始为管理员分配角色，管理员ID: {}, 角色数量: {}", 
+            adminId, roleIds == null ? 0 : roleIds.size());
+            
+        // 先删除原有关系
+        LambdaQueryWrapper<AmsAdminRoleRelations> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AmsAdminRoleRelations::getAdminId, adminId);
+        adminRoleRelationsMapper.delete(queryWrapper);
+        
+        // 如果没有新的角色，直接返回
+        if (roleIds == null || roleIds.isEmpty()) {
+            log.info("管理员角色已清空，管理员ID: {}", adminId);
+            return true;
+        }
+        
+        // 批量添加新关系
+        int successCount = 0;
+        for (Long roleId : roleIds) {
+            AmsAdminRoleRelations relation = new AmsAdminRoleRelations();
+            relation.setAdminId(adminId);
+            relation.setRoleId(roleId);
+            successCount += adminRoleRelationsMapper.insert(relation);
+        }
+        
+        log.info("完成角色分配，管理员ID: {}, 分配角色数: {}, 成功: {}", 
+            adminId, roleIds.size(), successCount == roleIds.size());
+            
+        return successCount == roleIds.size();
+    }
+} 
