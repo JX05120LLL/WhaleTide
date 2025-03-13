@@ -8,9 +8,6 @@ spring:
     active: dev
 #  main:
 #    allow-circular-references: true
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -28,7 +25,7 @@ jwt:
   tokenHead: 'Bearer '  #JWT负载中拿到开头
 
 redis:
-  database: mall-tiny
+  database: whale-tide
   key:
     admin: 'ums:admin'
     resourceList: 'ums:resourceList'

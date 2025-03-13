@@ -1,5 +1,6 @@
 package com.whale_tide.service;
 
+import com.whale_tide.dto.CloseOrderParam;
 import com.whale_tide.entity.OmsOrders;
 import com.whale_tide.dto.OrderQueryParam;
 import com.whale_tide.dto.OrderResult;
@@ -19,11 +20,13 @@ public interface IOrderService {
     
     /**
      * 关闭订单
+     * @param closeOrderParam 关闭订单参数
+     * @return 关闭成功的订单数量
      */
-    void closeOrder();
+    int closeOrder(CloseOrderParam closeOrderParam);
     
     /**
      * 订单详情
      */
-    // 其他接口方法...
+
 }
