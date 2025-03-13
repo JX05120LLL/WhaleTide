@@ -1,11 +1,16 @@
 package com.whale_tide.common.api;
 
 /**
- * 封装API的错误码
- * Created by macro on 2019/4/19.
+ * API错误码接口
  */
 public interface IErrorCode {
+    /**
+     * 获取错误码
+     */
     long getCode();
 
+    /**
+     * 获取错误信息
+     */
     String getMessage();
 }

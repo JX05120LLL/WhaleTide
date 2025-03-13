@@ -8,9 +8,6 @@ spring:
     active: dev
 #  main:
 #    allow-circular-references: true
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -28,27 +25,11 @@ jwt:
   tokenHead: 'Bearer '  #JWT负载中拿到开头
 
 redis:
-  database: mall-tiny
+  database: whale-tide
   key:
     admin: 'ums:admin'
     resourceList: 'ums:resourceList'
   expire:
     common: 86400 # 24小时
 
-secure:
-  ignored:
-    urls: #安全路径白名单
-      - /swagger-ui/
-      - /swagger-resources/**
-      - /**/v2/api-docs
-      - /**/*.html
-      - /**/*.js
-      - /**/*.css
-      - /**/*.png
-      - /favicon.ico
-      - /actuator/**
-      - /druid/**
-      - /admin/login
-      - /admin/register
-      - /admin/info
-      - /admin/logout
+

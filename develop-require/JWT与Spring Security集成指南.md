@@ -252,9 +252,6 @@ Spring Security配置类：
 ```java
 package com.whale_tide.config;
 
-import com.whale_tide.common.util.component.JwtAuthenticationTokenFilter;
-import com.whale_tide.common.util.component.RestAuthenticationEntryPoint;
-import com.whale_tide.common.util.component.RestfulAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -290,7 +287,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 允许对于静态资源的无授权访问
-                .antMatchers(HttpMethod.GET, 
+                .antMatchers(HttpMethod.GET,
                         "/",
                         "/*.html",
                         "/favicon.ico",
@@ -311,7 +308,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/ams/**").hasRole("ADMIN")
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated();
-        
+
         // 禁用缓存
         httpSecurity.headers().cacheControl();
         // 添加JWT filter
