@@ -1,4 +1,4 @@
-package com.whale_tide.controller.dto.result;
+package com.whale_tide.dto;
 
 import lombok.Data;
 

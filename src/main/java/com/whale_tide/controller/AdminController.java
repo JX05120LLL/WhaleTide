@@ -1,9 +1,9 @@
 package com.whale_tide.controller;
 
 import com.whale_tide.common.dto.HttpResult;
-import com.whale_tide.controller.dto.param.AdminLoginParam;
-import com.whale_tide.controller.dto.result.AdminInfoResult;
-import com.whale_tide.controller.dto.result.AdminLoginResult;
+import com.whale_tide.dto.AdminLoginParam;
+import com.whale_tide.dto.AdminInfoResult;
+import com.whale_tide.dto.AdminLoginResult;
 import com.whale_tide.entity.AmsAdmins;
 import com.whale_tide.security.util.JwtTokenUtil;
 import com.whale_tide.service.IAdminService;
@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
