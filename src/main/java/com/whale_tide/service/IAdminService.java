@@ -84,7 +84,16 @@ public interface IAdminService {
      * @return 角色ID列表
      */
     List<Long> getRoleList(Long adminId);
-    
+
+    /**
+     * 获取角色ID列表的所有角色名称
+     * @param rolesId 角色列表ID
+     * @return 角色名称列表
+     */
+    List<String> getRoleNameList(List<Long> rolesId);
+
+    List<Long> get
+
     /**
      * 为管理员分配角色
      * @param adminId 管理员ID

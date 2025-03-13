@@ -54,29 +54,29 @@ public class AdminController {
     }
 
 
-//    @GetMapping("/info")
-//    public HttpResult<AdminInfoResult> info(@RequestHeader("Authorization") String authHeader) {
-//        String token = authHeader.replace("Bearer ", "");
-//        String username = jwtTokenUtil.getUserNameFromToken(token);
-//        AmsAdmins amsAdmins = adminService.getAdminByUsername(username);
-//        HttpResult<AdminInfoResult> result = new HttpResult<>();
-//        AdminInfoResult infoResult = new AdminInfoResult();
-//
-//        if (amsAdmins == null) {
-//            infoResult = null;
-//            result.setResult(infoResult);
-//        } else {
-//            infoResult.setUsername(username);
-//
-//            List<Long> roles_id = adminService.getRoleList(amsAdmins.getId());
-//            List<String> roles = new ArrayList<>();
-//            for (long role_id : roles_id) {
-//                roles.add("");
-//            }
-//            infoResult.setRoles(roles);
-//        }
-//        return result;
-//    }
+    @GetMapping("/info")
+    public HttpResult<AdminInfoResult> info(@RequestHeader("Authorization") String authHeader) {
+        //获取admin
+        String token = authHeader.replace("Bearer ", "");
+        String username = jwtTokenUtil.getUserNameFromToken(token);
+        AmsAdmins amsAdmins = adminService.getAdminByUsername(username);
+        HttpResult<AdminInfoResult> result = new HttpResult<>();
+        AdminInfoResult infoResult = new AdminInfoResult();
+
+        if (amsAdmins == null) {
+            infoResult = null;
+            result.setResult(infoResult);
+        } else {
+            infoResult.setUsername(username);
+            //获取角色列表
+            List<String> roles = adminService.getRoleNameList(adminService.getRoleList(amsAdmins.getId()));
+            infoResult.setRoles(roles);
+
+            List<String> menus =
+
+        }
+        return result;
+    }
 
 
 }
