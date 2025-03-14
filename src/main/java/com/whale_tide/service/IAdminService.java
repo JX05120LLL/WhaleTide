@@ -32,6 +32,13 @@ public interface IAdminService {
      * @return 生成的JWT token
      */
     String login(String username, String password);
+
+    /**
+     * 登出操作
+     * @param username 用户名
+     * @return 登出结果
+     */
+    boolean logout(String username);
     
     /**
      * 刷新token

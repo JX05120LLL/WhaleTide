@@ -116,6 +116,14 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
+    public boolean logout(String username) {
+
+        log.info("管理员登出：{}", username);
+
+        return true;
+    }
+
+    @Override
     public String refreshToken(String oldToken) {
         // 刷新JWT token
         // return jwtTokenUtil.refreshToken(oldToken);

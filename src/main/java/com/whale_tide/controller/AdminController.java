@@ -79,5 +79,13 @@ public class AdminController {
         return commonResult;
     }
 
+    @PostMapping("/logout")
+    public CommonResult logout(@RequestHeader("Authorization") String authHeader) {
+        String username = "jwtTokenUtil.getUserNameFromToken(token)";
+        if(!adminService.logout(username))
+            return CommonResult.failed("操作失败");
+
+        return CommonResult.success(null);
+    }
 
 }
