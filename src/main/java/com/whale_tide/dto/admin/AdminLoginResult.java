@@ -1,4 +1,4 @@
-package com.whale_tide.dto;
+package com.whale_tide.dto.admin;
 
 import lombok.Data;
 
