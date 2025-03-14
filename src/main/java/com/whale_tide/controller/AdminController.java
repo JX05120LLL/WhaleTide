@@ -95,24 +95,41 @@ public class AdminController {
 
         //获取管理员列表并进行转换
         List<AmsAdmins> amsAdmins = page.getRecords();
-        List<AdminListDTO> adminListDTOS = new ArrayList<>();
+        List<AdminResult> adminResults = new ArrayList<>();
         for (AmsAdmins admin : amsAdmins) {
-            AdminListDTO adminListDTO = new AdminListDTO();
-            adminListDTO.setUsername(admin.getUsername());
-            adminListDTO.setId(admin.getId());
-            adminListDTO.setEmail(admin.getEmail());
-            adminListDTO.setCreateTime(admin.getCreateTime());
-            adminListDTO.setStatus(admin.getStatus().byteValue());
-            adminListDTO.setNote(admin.getNote());
-            adminListDTOS.add(adminListDTO);
+            AdminResult adminResult = new AdminResult();
+            adminResult.setUsername(admin.getUsername());
+            adminResult.setId(admin.getId());
+            adminResult.setEmail(admin.getEmail());
+            adminResult.setCreateTime(admin.getCreateTime());
+            adminResult.setStatus(admin.getStatus().byteValue());
+            adminResult.setNote(admin.getNote());
+            adminResults.add(adminResult);
         }
 
         //填充返回Data
-        result.setList(adminListDTOS);
+        result.setList(adminResults);
         result.setTotal(page.getTotal());
         result.setPageNum(adminListParam.getPageNum());
         result.setPageSize(adminListParam.getPageSize());
         return CommonResult.success(result);
+    }
+
+    @PostMapping("/register")
+    public CommonResult regiser(@RequestBody AdminParam adminParam) {
+        AmsAdmins amsAdmins = new AmsAdmins();
+        amsAdmins.setUsername(adminParam.getUsername());
+        amsAdmins.setPassword(adminParam.getPassword());
+        amsAdmins.setEmail(adminParam.getEmail());   //邮箱
+        amsAdmins.setNote(adminParam.getNote());
+        long result = adminService.register(amsAdmins);
+        if (result == -1L) {
+            return CommonResult.failed("注册失败");
+        } else if (result == 0L) {
+            return CommonResult.failed("用户名已存在");
+        } else {
+            return CommonResult.success(result);
+        }
     }
 
 }

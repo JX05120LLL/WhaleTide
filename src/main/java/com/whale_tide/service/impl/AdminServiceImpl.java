@@ -63,12 +63,12 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public AmsAdmins register(AmsAdmins admin) {
+    public long register(AmsAdmins admin) {
         AmsAdmins existAdmin = getAdminByUsername(admin.getUsername());
         if (existAdmin != null) {
             // 用户名已存在
             log.warn("注册失败，用户名已存在: {}", admin.getUsername());
-            return null;
+            return 0;
         }
 
         // 设置默认值
@@ -76,17 +76,21 @@ public class AdminServiceImpl implements IAdminService {
         admin.setStatus(1); // 默认启用
 
         // 加密密码
-        String encodePassword = "passwordEncoder.encode(admin.getPassword())";          //待修改----------------------------------------------------------------------------------------------
-        admin.setPassword(encodePassword);
+        String encodePassword = admin.getPassword();          //待修改-------密码加密---------------------------------------------------------------------------------------
+//        admin.setPassword(encodePassword);
 
         // 保存管理员
         int result = adminsMapper.insert(admin);
         if (result > 0) {
             log.info("管理员注册成功: {}", admin.getUsername());
-            return admin;
+            LambdaQueryWrapper<AmsAdmins> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(AmsAdmins::getUsername, admin.getUsername());
+            queryWrapper.select(AmsAdmins::getId);
+            AmsAdmins amsAdmins = adminsMapper.selectOne(queryWrapper);
+            return amsAdmins.getId();
         }
 
-        return null;
+        return -1L;
     }
 
     @Override

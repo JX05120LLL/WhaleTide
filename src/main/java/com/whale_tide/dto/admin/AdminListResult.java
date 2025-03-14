@@ -9,7 +9,7 @@ public class AdminListResult {
     /**
      * 管理员列表
      */
-    private List<AdminListDTO> list;
+    private List<AdminResult> list;
     /**
      * 查询结果总计数
      */

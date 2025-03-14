@@ -4,13 +4,11 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-
 @Data
-public class AdminListDTO {
-    long id;
+public class AdminParam {
     String username;
+    String password;
     String email;
-    LocalDateTime createTime;
-    byte status;
     String note;
+    byte status;
 }

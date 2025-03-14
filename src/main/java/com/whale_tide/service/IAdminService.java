@@ -1,5 +1,6 @@
 package com.whale_tide.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.entity.AmsAdmins;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface IAdminService {
      * @param admin 管理员信息
      * @return 注册成功的管理员
      */
-    AmsAdmins register(AmsAdmins admin);
+    long register(AmsAdmins admin);
 
     /**
      * 登录功能
@@ -49,7 +50,7 @@ public interface IAdminService {
      * @param pageSize 分页大小
      * @return 查询结果
      */
-    com.baomidou.mybatisplus.extension.plugins.pagination.Page<AmsAdmins> list(String keyword, long pageNum, long pageSize);
+    Page<AmsAdmins> list(String keyword, long pageNum, long pageSize);
 
     /**
      * 刷新token
