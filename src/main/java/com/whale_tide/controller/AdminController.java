@@ -1,9 +1,8 @@
 package com.whale_tide.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonResult;
-import com.whale_tide.dto.AdminLoginParam;
-import com.whale_tide.dto.AdminInfoResult;
-import com.whale_tide.dto.AdminLoginResult;
+import com.whale_tide.dto.admin.*;
 import com.whale_tide.entity.AmsAdmins;
 import com.whale_tide.service.IAdminService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -82,10 +82,37 @@ public class AdminController {
     @PostMapping("/logout")
     public CommonResult logout(@RequestHeader("Authorization") String authHeader) {
         String username = "jwtTokenUtil.getUserNameFromToken(token)";
-        if(!adminService.logout(username))
+        if (!adminService.logout(username))
             return CommonResult.failed("操作失败");
 
         return CommonResult.success(null);
+    }
+
+    @GetMapping("/list")
+    public CommonResult<AdminListResult> list(@RequestBody AdminListParam adminListParam) {
+        Page<AmsAdmins> page = adminService.list(adminListParam.getKeyword(), adminListParam.getPageNum(), adminListParam.getPageSize());
+        AdminListResult result = new AdminListResult();
+
+        //获取管理员列表并进行转换
+        List<AmsAdmins> amsAdmins = page.getRecords();
+        List<AdminListDTO> adminListDTOS = new ArrayList<>();
+        for (AmsAdmins admin : amsAdmins) {
+            AdminListDTO adminListDTO = new AdminListDTO();
+            adminListDTO.setUsername(admin.getUsername());
+            adminListDTO.setId(admin.getId());
+            adminListDTO.setEmail(admin.getEmail());
+            adminListDTO.setCreateTime(admin.getCreateTime());
+            adminListDTO.setStatus(admin.getStatus().byteValue());
+            adminListDTO.setNote(admin.getNote());
+            adminListDTOS.add(adminListDTO);
+        }
+
+        //填充返回Data
+        result.setList(adminListDTOS);
+        result.setTotal(page.getTotal());
+        result.setPageNum(adminListParam.getPageNum());
+        result.setPageSize(adminListParam.getPageSize());
+        return CommonResult.success(result);
     }
 
 }

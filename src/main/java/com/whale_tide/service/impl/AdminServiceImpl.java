@@ -1,6 +1,7 @@
 package com.whale_tide.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.entity.AmsAdminRoleRelations;
 import com.whale_tide.entity.AmsAdmins;
@@ -124,6 +125,23 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
+    public Page<AmsAdmins> list(String keyword, long pageNum, long pageSize) {
+        log.info("查询管理员列表，关键字: {}, 页码: {}, 每页数量: {}",
+                keyword, pageNum, pageSize);
+        // 创建MyBatis-Plus分页对象
+        Page<AmsAdmins> page = Page.of(pageNum, pageSize);
+        page.addOrder(new OrderItem("username", true));
+        LambdaQueryWrapper<AmsAdmins> queryWrapper = new LambdaQueryWrapper<>();
+        if (keyword == null || keyword == "") {
+            queryWrapper.like(AmsAdmins::getUsername, keyword);
+        }
+
+        //获取查询
+        page = adminsMapper.selectPage(page, queryWrapper);
+        return page;
+    }
+
+    @Override
     public String refreshToken(String oldToken) {
         // 刷新JWT token
         // return jwtTokenUtil.refreshToken(oldToken);
@@ -137,32 +155,6 @@ public class AdminServiceImpl implements IAdminService {
             return null;
         }
         return adminsMapper.selectById(id);
-    }
-
-    @Override
-    public org.springframework.data.domain.Page<AmsAdmins> list(String keyword, Pageable pageable) {
-        log.info("查询管理员列表，关键字: {}, 页码: {}, 每页数量: {}",
-                keyword, pageable.getPageNumber(), pageable.getPageSize());
-
-        // 创建MyBatis-Plus分页对象
-        Page<AmsAdmins> page = new Page<>(pageable.getPageNumber(), pageable.getPageSize());
-
-        // 构建查询条件
-        LambdaQueryWrapper<AmsAdmins> queryWrapper = new LambdaQueryWrapper<>();
-        if (StringUtils.hasText(keyword)) {
-            // 只检索用户名，如果有其他需要检索的字段可以在此添加
-            queryWrapper.like(AmsAdmins::getUsername, keyword);
-        }
-
-        // 执行查询
-        Page<AmsAdmins> result = adminsMapper.selectPage(page, queryWrapper);
-
-        // 转换为Spring Data Page
-        return new org.springframework.data.domain.PageImpl<>(
-                result.getRecords(),
-                pageable,
-                result.getTotal()
-        );
     }
 
     @Override
