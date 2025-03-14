@@ -132,5 +132,26 @@ public class AdminController {
         }
     }
 
+    @PostMapping("/update/{id}")
+    public CommonResult update(@RequestBody AdminParam adminParam, @PathVariable("id") Long id) {
+        AmsAdmins amsAdmins = new AmsAdmins();
+        amsAdmins.setId(id);
+        amsAdmins.setUsername(adminParam.getUsername());
+        amsAdmins.setPassword(adminParam.getPassword());
+        amsAdmins.setEmail(adminParam.getEmail());   //邮箱
+        amsAdmins.setNote(adminParam.getNote());
+        int result = adminService.update(amsAdmins);
+        switch (result) {
+            case -1:
+                return CommonResult.failed("更新失败,请检查参数");
+            case -2:
+                return CommonResult.failed("用户名不存在");
+            case -3:
+                return CommonResult.failed("服务器内部错误");
+            default:
+                return CommonResult.success(result, "更新成功");
+        }
+    }
+
 
 }

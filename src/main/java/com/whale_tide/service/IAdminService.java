@@ -75,7 +75,7 @@ public interface IAdminService {
      * @param admin 管理员信息
      * @return 更新成功返回true
      */
-    boolean update(Long id, AmsAdmins admin);
+    int update(AmsAdmins admin);
 
     /**
      * 删除指定管理员

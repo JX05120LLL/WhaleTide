@@ -162,27 +162,26 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public boolean update(Long id, AmsAdmins admin) {
-        if (id == null || admin == null) {
-            return false;
+    public int update(AmsAdmins admin) {
+        if (admin.getUsername() == null || admin == null) {
+            return -1;
         }
 
         // 查询现有管理员
-        AmsAdmins existAdmin = getAdminById(id);
+        AmsAdmins existAdmin = getAdminById(admin.getId());
         if (existAdmin == null) {
-            log.warn("更新管理员失败，ID不存在: {}", id);
-            return false;
+            log.warn("更新管理员失败，用户ID不存在: {}", admin.getId());
+            return -2;
         }
 
-        // 设置ID以确保更新而不是新增
-        admin.setId(id);
-
+        int result_ = 0;
         // 如果没有设置密码，使用原密码
         if (!StringUtils.hasText(admin.getPassword())) {
             admin.setPassword(existAdmin.getPassword());
         } else {
             // 如果设置了新密码，需要加密
-            admin.setPassword("passwordEncoder.encode(admin.getPassword())");       //待修改--------------------------------------------------------------------------------------------------------
+            admin.setPassword(admin.getPassword());       //待修改-----------------------加密-----------------------------------------------------------------------------------
+            result_++;
         }
 
         // 保留创建时间
@@ -191,12 +190,20 @@ public class AdminServiceImpl implements IAdminService {
         // 更新
         int result = adminsMapper.updateById(admin);
         if (result > 0) {
-            log.info("管理员信息更新成功，ID: {}", id);
-            return true;
+            log.info("管理员信息更新成功，ID: {}", admin.getId());
+            if (!admin.getUsername().equals(existAdmin.getUsername()))
+                result_++;
+            if (!admin.getEmail().equals(existAdmin.getEmail()))
+                result_++;
+            if (!admin.getNote().equals(existAdmin.getNote()))
+                result_++;
+            if (!admin.getStatus().equals(existAdmin.getStatus()))
+                result_++;
+            return result_;
         }
 
-        log.warn("管理员信息更新失败，ID: {}", id);
-        return false;
+        log.warn("管理员信息更新失败，ID: {}", admin.getId());
+        return -3;
     }
 
     @Override
