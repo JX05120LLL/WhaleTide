@@ -1,9 +1,6 @@
 package com.whale_tide.service;
 
-import com.whale_tide.dto.CloseOrderParam;
-import com.whale_tide.entity.OmsOrders;
-import com.whale_tide.dto.OrderQueryParam;
-import com.whale_tide.dto.OrderResult;
+import com.whale_tide.dto.order.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
 /**
@@ -23,6 +20,28 @@ public interface IOrderService {
      * @param closeOrderParam 关闭订单参数
      * @return 关闭成功的订单数量
      */
+    int closeOrder(CloseOrderParam closeOrderParam);
+    
+    /**
+     * 删除订单
+     * @param deleteOrderParam 删除订单参数
+     * @return 删除成功的订单数量
+     */
+    int deleteOrder(DeleteOrderParam deleteOrderParam);
 
+    /**
+     * 发货
+     * @param orderDeliveryParam 订单发货参数
+     * @return 成功发货的订单数量
+     */
+    int deliver(OrderDeliveryParam orderDeliveryParam);
+
+    /**
+     * 获取订单详情
+     *
+     * @param orderId 订单ID
+     * @return 订单详情
+     */
+    OrderDetailResult getOrderDetail(Long orderId);
 
 }

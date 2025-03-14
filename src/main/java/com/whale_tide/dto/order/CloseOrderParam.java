@@ -1,4 +1,4 @@
-package com.whale_tide.dto;
+package com.whale_tide.dto.order;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
