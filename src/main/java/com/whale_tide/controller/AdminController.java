@@ -1,17 +1,16 @@
 package com.whale_tide.controller;
 
-import com.whale_tide.common.dto.HttpResult;
+import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.AdminLoginParam;
 import com.whale_tide.dto.AdminInfoResult;
 import com.whale_tide.dto.AdminLoginResult;
 import com.whale_tide.entity.AmsAdmins;
-import com.whale_tide.security.util.JwtTokenUtil;
 import com.whale_tide.service.IAdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+
 import java.util.List;
 
 @RestController
@@ -19,8 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class AdminController {
     private final IAdminService adminService;
-    @Autowired
-    private final JwtTokenUtil jwtTokenUtil;
+//    @Autowired
+//    private final JwtTokenUtil jwtTokenUtil;
 
     /**
      * 管理员登录接口
@@ -29,52 +28,55 @@ public class AdminController {
      * @return 返回登录结果2
      */
     @PostMapping("/login")
-    public HttpResult<AdminLoginResult> login(@RequestBody AdminLoginParam admin) {
-        HttpResult<AdminLoginResult> httpResult = new HttpResult<>();
+    public CommonResult<AdminLoginResult> login(@RequestBody AdminLoginParam admin) {
+        CommonResult<AdminLoginResult> commonResult;
 
         String token = adminService.login(admin.getUsername(), admin.getPassword());
         if (token == null) {
-            httpResult.setCode(403);
-            httpResult.setMessage("?");
-            httpResult.setResult(null);
-            httpResult.setTime(new Date());
+            commonResult = CommonResult.failed("?");
         } else {
             //
             AdminLoginResult result = new AdminLoginResult();
             result.setToken(token);
             result.setTokenHead("JWT");
             //
-            httpResult.setCode(200);
-            httpResult.setMessage("Login success");
-            httpResult.setResult(result);
-            httpResult.setTime(new Date());
+            commonResult = CommonResult.success(result);
         }
-        return httpResult;
+        return commonResult;
     }
 
 
     @GetMapping("/info")
-    public HttpResult<AdminInfoResult> info(@RequestHeader("Authorization") String authHeader) {
+    public CommonResult<AdminInfoResult> info(@RequestHeader("Authorization") String authHeader) {
         //获取admin
-        String token = authHeader.replace("Bearer ", "");
-        String username = jwtTokenUtil.getUserNameFromToken(token);
+//        String token = authHeader.replace("Bearer ", "");
+//        String username = jwtTokenUtil.getUserNameFromToken(token);
+        String username = "jwtTokenUtil.getUserNameFromToken(token)";
         AmsAdmins amsAdmins = adminService.getAdminByUsername(username);
-        HttpResult<AdminInfoResult> result = new HttpResult<>();
+        CommonResult<AdminInfoResult> commonResult;
         AdminInfoResult infoResult = new AdminInfoResult();
 
         if (amsAdmins == null) {
             infoResult = null;
-            result.setResult(infoResult);
+            commonResult = CommonResult.failed("未查询到信息");
         } else {
             infoResult.setUsername(username);
+            List<Long> roleIds = adminService.getRoleIdList(amsAdmins.getId());
             //获取角色列表
-            List<String> roles = adminService.getRoleNameList(adminService.getRoleList(amsAdmins.getId()));
+            List<String> roles = adminService.getRoleNameList(roleIds);
             infoResult.setRoles(roles);
 
-            List<String> menus =
+            //获取菜单列表
+            List<String> menus = adminService.getMenuNameList(adminService.getMenuIdListByRoleIds(roleIds));
+            infoResult.setMenus(menus);
 
+            //获取头像URL
+            infoResult.setIcon(amsAdmins.getAvatar());
+
+            //获取权限列表
+            commonResult = CommonResult.success(null);
         }
-        return result;
+        return commonResult;
     }
 
 

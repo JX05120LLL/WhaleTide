@@ -77,22 +77,41 @@ public interface IAdminService {
      * @return 更新成功返回true
      */
     boolean updateStatus(Long id, Integer status);
-    
+
     /**
      * 获取管理员拥有的角色ID列表
      * @param adminId 管理员ID
      * @return 角色ID列表
      */
-    List<Long> getRoleList(Long adminId);
+    List<Long> getRoleIdList(Long adminId);
 
     /**
      * 获取角色ID列表的所有角色名称
-     * @param rolesId 角色列表ID
+     * @param rolesId 角色ID列表
      * @return 角色名称列表
      */
     List<String> getRoleNameList(List<Long> rolesId);
 
-    List<Long> get
+    /**
+     * 获取角色对应的菜单ID表
+     * @param roleId 角色ID
+     * @return 菜单ID表
+     */
+    List<Long> getMenuIdList(Long roleId);
+
+    /**
+     * 根据角色列表获取所有菜单
+     * @param roleIds 角色ID列表
+     * @return 菜单ID列表
+     */
+    List<Long> getMenuIdListByRoleIds(List<Long> roleIds);
+
+    /**
+     * 获取菜单ID列表的所有菜单名称
+     * @param menuIds 菜单ID列表
+     * @return 菜单名称列表
+     */
+    List<String> getMenuNameList(List<Long> menuIds);
 
     /**
      * 为管理员分配角色

@@ -4,21 +4,19 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.entity.AmsAdminRoleRelations;
 import com.whale_tide.entity.AmsAdmins;
-import com.whale_tide.mapper.AmsAdminRoleRelationsMapper;
-import com.whale_tide.mapper.AmsAdminsMapper;
-import com.whale_tide.mapper.AmsRolesMapper;
+import com.whale_tide.entity.AmsMenus;
+import com.whale_tide.entity.AmsRoleMenuRelations;
+import com.whale_tide.mapper.*;
 import com.whale_tide.service.IAdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -32,13 +30,19 @@ public class AdminServiceImpl implements IAdminService {
     private AmsAdminsMapper adminsMapper;
 
     @Autowired
+    private AmsRolesMapper rolesMapper;
+
+    @Autowired
+    private AmsMenusMapper menusMapper;
+
+    @Autowired
     private AmsAdminRoleRelationsMapper adminRoleRelationsMapper;
 
     @Autowired
-    private AmsRolesMapper amsRolesMapper;
+    private AmsRoleMenuRelationsMapper roleMenuRelationsMapper;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+//    @Autowired
+//    private PasswordEncoder passwordEncoder;
 
     // JWT相关服务会在后续实现
     // @Autowired
@@ -71,7 +75,7 @@ public class AdminServiceImpl implements IAdminService {
         admin.setStatus(1); // 默认启用
 
         // 加密密码
-        String encodePassword = passwordEncoder.encode(admin.getPassword());
+        String encodePassword = "passwordEncoder.encode(admin.getPassword())";          //待修改----------------------------------------------------------------------------------------------
         admin.setPassword(encodePassword);
 
         // 保存管理员
@@ -94,10 +98,10 @@ public class AdminServiceImpl implements IAdminService {
         }
 
         // 验证密码
-        if (!passwordEncoder.matches(password, admin.getPassword())) {
-            log.warn("登录失败，密码不正确，用户名: {}", username);
-            return null;
-        }
+//        if (!passwordEncoder.matches(password, admin.getPassword())) {                   待修改------------------------------------------------------------------------------------------
+//            log.warn("登录失败，密码不正确，用户名: {}", username);
+//            return null;
+//        }
 
         // 更新登录时间
         admin.setLoginTime(LocalDateTime.now());
@@ -174,7 +178,7 @@ public class AdminServiceImpl implements IAdminService {
             admin.setPassword(existAdmin.getPassword());
         } else {
             // 如果设置了新密码，需要加密
-            admin.setPassword(passwordEncoder.encode(admin.getPassword()));
+            admin.setPassword("passwordEncoder.encode(admin.getPassword())");       //待修改--------------------------------------------------------------------------------------------------------
         }
 
         // 保留创建时间
@@ -231,7 +235,47 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public List<Long> getRoleList(Long adminId) {
+    public List<Long> getMenuIdList(Long roleId) {
+        if (roleId == null) {
+            return new ArrayList<>();
+        }
+
+        LambdaQueryWrapper<AmsRoleMenuRelations> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AmsRoleMenuRelations::getRoleId, roleId);
+        List<AmsRoleMenuRelations> relations = roleMenuRelationsMapper.selectList(queryWrapper);
+
+        List<Long> menuIds = new ArrayList<>();
+        for (AmsRoleMenuRelations amsRoleMenuRelations_ : relations) {
+            menuIds.add(amsRoleMenuRelations_.getMenuId());
+        }
+
+        return menuIds;
+    }
+
+    @Override
+    public List<Long> getMenuIdListByRoleIds(List<Long> roleIds) {
+        Set<Long> retMenuIds = new HashSet<>();
+        for (long roleId : roleIds) {
+            List<Long> menuIds = getMenuIdList(roleId);
+            retMenuIds.addAll(menuIds);
+        }
+        return new ArrayList<>(retMenuIds);
+    }
+
+    @Override
+    public List<String> getMenuNameList(List<Long> menuIds) {
+        if (menuIds == null || menuIds.size() == 0) {
+            return new ArrayList<>();
+        }
+        List<String> menuNameList = new ArrayList<>();
+        for (Long menuId : menuIds) {
+            menuNameList.add(menusMapper.selectById(menuId).getTitle());
+        }
+        return menuNameList;
+    }
+
+    @Override
+    public List<Long> getRoleIdList(Long adminId) {
         if (adminId == null) {
             return new ArrayList<>();
         }
@@ -239,6 +283,7 @@ public class AdminServiceImpl implements IAdminService {
         // 查询管理员角色关系
         LambdaQueryWrapper<AmsAdminRoleRelations> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(AmsAdminRoleRelations::getAdminId, adminId);
+
         List<AmsAdminRoleRelations> relations = adminRoleRelationsMapper.selectList(queryWrapper);
 
         // 转换为角色ID列表
@@ -254,7 +299,7 @@ public class AdminServiceImpl implements IAdminService {
     public List<String> getRoleNameList(List<Long> rolesId) {
         List<String> roles = new ArrayList<>();
         for (long roleId : rolesId) {
-            roles.add(amsRolesMapper.selectById(roleId).getName());
+            roles.add(rolesMapper.selectById(roleId).getName());
         }
         log.info("获取管理员角色列表名称，角色ID数量: {}, 角色数量: {}", rolesId.size(), roles.size());
         return roles;
