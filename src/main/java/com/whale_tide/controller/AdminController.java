@@ -128,8 +128,9 @@ public class AdminController {
         } else if (result == 0L) {
             return CommonResult.failed("用户名已存在");
         } else {
-            return CommonResult.success(result);
+            return CommonResult.success(result, "注册成功");
         }
     }
+
 
 }
