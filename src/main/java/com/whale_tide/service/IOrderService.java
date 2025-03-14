@@ -23,10 +23,6 @@ public interface IOrderService {
      * @param closeOrderParam 关闭订单参数
      * @return 关闭成功的订单数量
      */
-    int closeOrder(CloseOrderParam closeOrderParam);
-    
-    /**
-     * 订单详情
-     */
+
 
 }
