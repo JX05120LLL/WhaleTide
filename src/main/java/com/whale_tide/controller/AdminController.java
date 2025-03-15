@@ -26,15 +26,17 @@ public class AdminController {
      * 管理员登录接口
      *
      * @param admin 用户名和密码
-     * @return 返回登录结果2
+     * @return 返回登录结果
      */
     @PostMapping("/login")
     public CommonResult<AdminLoginResult> login(@RequestBody AdminLoginParam admin) {
         CommonResult<AdminLoginResult> commonResult;
 
         String token = adminService.login(admin.getUsername(), admin.getPassword());
-        if (token == null) {
-            commonResult = CommonResult.failed("?");
+        if (token.equals("-2")) {
+            commonResult = CommonResult.failed("用户不存在");
+        } else if (token.equals("0")) {
+            commonResult = CommonResult.failed("密码错误");
         } else {
             //
             AdminLoginResult result = new AdminLoginResult();

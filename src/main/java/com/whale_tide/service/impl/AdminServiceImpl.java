@@ -96,10 +96,14 @@ public class AdminServiceImpl implements IAdminService {
         AmsAdmins admin = getAdminByUsername(username);
         if (admin == null) {
             log.warn("登录失败，用户名不存在: {}", username);
-            return null;
+            return "-2";
         }
 
         // 验证密码
+        if(!admin.getPassword().equals(password)){
+            log.warn("登录失败，密码不正确，用户名: {}", username);
+            return "0";
+        }
 //        if (!passwordEncoder.matches(password, admin.getPassword())) {                   待修改------------------------------------------------------------------------------------------
 //            log.warn("登录失败，密码不正确，用户名: {}", username);
 //            return null;
@@ -114,7 +118,7 @@ public class AdminServiceImpl implements IAdminService {
         // 生成JWT token
         // 由于JWT实现可能需要额外设置，这里先返回模拟token
         // return jwtTokenUtil.generateToken(username);
-        return "mock_token_for_" + username;
+        return "token:" + username;
     }
 
     @Override
