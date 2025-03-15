@@ -71,4 +71,19 @@ public class OrderController {
         return CommonResult.failed("订单不存在");
     }
 
+    // 更新收货人信息
+    @ApiOperation("更新收货人信息")
+    @PostMapping("/update/receiverInfo")
+    public CommonResult<Integer> updateReceiverInfo(@RequestBody ReceiverInfoParam receiverInfoParam) {
+        int count = orderService.updateReceiverInfo(receiverInfoParam);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed("更新收货人信息失败");
+    }
+
+    
+
+
+
 } 

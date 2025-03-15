@@ -3,10 +3,9 @@ package com.whale_tide.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
-import com.whale_tide.dto.*;
+import com.whale_tide.dto.product.*;
 import com.whale_tide.service.IProductService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -87,6 +86,19 @@ public class ProductController {
             return CommonResult.failed("更新失败");
         }
     }
-
+    
+    @ApiOperation("创建商品")
+    @PostMapping("/create")
+    public CommonResult<Integer> createProduct(@RequestBody ProductParam productParam) {
+        // 调用服务层方法，创建商品
+        int count = productService.createProduct(productParam);
+        
+        // 根据创建结果返回响应
+        if (count > 0) {
+            return CommonResult.success(count);
+        } else {
+            return CommonResult.failed("创建商品失败，请检查参数是否完整");
+        }
+    }
 
 }

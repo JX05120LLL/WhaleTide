@@ -9,11 +9,14 @@ import com.whale_tide.entity.OmsOrderDeliveries;
 import com.whale_tide.entity.OmsOrderItems;
 import com.whale_tide.entity.OmsOrderStatusHistory;
 import com.whale_tide.entity.OmsOrders;
+import com.whale_tide.entity.UmsUserAddresses;
 import com.whale_tide.mapper.OmsOrderDeliveriesMapper;
 import com.whale_tide.mapper.OmsOrderItemsMapper;
 import com.whale_tide.mapper.OmsOrderStatusHistoryMapper;
 import com.whale_tide.mapper.OmsOrdersMapper;
+import com.whale_tide.mapper.UmsUserAddressesMapper;
 import com.whale_tide.service.IOrderService;
+import io.swagger.models.auth.In;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,9 @@ public class OrderServiceImpl  implements IOrderService {
     
     @Autowired
     private OmsOrderStatusHistoryMapper orderStatusHistoryMapper;
+
+    @Autowired
+    private UmsUserAddressesMapper userAddressesMapper;
 
     @Override
     public IPage<OrderResult> getOrderList(OrderQueryParam queryParam) {
@@ -244,6 +250,66 @@ public class OrderServiceImpl  implements IOrderService {
         result.setHistoryList(historyDTOs);
         
         return result;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateReceiverInfo(ReceiverInfoParam receiverInfoParam) {
+        // 1. 解析参数
+        String receiverName = receiverInfoParam.getReceiverName();
+        String receiverPhone = receiverInfoParam.getReceiverPhone();
+        String receiverPostCode = receiverInfoParam.getReceiverPostCode();
+        String receiverProvince = receiverInfoParam.getReceiverProvince();
+        String receiverCity = receiverInfoParam.getReceiverCity();
+        String receiverRegion = receiverInfoParam.getReceiverRegion();
+        String receiverDetailAddress = receiverInfoParam.getReceiverDetailAddress();
+        Integer status = receiverInfoParam.getStatus();
+
+        // 2. 更新订单表中的用户ID
+        LambdaUpdateWrapper<OmsOrders> orderUpdateWrapper = new LambdaUpdateWrapper<>();
+        orderUpdateWrapper.eq(OmsOrders::getId, receiverInfoParam.getOrderId())
+                .set(OmsOrders::getUserId, receiverInfoParam.getUserId());
+        
+        // 如果状态不为空，则同时更新订单状态
+        if (status != null) {
+            orderUpdateWrapper.set(OmsOrders::getStatus, status);
+        }
+        
+        int orderCount = ordersMapper.update(null, orderUpdateWrapper);
+        if (orderCount == 0) {
+            return 0;
+        }
+
+        // 3. 更新用户地址信息
+        LambdaUpdateWrapper<UmsUserAddresses> addressUpdateWrapper = new LambdaUpdateWrapper<>();
+        addressUpdateWrapper.eq(UmsUserAddresses::getUserId, receiverInfoParam.getUserId())
+                .eq(UmsUserAddresses::getIsDeleted, 0)
+                .set(UmsUserAddresses::getReceiverName, receiverName)
+                .set(UmsUserAddresses::getReceiverPhone, receiverPhone)
+                .set(UmsUserAddresses::getProvince, receiverProvince)
+                .set(UmsUserAddresses::getCity, receiverCity)
+                .set(UmsUserAddresses::getDistrict, receiverRegion)
+                .set(UmsUserAddresses::getDetailAddress, receiverDetailAddress)
+                .set(UmsUserAddresses::getPostalCode, receiverPostCode);
+
+        // 4. 执行地址更新
+        int addressCount = userAddressesMapper.update(null, addressUpdateWrapper);
+
+        // 5. 如果更新成功，记录状态变更历史
+        if (addressCount > 0) {
+            OmsOrderStatusHistory history = new OmsOrderStatusHistory();
+            history.setOrderId(receiverInfoParam.getOrderId());
+            history.setOrderSn(ordersMapper.selectById(receiverInfoParam.getOrderId()).getOrderSn());
+            history.setPreviousStatus(ordersMapper.selectById(receiverInfoParam.getOrderId()).getStatus());
+            history.setCurrentStatus(status != null ? status : ordersMapper.selectById(receiverInfoParam.getOrderId()).getStatus());
+            history.setOperatorType(3); // 3-管理员
+            history.setOperatorName("系统管理员");
+            history.setNote("更新收货人信息");
+            history.setCreateTime(LocalDateTime.now());
+            orderStatusHistoryMapper.insert(history);
+        }
+
+        return addressCount;
     }
 
 

@@ -44,4 +44,15 @@ public interface IOrderService {
      */
     OrderDetailResult getOrderDetail(Long orderId);
 
+    /**
+     *更新收货人信息
+     * @param receiverInfoParam 收货人信息参数
+     * @return 更新成功的订单数量
+     */
+    int updateReceiverInfo(ReceiverInfoParam receiverInfoParam);
+
+    /**
+     *
+     */
+
 }

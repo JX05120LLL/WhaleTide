@@ -1,7 +1,7 @@
 package com.whale_tide.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.whale_tide.dto.*;
+import com.whale_tide.dto.product.*;
 /*
 产品管理接口
 */
@@ -19,8 +19,9 @@ public interface IProductService {
     int updateRecommendStatus(UpdateRecommendStatusParam updateRecommendStatusParam);
 
     int updatePublishStatusParam(UpdatePublishStatusParam updatePublishStatusParam);
+    //创建产品
+    int createProduct(ProductParam productCreateParam);
 
 
 
-    void closeProduct();
 }
