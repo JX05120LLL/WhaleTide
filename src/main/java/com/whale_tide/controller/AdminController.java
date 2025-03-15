@@ -54,7 +54,7 @@ public class AdminController {
         //获取admin
 //        String token = authHeader.replace("Bearer ", "");
 //        String username = jwtTokenUtil.getUserNameFromToken(token);
-        String username = "jwtTokenUtil.getUserNameFromToken(token)";
+        String username = authHeader.replace("token:", "");
         AmsAdmins amsAdmins = adminService.getAdminByUsername(username);
         CommonResult<AdminInfoResult> commonResult;
         AdminInfoResult infoResult = new AdminInfoResult();
@@ -77,7 +77,11 @@ public class AdminController {
             infoResult.setIcon(amsAdmins.getAvatar());
 
             //获取权限列表
-            commonResult = CommonResult.success(null);
+            List<String > permissions = adminService.getPermissionNameListByAdminId(amsAdmins.getId());
+            infoResult.setPermissions(permissions);
+
+
+            commonResult = CommonResult.success(infoResult);
         }
         return commonResult;
     }

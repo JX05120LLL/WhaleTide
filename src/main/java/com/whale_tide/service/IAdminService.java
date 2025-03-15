@@ -151,4 +151,37 @@ public interface IAdminService {
      * @return 分配成功返回true
      */
     int allocateRoles(Long adminId, List<Long> roleIds);
+
+    /**
+     * 获取管理员的权限ID列表
+     *
+     * @param roleId 管理员ID
+     * @return 权限ID列表
+     */
+    List<Long> getPermissionIdList(Long roleId);
+
+    /**
+     * 获取管理员的权限ID列表
+     *
+     * @param adminId 管理员ID
+     * @return 权限ID列表
+     */
+    List<Long> getPermissionIdListByAdminId(Long adminId);
+
+    /**
+     * 获取权限ID列表的所有权限名称
+     *
+     * @param permissionIds 权限ID列表
+     * @return 权限名称列表
+     */
+    List<String> getPermissionNameList(List<Long> permissionIds);
+
+    /**
+     * 获取管理员的权限名称列表
+     *
+     * @param adminId 管理员ID
+     * @return 权限名称列表
+     */
+    List<String> getPermissionNameListByAdminId(Long adminId);
+
 } 

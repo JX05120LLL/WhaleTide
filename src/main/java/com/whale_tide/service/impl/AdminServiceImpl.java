@@ -8,7 +8,6 @@ import com.whale_tide.mapper.*;
 import com.whale_tide.service.IAdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -34,10 +33,16 @@ public class AdminServiceImpl implements IAdminService {
     private AmsMenusMapper menusMapper;
 
     @Autowired
+    private AmsPermissionsMapper permissionsMapper;
+
+    @Autowired
     private AmsAdminRoleRelationsMapper adminRoleRelationsMapper;
 
     @Autowired
     private AmsRoleMenuRelationsMapper roleMenuRelationsMapper;
+
+    @Autowired
+    private AmsRolePermissionRelationsMapper rolePermissionRelationsMapper;
 
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
@@ -100,7 +105,7 @@ public class AdminServiceImpl implements IAdminService {
         }
 
         // 验证密码
-        if(!admin.getPassword().equals(password)){
+        if (!admin.getPassword().equals(password)) {
             log.warn("登录失败，密码不正确，用户名: {}", username);
             return "0";
         }
@@ -404,4 +409,81 @@ public class AdminServiceImpl implements IAdminService {
 
         return roleIds.size();
     }
-} 
+
+    @Override
+    public List<Long> getPermissionIdList(Long roledId) {
+        LambdaQueryWrapper<AmsRolePermissionRelation> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(AmsRolePermissionRelation::getRoleId, roledId);
+
+        List<Long> permissionIds = rolePermissionRelationsMapper.selectList(queryWrapper).stream()
+                .map(AmsRolePermissionRelation::getPermissionId)
+                .collect(Collectors.toList());
+        return permissionIds;
+    }
+
+    @Override
+    public List<Long> getPermissionIdListByAdminId(Long adminId) {
+        if (adminId == null) {
+            return new ArrayList<>();
+        }
+
+        //查询管理员是否存在
+        AmsAdmins admin = adminsMapper.selectById(adminId);
+        if (admin == null) {
+            log.warn("管理员ID不存在: {}", adminId);
+            return new ArrayList<>();
+        }
+
+        //查询角色ID列表
+        List<Long> roleIds = getRoleIdList(adminId);
+
+        //查询角色权限关系
+        Set<Long> permissionIds = new HashSet<>();
+        for (Long roleId : roleIds) {
+            List<Long> permissionId = getPermissionIdList(roleId);
+            permissionIds.addAll(permissionId);
+        }
+
+        return new ArrayList<>(permissionIds);
+    }
+
+    @Override
+    public List<String> getPermissionNameList(List<Long> permissionIds) {
+        if (permissionIds == null || permissionIds.size() == 0) {
+            return new ArrayList<>();
+        }
+        List<String> permissionNameList = new ArrayList<>();
+        for (Long permissionId : permissionIds) {
+            //查询ID是否存在
+            AmsPermissions permission = permissionsMapper.selectById(permissionId);
+            if (permission == null) {
+                log.warn("权限ID不存在: {}", permissionId);
+            } else {
+                permissionNameList.add(permissionsMapper.selectById(permissionId).getName());
+            }
+        }
+        return permissionNameList;
+    }
+
+    @Override
+    public List<String> getPermissionNameListByAdminId(Long adminId) {
+        if (adminId == null) {
+            return new ArrayList<>();
+        }
+
+        //查询管理员是否存在
+        AmsAdmins admin = adminsMapper.selectById(adminId);
+        if (admin == null) {
+            log.warn("管理员ID不存在: {}", adminId);
+            return new ArrayList<>();
+        }
+
+        //查询权限ID列表
+        List<Long> permissionIds = getPermissionIdListByAdminId(adminId);
+
+        //查询权限名称
+        List<String> permissionNameList = getPermissionNameList(permissionIds);
+
+        return permissionNameList;
+    }
+}
