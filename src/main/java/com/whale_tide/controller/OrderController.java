@@ -3,9 +3,7 @@ package com.whale_tide.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
-import com.whale_tide.dto.CloseOrderParam;
-import com.whale_tide.dto.OrderQueryParam;
-import com.whale_tide.dto.OrderResult;
+import com.whale_tide.dto.order.*;
 import com.whale_tide.service.IOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,5 +38,37 @@ public class OrderController {
         return CommonResult.failed("没有订单被关闭");
     }
     
-    // 其他订单相关接口...
+    // 删除订单
+    @ApiOperation("删除订单")
+    @PostMapping("/delete")
+    public CommonResult<Integer> delete(@RequestBody DeleteOrderParam deleteOrderParam) {
+        int count = orderService.deleteOrder(deleteOrderParam);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed("没有订单被删除");
+    }
+
+    // 发货
+    @ApiOperation("发货")
+    @PostMapping("/update/delivery")
+    public CommonResult<Integer> deliver(@RequestBody OrderDeliveryParam orderDeliveryParam) {
+        int count = orderService.deliver(orderDeliveryParam);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed("没有订单被发货");
+    }
+
+    // 获取订单详情
+    @ApiOperation("获取订单详情")
+    @GetMapping("/{id}")
+    public CommonResult<OrderDetailResult> detail(@PathVariable Long id) {
+        OrderDetailResult orderDetail = orderService.getOrderDetail(id);
+        if (orderDetail != null) {
+            return CommonResult.success(orderDetail);
+        }
+        return CommonResult.failed("订单不存在");
+    }
+
 } 

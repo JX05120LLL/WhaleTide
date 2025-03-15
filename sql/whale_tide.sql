@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 13/03/2025 12:58:01
+ Date: 14/03/2025 16:05:41
 */
 
 SET NAMES utf8mb4;
@@ -261,6 +261,31 @@ CREATE TABLE `ams_role_menu_relations`  (
   CONSTRAINT `fk_menu_relation_menu` FOREIGN KEY (`menu_id`) REFERENCES `ams_menus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_menu_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与菜单关系表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for ams_role_permission_relations
+-- ----------------------------
+DROP TABLE IF EXISTS `ams_role_permission_relations`;
+CREATE TABLE `ams_role_permission_relations`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `role_id` bigint(0) NOT NULL COMMENT '角色ID',
+  `permission_id` bigint(0) NOT NULL COMMENT '权限ID',
+  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_role_id`(`role_id`) USING BTREE,
+  INDEX `idx_permission_id`(`permission_id`) USING BTREE,
+  CONSTRAINT `fk_permission_relation_permission` FOREIGN KEY (`permission_id`) REFERENCES `ams_permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_permission_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与权限关系表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ams_role_permission_relations
+-- ----------------------------
+INSERT INTO `ams_role_permission_relations` VALUES (1, 1, 1, '2023-01-01 00:00:00');
+INSERT INTO `ams_role_permission_relations` VALUES (2, 1, 2, '2023-01-01 00:00:00');
+INSERT INTO `ams_role_permission_relations` VALUES (3, 1, 3, '2023-01-01 00:00:00');
+INSERT INTO `ams_role_permission_relations` VALUES (4, 2, 1, '2023-01-01 00:00:00');
+INSERT INTO `ams_role_permission_relations` VALUES (5, 3, 2, '2023-01-01 00:00:00');
 
 -- ----------------------------
 -- Table structure for ams_role_resource_relations

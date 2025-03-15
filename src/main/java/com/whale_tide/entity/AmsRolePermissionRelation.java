@@ -12,8 +12,7 @@ import java.time.LocalDateTime;
 
 /**
  * 角色权限关系表
- *
- * @author whale
+ * @author Bro_cat
  * @since 2024-03-20
  */
 @Data
