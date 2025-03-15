@@ -141,6 +141,7 @@ public class AdminController {
         amsAdmins.setPassword(adminParam.getPassword());
         amsAdmins.setEmail(adminParam.getEmail());   //邮箱
         amsAdmins.setNote(adminParam.getNote());
+        amsAdmins.setStatus(new Integer(adminParam.getStatus()));
         int result = adminService.update(amsAdmins);
         switch (result) {
             case -1:
@@ -155,7 +156,8 @@ public class AdminController {
     }
 
     @PostMapping("/updateStatus/{id}")
-    public CommonResult updataStatus(@RequestBody UpdataStatusParam updataStatusParam, @RequestBody Long id) {
+    public CommonResult updataStatus(@RequestBody UpdataStatusParam updataStatusParam, @PathVariable("id") long id) {
+        System.out.println("test");
         int result = adminService.updateStatus(id, updataStatusParam.getStatus());
         switch (result) {
             case -1:
@@ -206,9 +208,9 @@ public class AdminController {
     }
 
 
-    @PostMapping("/role/updata")
+    @PostMapping("/role/update")
     public CommonResult updataRole(@RequestBody AdminRoleParam adminRoleParam) {
-        int result = adminService.allocateRoles(adminRoleParam.getAdmin_id(), adminRoleParam.getRole_ids());
+        int result = adminService.allocateRoles(adminRoleParam.getAdminId(), adminRoleParam.getRoleIds());
         if (result > 0) {
             return CommonResult.success(result, "更新成功");
         }
