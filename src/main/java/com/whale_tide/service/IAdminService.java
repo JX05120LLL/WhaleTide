@@ -1,10 +1,16 @@
 package com.whale_tide.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.whale_tide.dto.resource.ResourceResult;
+import com.whale_tide.dto.role.MenuNodeResult;
+import com.whale_tide.dto.role.RoleParam;
+import com.whale_tide.dto.role.RoleResult;
 import com.whale_tide.entity.AmsAdmins;
 import com.whale_tide.entity.AmsRoles;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 管理员服务接口
@@ -144,6 +150,14 @@ public interface IAdminService {
     List<String> getMenuNameList(List<Long> menuIds);
 
     /**
+     * 获取菜单详情列表
+     *
+     * @param menuIds 菜单ID列表
+     * @return 菜单详情对象列表
+     */
+    List<Map<String, Object>> getMenuDetailList(List<Long> menuIds);
+
+    /**
      * 为管理员分配角色
      *
      * @param adminId 管理员ID
@@ -183,5 +197,89 @@ public interface IAdminService {
      * @return 权限名称列表
      */
     List<String> getPermissionNameListByAdminId(Long adminId);
-
+    
+    /**
+     * 获取角色列表（分页）
+     *
+     * @param keyword  查询关键词（模糊查询）
+     * @param pageNum  页码
+     * @param pageSize 分页大小
+     * @return 查询结果
+     */
+    IPage<RoleResult> listRoles(String keyword, Integer pageNum, Integer pageSize);
+    
+    /**
+     * 获取所有角色
+     *
+     * @return 角色列表
+     */
+    List<RoleResult> listAllRoles();
+    
+    /**
+     * 创建角色
+     *
+     * @param roleParam 角色参数
+     * @return 创建成功返回true
+     */
+    boolean createRole(RoleParam roleParam);
+    
+    /**
+     * 更新角色
+     *
+     * @param id        角色ID
+     * @param roleParam 角色参数
+     * @return 更新成功返回true
+     */
+    boolean updateRole(Long id, RoleParam roleParam);
+    
+    /**
+     * 批量删除角色
+     *
+     * @param ids 角色ID列表
+     * @return 删除成功返回true
+     */
+    boolean deleteRoles(List<Long> ids);
+    
+    /**
+     * 更新角色状态
+     *
+     * @param id     角色ID
+     * @param status 状态（0->禁用；1->启用）
+     * @return 更新成功返回true
+     */
+    boolean updateRoleStatus(Long id, Integer status);
+    
+    /**
+     * 获取角色相关菜单
+     *
+     * @param roleId 角色ID
+     * @return 菜单列表
+     */
+    List<MenuNodeResult> listMenuByRole(Long roleId);
+    
+    /**
+     * 获取角色相关资源
+     *
+     * @param roleId 角色ID
+     * @return 资源列表
+     */
+    List<ResourceResult> listResourceByRole(Long roleId);
+    
+    /**
+     * 分配角色菜单
+     *
+     * @param roleId  角色ID
+     * @param menuIds 菜单ID列表
+     * @return 分配成功返回true
+     */
+    boolean allocMenu(Long roleId, List<Long> menuIds);
+    
+    /**
+     * 分配角色资源
+     *
+     * @param roleId      角色ID
+     * @param resourceIds 资源ID列表
+     * @return 分配成功返回true
+     */
+    boolean allocResource(Long roleId, List<Long> resourceIds);
 } 

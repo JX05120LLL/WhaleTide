@@ -46,6 +46,9 @@ public class ProductParam {
         @ApiModelProperty(value = "品牌ID")
         private Long brandId;
         
+        @ApiModelProperty(value = "商户ID", required = true)
+        private Long merchantId;
+        
         @ApiModelProperty(value = "商品分类ID", required = true)
         private Long productCategoryId;
         

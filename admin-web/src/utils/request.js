@@ -11,8 +11,18 @@ const service = axios.create({
 
 //request拦截器
 service.interceptors.request.use(config => {
+  // 确保Content-Type正确设置为application/json
+  if (!config.headers['Content-Type'] && config.method === 'post') {
+    config.headers['Content-Type'] = 'application/json'
+  }
+  
+  // 处理授权头
   if (store.getters.token) {
-    config.headers['Authorization'] = getToken() // 让每个请求携带自定义token 请根据实际情况自行修改
+    // 打印token值用于调试
+    console.log('当前token:', getToken())
+    // 直接使用token作为Authorization头的值
+    // 后端代码中预期格式为 "token:username"
+    config.headers['Authorization'] = getToken()
   }
   return config
 }, error => {

@@ -2,14 +2,13 @@ package com.whale_tide.common.api;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import lombok.Data;
 
 import java.util.List;
 
 /**
  * 分页数据封装类
+ * @author Bro_cat
  */
-@Data
 public class CommonPage<T> {
     /**
      * 当前页码
@@ -56,5 +55,45 @@ public class CommonPage<T> {
         result.setTotalPage(pageResult.getPages());
         result.setList(pageResult.getRecords());
         return result;
+    }
+
+    public Long getPageNum() {
+        return pageNum;
+    }
+
+    public void setPageNum(Long pageNum) {
+        this.pageNum = pageNum;
+    }
+
+    public Long getPageSize() {
+        return pageSize;
+    }
+
+    public void setPageSize(Long pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public Long getTotalPage() {
+        return totalPage;
+    }
+
+    public void setTotalPage(Long totalPage) {
+        this.totalPage = totalPage;
+    }
+
+    public List<T> getList() {
+        return list;
+    }
+
+    public void setList(List<T> list) {
+        this.list = list;
+    }
+
+    public Long getTotal() {
+        return total;
+    }
+
+    public void setTotal(Long total) {
+        this.total = total;
     }
 }

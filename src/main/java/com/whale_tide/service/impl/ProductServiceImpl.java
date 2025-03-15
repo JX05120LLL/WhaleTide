@@ -14,6 +14,7 @@ import com.whale_tide.entity.PmsProductSkus;
 import com.whale_tide.mapper.PmsProductAttributeValuesMapper;
 import com.whale_tide.mapper.PmsProductSkusMapper;
 import com.whale_tide.mapper.PmsProductsMapper;
+import com.whale_tide.mapper.PmsProductCategoriesMapper;
 import com.whale_tide.service.IProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
     private PmsProductSkusMapper skusMapper;
     @Autowired
     private PmsProductAttributeValuesMapper productAttributeValuesMapper;
+    @Autowired
+    private PmsProductCategoriesMapper productCategoriesMapper;
 
     @Override
     public IPage<ProductListResult> getProductList(ProductQueryParam queryParam) {
@@ -193,8 +196,14 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
         // 复制基本信息
         BeanUtils.copyProperties(basicParam, product);
         
-        // 设置分类ID字段映射
-        product.setCategoryId(basicParam.getProductCategoryId());
+        // 验证分类ID是否有效，如果无效则使用默认值1
+        Long categoryId = basicParam.getProductCategoryId();
+        if (categoryId == null || categoryId == 0 || !isValidCategoryId(categoryId)) {
+            log.warn("商品分类ID无效，将使用默认分类ID：1");
+            product.setCategoryId(1L); // 使用ID为1的分类
+        } else {
+            product.setCategoryId(categoryId);
+        }
         
         // 设置一些默认值
         if (StringUtils.isBlank(basicParam.getProductSn())) {
@@ -202,6 +211,18 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
         }
         product.setVerifyStatus(0); // 默认未审核
         product.setSale(0); // 默认销量为0
+        
+        // 设置商户ID - 优先从请求参数获取，如果没有则设置默认值
+        if (basicParam.getMerchantId() != null) {
+            // 如果请求中有商户ID，则使用请求中的商户ID
+            product.setMerchantId(basicParam.getMerchantId());
+        } else {
+            // 如果请求中没有商户ID，则设置为默认值1
+            // 注意: 实际项目中应该从当前登录用户获取，这里使用默认值仅用于开发阶段
+            product.setMerchantId(1L);
+            log.warn("商品创建时未提供商户ID，使用默认值：1");
+        }
+        
         // 设置主图
         product.setMainImage(basicParam.getPic());
         product.setIsDeleted(0); // 默认未删除
@@ -295,5 +316,132 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
     private String generateSkuCode(Long productId) {
         // 简单实现，使用商品ID+时间戳生成SKU编码
         return "SKU" + productId + System.currentTimeMillis() % 10000;
+    }
+
+    /**
+     * 检查分类ID是否存在于数据库中
+     */
+    private boolean isValidCategoryId(Long categoryId) {
+        if (categoryId == null || categoryId <= 0) {
+            return false;
+        }
+        
+        try {
+            // 查询该ID是否在分类表中存在
+            return productCategoriesMapper.selectById(categoryId) != null;
+        } catch (Exception e) {
+            log.error("检查分类ID时发生错误", e);
+            return false;
+        }
+    }
+
+    /**
+     * 获取商品编辑信息
+     */
+    @Override
+    public ProductParam getUpdateInfo(Long id) {
+        try {
+            // 查询商品基本信息
+            PmsProducts product = productsMapper.selectById(id);
+            if (product == null) {
+                return null;
+            }
+            
+            // 创建返回对象
+            ProductParam productParam = new ProductParam();
+            BeanUtils.copyProperties(product, productParam);
+            
+            // 查询商品SKU信息
+            LambdaQueryWrapper<PmsProductSkus> skuQueryWrapper = new LambdaQueryWrapper<>();
+            skuQueryWrapper.eq(PmsProductSkus::getProductId, id);
+            List<PmsProductSkus> skuList = skusMapper.selectList(skuQueryWrapper);
+            
+            // 转换SKU信息
+            if (skuList != null && !skuList.isEmpty()) {
+                List<ProductParam.SkuStockParam> skuStockParams = new ArrayList<>();
+                for (PmsProductSkus sku : skuList) {
+                    ProductParam.SkuStockParam skuStockParam = new ProductParam.SkuStockParam();
+                    BeanUtils.copyProperties(sku, skuStockParam);
+                    skuStockParams.add(skuStockParam);
+                }
+                productParam.setSkuStockList(skuStockParams);
+            }
+            
+            // 查询商品属性信息
+            LambdaQueryWrapper<PmsProductAttributeValues> attributeQueryWrapper = new LambdaQueryWrapper<>();
+            attributeQueryWrapper.eq(PmsProductAttributeValues::getProductId, id);
+            List<PmsProductAttributeValues> attributeList = productAttributeValuesMapper.selectList(attributeQueryWrapper);
+            
+            // 转换属性信息
+            if (attributeList != null && !attributeList.isEmpty()) {
+                List<ProductParam.ProductAttributeValueParam> attributeValueParams = new ArrayList<>();
+                for (PmsProductAttributeValues attribute : attributeList) {
+                    ProductParam.ProductAttributeValueParam attributeValueParam = new ProductParam.ProductAttributeValueParam();
+                    attributeValueParam.setProductAttributeId(attribute.getAttributeId());
+                    attributeValueParam.setValue(attribute.getValue());
+                    attributeValueParams.add(attributeValueParam);
+                }
+                productParam.setProductAttributeValueList(attributeValueParams);
+            }
+            
+            return productParam;
+        } catch (Exception e) {
+            log.error("获取商品编辑信息时发生错误", e);
+            return null;
+        }
+    }
+
+    /**
+     * 更新商品信息
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateProduct(Long id, ProductParam productParam) {
+        try {
+            // 查询商品是否存在
+            PmsProducts existingProduct = productsMapper.selectById(id);
+            if (existingProduct == null) {
+                return 0;
+            }
+            
+            // 更新商品基本信息
+            PmsProducts product = new PmsProducts();
+            BeanUtils.copyProperties(productParam, product);
+            product.setId(id);
+            product.setUpdateTime(LocalDateTime.now());
+            
+            // 执行更新
+            int count = productsMapper.updateById(product);
+            if (count <= 0) {
+                return 0;
+            }
+            
+            // 删除原有SKU信息
+            LambdaQueryWrapper<PmsProductSkus> skuQueryWrapper = new LambdaQueryWrapper<>();
+            skuQueryWrapper.eq(PmsProductSkus::getProductId, id);
+            skusMapper.delete(skuQueryWrapper);
+            
+            // 添加新的SKU信息
+            List<PmsProductSkus> skuList = handleSkuList(productParam.getSkuStockList(), id);
+            for (PmsProductSkus sku : skuList) {
+                skusMapper.insert(sku);
+            }
+            
+            // 删除原有属性信息
+            LambdaQueryWrapper<PmsProductAttributeValues> attributeQueryWrapper = new LambdaQueryWrapper<>();
+            attributeQueryWrapper.eq(PmsProductAttributeValues::getProductId, id);
+            productAttributeValuesMapper.delete(attributeQueryWrapper);
+            
+            // 添加新的属性信息
+            List<PmsProductAttributeValues> attributeList = handleAttributeList(productParam.getProductAttributeValueList(), id);
+            for (PmsProductAttributeValues attribute : attributeList) {
+                productAttributeValuesMapper.insert(attribute);
+            }
+            
+            return 1;
+        } catch (Exception e) {
+            log.error("更新商品信息时发生错误", e);
+            throw e;
+        }
     }
 }

@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 15/03/2025 15:06:46
+ Date: 15/03/2025 18:36:41
 */
 
 SET NAMES utf8mb4;
@@ -77,11 +77,9 @@ CREATE TABLE `ams_admin_role_relations`  (
 -- ----------------------------
 -- Records of ams_admin_role_relations
 -- ----------------------------
-INSERT INTO `ams_admin_role_relations` VALUES (1, 1, 1, '2023-01-01 00:00:00');
-INSERT INTO `ams_admin_role_relations` VALUES (2, 2, 2, '2023-01-01 00:00:00');
-INSERT INTO `ams_admin_role_relations` VALUES (3, 3, 3, '2023-01-01 00:00:00');
-INSERT INTO `ams_admin_role_relations` VALUES (4, 4, 4, '2023-01-01 00:00:00');
-INSERT INTO `ams_admin_role_relations` VALUES (5, 5, 5, '2023-01-01 00:00:00');
+INSERT INTO `ams_admin_role_relations` VALUES (6, 12, 6, '2025-03-15 18:28:59');
+INSERT INTO `ams_admin_role_relations` VALUES (7, 13, 7, '2025-03-15 18:28:59');
+INSERT INTO `ams_admin_role_relations` VALUES (8, 14, 8, '2025-03-15 18:28:59');
 
 -- ----------------------------
 -- Table structure for ams_admins
@@ -113,11 +111,9 @@ CREATE TABLE `ams_admins`  (
 -- ----------------------------
 -- Records of ams_admins
 -- ----------------------------
-INSERT INTO `ams_admins` VALUES (1, 'admin', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '超级管理员', 'admin@whaletide.com', '13888888888', NULL, 1, 1, NULL, NULL, '超级管理员', 1, '技术部', 'CTO', 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_admins` VALUES (2, 'productAdmin', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '商品管理员', 'product@whaletide.com', '13866666666', NULL, 1, 1, NULL, NULL, '商品管理员', 0, '商品部', '主管', 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_admins` VALUES (3, 'orderAdmin', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '订单管理员', 'order@whaletide.com', '13855555555', NULL, 1, 1, NULL, NULL, '订单管理员', 0, '运营部', '主管', 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_admins` VALUES (4, 'marketingAdmin', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '营销管理员', 'marketing@whaletide.com', '13844444444', NULL, 2, 1, NULL, NULL, '营销管理员', 0, '营销部', '主管', 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_admins` VALUES (5, 'authAdmin', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '权限管理员', 'auth@whaletide.com', '13833333333', NULL, 1, 1, NULL, NULL, '权限管理员', 0, '人事部', '主管', 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
+INSERT INTO `ams_admins` VALUES (12, 'admin', '123456', '超级管理员', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:30:22');
+INSERT INTO `ams_admins` VALUES (13, 'merchant', '123456', '商家', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
+INSERT INTO `ams_admins` VALUES (14, 'user', '123456', '普通用户', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
 
 -- ----------------------------
 -- Table structure for ams_menus
@@ -141,29 +137,6 @@ CREATE TABLE `ams_menus`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_parent_id`(`parent_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of ams_menus
--- ----------------------------
-INSERT INTO `ams_menus` VALUES (1, 0, '系统管理', 0, 0, 'setting', '/system', 'Layout', '/system/users', 0, 1, '系统管理目录', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (2, 1, '用户管理', 1, 1, 'user', '/system/users', 'system/users/index', NULL, 0, 1, '用户管理菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (3, 1, '角色管理', 1, 2, 'role', '/system/roles', 'system/roles/index', NULL, 0, 1, '角色管理菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (4, 1, '菜单管理', 1, 3, 'menu', '/system/menus', 'system/menus/index', NULL, 0, 1, '菜单管理菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (5, 1, '资源管理', 1, 4, 'resource', '/system/resources', 'system/resources/index', NULL, 0, 1, '资源管理菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (6, 0, '商品管理', 0, 1, 'product', '/product', 'Layout', '/product/list', 0, 1, '商品管理目录', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (7, 6, '商品列表', 1, 1, 'list', '/product/list', 'product/list/index', NULL, 0, 1, '商品列表菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (8, 6, '商品分类', 1, 2, 'category', '/product/categories', 'product/categories/index', NULL, 0, 1, '商品分类菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (9, 6, '品牌管理', 1, 3, 'brand', '/product/brands', 'product/brands/index', NULL, 0, 1, '品牌管理菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (10, 0, '订单管理', 0, 2, 'order', '/order', 'Layout', '/order/list', 0, 1, '订单管理目录', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (11, 10, '订单列表', 1, 1, 'list', '/order/list', 'order/list/index', NULL, 0, 1, '订单列表菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (12, 10, '退货管理', 1, 2, 'return', '/order/returns', 'order/returns/index', NULL, 0, 1, '退货管理菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (13, 0, '营销管理', 0, 3, 'marketing', '/marketing', 'Layout', '/marketing/coupons', 0, 1, '营销管理目录', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (14, 13, '优惠券管理', 1, 1, 'coupon', '/marketing/coupons', 'marketing/coupons/index', NULL, 0, 1, '优惠券管理菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (15, 13, '秒杀活动', 1, 2, 'flash', '/marketing/flash', 'marketing/flash/index', NULL, 0, 1, '秒杀活动菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (16, 13, '促销活动', 1, 3, 'promotion', '/marketing/promotions', 'marketing/promotions/index', NULL, 0, 1, '促销活动菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (17, 0, '用户管理', 0, 4, 'member', '/member', 'Layout', '/member/list', 0, 1, '用户管理目录', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (18, 17, '用户列表', 1, 1, 'list', '/member/list', 'member/list/index', NULL, 0, 1, '用户列表菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_menus` VALUES (19, 17, '商家管理', 1, 2, 'merchant', '/member/merchants', 'member/merchants/index', NULL, 0, 1, '商家管理菜单', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
 
 -- ----------------------------
 -- Table structure for ams_permissions
@@ -203,18 +176,6 @@ CREATE TABLE `ams_resource_categories`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of ams_resource_categories
--- ----------------------------
-INSERT INTO `ams_resource_categories` VALUES (1, '管理员模块', 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resource_categories` VALUES (2, '角色模块', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resource_categories` VALUES (3, '菜单模块', 2, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resource_categories` VALUES (4, '资源模块', 3, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resource_categories` VALUES (5, '商品模块', 4, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resource_categories` VALUES (6, '订单模块', 5, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resource_categories` VALUES (7, '营销模块', 6, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resource_categories` VALUES (8, '用户模块', 7, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-
--- ----------------------------
 -- Table structure for ams_resources
 -- ----------------------------
 DROP TABLE IF EXISTS `ams_resources`;
@@ -231,20 +192,6 @@ CREATE TABLE `ams_resources`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of ams_resources
--- ----------------------------
-INSERT INTO `ams_resources` VALUES (1, 1, '获取管理员列表', '/api/admin/admins', 'GET', '获取管理员列表接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resources` VALUES (2, 1, '创建管理员', '/api/admin/admins', 'POST', '创建管理员接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resources` VALUES (3, 1, '更新管理员', '/api/admin/admins/{id}', 'PUT', '更新管理员接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resources` VALUES (4, 1, '删除管理员', '/api/admin/admins/{id}', 'DELETE', '删除管理员接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resources` VALUES (5, 2, '获取角色列表', '/api/admin/roles', 'GET', '获取角色列表接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resources` VALUES (6, 2, '创建角色', '/api/admin/roles', 'POST', '创建角色接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resources` VALUES (7, 2, '更新角色', '/api/admin/roles/{id}', 'PUT', '更新角色接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resources` VALUES (8, 2, '删除角色', '/api/admin/roles/{id}', 'DELETE', '删除角色接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resources` VALUES (9, 3, '获取菜单列表', '/api/admin/menus', 'GET', '获取菜单列表接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_resources` VALUES (10, 3, '创建菜单', '/api/admin/menus', 'POST', '创建菜单接口', 1, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
 
 -- ----------------------------
 -- Table structure for ams_role_menu_relations
@@ -324,11 +271,9 @@ CREATE TABLE `ams_roles`  (
 -- ----------------------------
 -- Records of ams_roles
 -- ----------------------------
-INSERT INTO `ams_roles` VALUES (1, '超级管理员', 'SUPER_ADMIN', '超级管理员，拥有所有权限', 0, 1, 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_roles` VALUES (2, '商品管理员', 'PRODUCT_ADMIN', '商品管理员，负责商品管理相关操作', 1, 1, 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_roles` VALUES (3, '订单管理员', 'ORDER_ADMIN', '订单管理员，负责订单管理相关操作', 2, 1, 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_roles` VALUES (4, '营销管理员', 'MARKETING_ADMIN', '营销管理员，负责营销活动管理相关操作', 3, 1, 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ams_roles` VALUES (5, '权限管理员', 'AUTH_ADMIN', '权限管理员，负责权限管理相关操作', 4, 1, 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
+INSERT INTO `ams_roles` VALUES (6, '超级管理员', 'ADMIN', '拥有所有操作权限', 0, 1, 0, '2025-03-15 18:23:32', '2025-03-15 18:30:44');
+INSERT INTO `ams_roles` VALUES (7, '商家', 'MERCHANT', '拥有商品和订单管理权限', 0, 1, 0, '2025-03-15 18:23:32', '2025-03-15 18:23:32');
+INSERT INTO `ams_roles` VALUES (8, '普通用户', 'USER', '拥有基本查看权限', 0, 1, 0, '2025-03-15 18:23:32', '2025-03-15 18:24:03');
 
 -- ----------------------------
 -- Table structure for oms_cart_items
@@ -1297,5 +1242,12 @@ INSERT INTO `ums_users` VALUES (1, 'user123', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OE
 INSERT INTO `ums_users` VALUES (2, 'merchant456', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '13900139000', 'merchant456@example.com', '李大卖', '李卖', 1, '1985-05-05', 'https://example.com/avatar/2.jpg', 1, NULL, 1, '2023-01-02 11:00:00', '192.168.1.2', 1, 1, 200, 50, '上海市', NULL, 0, '2023-01-01 00:00:00', '2023-01-02 11:00:00');
 INSERT INTO `ums_users` VALUES (3, 'user789', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '13700137000', 'user789@example.com', '王小红', '王红', 2, '1995-10-10', 'https://example.com/avatar/3.jpg', 1, NULL, 2, '2023-01-02 12:00:00', '192.168.1.3', 0, 0, 50, 10, '广州市', NULL, 0, '2023-01-01 00:00:00', '2023-01-02 12:00:00');
 INSERT INTO `ums_users` VALUES (4, 'merchant321', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '13600136000', 'merchant321@example.com', '赵掌柜', '赵柜', 1, '1980-12-12', 'https://example.com/avatar/4.jpg', 1, NULL, 0, '2023-01-02 13:00:00', '192.168.1.4', 1, 2, 300, 100, '深圳市', NULL, 0, '2023-01-01 00:00:00', '2023-01-02 13:00:00');
+INSERT INTO `ums_users` VALUES (5, 'lisi', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581841', NULL, 'lisi', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:12:38', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:12:38', '2025-03-15 16:57:32');
+INSERT INTO `ums_users` VALUES (6, 'wangwu', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581842', NULL, 'wangwu', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:13:09', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:13:09', '2025-03-15 16:57:32');
+INSERT INTO `ums_users` VALUES (7, 'lion', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581845', NULL, 'lion', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:21:39', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:21:39', '2025-03-15 16:57:32');
+INSERT INTO `ums_users` VALUES (8, 'shari', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581844', NULL, 'shari', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:22:00', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:22:00', '2025-03-15 16:57:32');
+INSERT INTO `ums_users` VALUES (9, 'aewen', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581843', NULL, 'aewen', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:22:55', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:22:55', '2025-03-15 16:57:32');
+INSERT INTO `ums_users` VALUES (10, 'guest', '$2a$10$WQiD4RzEs1iJVWU.2HVu8OdSlExJHWKmwndaw3SUfMyqfKZmXe1vq', '18911111111', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2020-03-14 14:52:18', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2020-03-14 14:52:18', '2025-03-15 16:57:32');
+INSERT INTO `ums_users` VALUES (11, 'member', '$2a$10$Q08uzqvtPj61NnpYQZsVvOnyilJ3AU4VdngAcJFGvPhEeqhhC.hhS', '18961511111', NULL, 'member', NULL, 1, '2009-06-01', 'https://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/icon/github_icon_02.png', 1, NULL, NULL, '2023-05-11 15:22:38', NULL, 0, 4, 5000, 1000, '上海', NULL, 0, '2023-05-11 15:22:38', '2025-03-15 16:57:32');
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -29,6 +29,11 @@ public class GlobalCorsConfig {
         config.addAllowedHeader("*");
         //允许所有请求方法跨域调用
         config.addAllowedMethod("*");
+        //允许暴露的响应头
+        config.addExposedHeader("*");
+        //预检请求的缓存时间
+        config.setMaxAge(3600L);
+        
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);

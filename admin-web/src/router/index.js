@@ -46,6 +46,26 @@ export const constantRouterMap = [
   }
 ]
 
+/**
+ * 以权限为中心的路由配置
+ * 
+ * 格式示例:
+ * {
+ *   path: '/pms', // 路由路径
+ *   component: Layout, // 路由组件
+ *   redirect: '/pms/product', // 重定向路径
+ *   name: 'pms', // 路由名称，必须唯一
+ *   meta: { title: '商品', icon: 'product' }, // 路由元数据
+ *   children: [ // 子路由
+ *     {
+ *       path: 'product', // 子路由路径
+ *       name: 'product', // 子路由名称
+ *       component: () => import('@/views/pms/product/index'), // 子路由组件
+ *       meta: { title: '商品列表', icon: 'product-list' } // 子路由元数据
+ *     }
+ *   ]
+ * }
+ */
 export const asyncRouterMap = [
   {
     path: '/pms',
@@ -367,6 +387,23 @@ export const asyncRouterMap = [
         component: () => import('@/views/ums/resource/categoryList'),
         meta: {title: '资源分类'},
         hidden: true
+      }
+    ]
+  },
+  // 帮助页面 - 用于处理组件不存在或404的情况
+  {
+    path: '/help',
+    component: Layout,
+    redirect: '/help/index',
+    name: 'help',
+    meta: {title: '帮助提示', icon: 'help'},
+    hidden: true,
+    children: [
+      {
+        path: 'index',
+        name: 'helpIndex',
+        component: () => import('@/views/HelpPage'),
+        meta: {title: '帮助提示'}
       }
     ]
   },

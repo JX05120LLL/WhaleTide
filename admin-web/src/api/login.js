@@ -7,6 +7,9 @@ export function login(username, password) {
     data: {
       username,
       password
+    },
+    headers: {
+      'Content-Type': 'application/json'
     }
   })
 }
@@ -15,6 +18,9 @@ export function getInfo() {
   return request({
     url: '/admin/info',
     method: 'get',
+    headers: {
+      'Content-Type': 'application/json'
+    }
   })
 }
 
