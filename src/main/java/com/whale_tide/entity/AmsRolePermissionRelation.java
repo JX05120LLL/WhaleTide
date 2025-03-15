@@ -43,4 +43,5 @@ public class AmsRolePermissionRelation implements Serializable {
      * 创建时间
      */
     private LocalDateTime createTime;
+
 } 

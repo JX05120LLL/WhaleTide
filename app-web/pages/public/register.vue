@@ -84,19 +84,33 @@
 				if (!this.validateMobile()) return;
 				
 				this.codeDisabled = true;
-				await getSmsCode(this.mobile);
-				
-				const timer = setInterval(() => {
-					if (this.countdown <= 0) {
-						clearInterval(timer);
-						this.codeBtnText = '重新获取';
-						this.countdown = 60;
-						this.codeDisabled = false;
-					} else {
-						this.codeBtnText = `${this.countdown}s后重发`;
-						this.countdown--;
-					}
-				}, 1000);
+				try {
+					await getSmsCode(this.mobile);
+					
+					uni.showToast({
+						title: '验证码已发送',
+						icon: 'success'
+					});
+					
+					const timer = setInterval(() => {
+						if (this.countdown <= 0) {
+							clearInterval(timer);
+							this.codeBtnText = '重新获取';
+							this.countdown = 60;
+							this.codeDisabled = false;
+						} else {
+							this.codeBtnText = `${this.countdown}s后重发`;
+							this.countdown--;
+						}
+					}, 1000);
+				} catch (error) {
+					console.error('获取验证码失败:', error);
+					uni.showToast({
+						title: error.message || '获取验证码失败，请稍后重试',
+						icon: 'none'
+					});
+					this.codeDisabled = false;
+				}
 			},
 			validateMobile() {
 				const reg = /^1[3-9]\d{9}$/;
@@ -111,7 +125,7 @@
 				
 				this.registering = true;
 				try {
-					await memberRegister({
+					const result = await memberRegister({
 						mobile: this.mobile,
 						code: this.code,
 						password: this.password
@@ -125,6 +139,12 @@
 								this.navBack();
 							}, 1500);
 						}
+					});
+				} catch (error) {
+					console.error('注册失败:', error);
+					uni.showToast({
+						title: error.message || '注册失败，请稍后重试',
+						icon: 'none'
 					});
 				} finally {
 					this.registering = false;
