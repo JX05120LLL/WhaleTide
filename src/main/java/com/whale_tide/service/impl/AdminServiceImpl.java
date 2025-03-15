@@ -142,7 +142,7 @@ public class AdminServiceImpl implements IAdminService {
         Page<AmsAdmins> page = Page.of(pageNum, pageSize);
         page.addOrder(new OrderItem("username", true));
         LambdaQueryWrapper<AmsAdmins> queryWrapper = new LambdaQueryWrapper<>();
-        if (keyword == null || keyword == "") {
+        if (!(keyword == null || keyword == "")) {
             queryWrapper.like(AmsAdmins::getUsername, keyword);
         }
 
