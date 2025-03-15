@@ -170,5 +170,21 @@ public class AdminController {
         }
     }
 
-    
+    @DeleteMapping("/delete/{id}")
+    public CommonResult delete(@PathVariable("id") Long id) {
+        int result = adminService.delete(id);
+        switch (result) {
+            case -2:
+                return CommonResult.failed("参数错误");
+            case -1:
+                return CommonResult.failed("管理员不存在");
+            case 0:
+                return CommonResult.failed("删除失败");
+            case 1:
+                return CommonResult.success(result, "删除成功");
+            default:
+                return CommonResult.failed("服务器内部错误");
+        }
+    }
+
 }

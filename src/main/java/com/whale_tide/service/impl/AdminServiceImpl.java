@@ -207,9 +207,16 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public boolean delete(Long id) {
+    public int delete(Long id) {
         if (id == null) {
-            return false;
+            return -2;
+        }
+
+        // 查询现有管理员
+        AmsAdmins existAdmin = getAdminById(id);
+        if (existAdmin == null) {
+            log.warn("删除管理员失败，ID不存在: {}", id);
+            return -1;
         }
 
         // 删除管理员
@@ -221,7 +228,7 @@ public class AdminServiceImpl implements IAdminService {
         adminRoleRelationsMapper.delete(queryWrapper);
 
         log.info("删除管理员及其角色关系，ID: {}, 结果: {}", id, result > 0);
-        return result > 0;
+        return result;
     }
 
     @Override

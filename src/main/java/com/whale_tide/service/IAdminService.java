@@ -84,7 +84,7 @@ public interface IAdminService {
      * @param id 管理员ID
      * @return 删除成功返回true
      */
-    boolean delete(Long id);
+    int delete(Long id);
 
     /**
      * 更新管理员状态
