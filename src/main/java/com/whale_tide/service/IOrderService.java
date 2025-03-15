@@ -52,7 +52,17 @@ public interface IOrderService {
     int updateReceiverInfo(ReceiverInfoParam receiverInfoParam);
 
     /**
-     *
+     *更新订单费用信息
+     * @param moneyInfoParam 订单费用信息参数
+     * @return 更新成功的订单数量
      */
+    int updateOrderAmount(MoneyInfoParam moneyInfoParam);
+
+    /**
+     * 更新订单备注信息
+     * @param orderNoteParam
+     * @return
+     */
+    int updateOrderNote(OrderNoteParam orderNoteParam);
 
 }

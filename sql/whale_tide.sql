@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 14/03/2025 16:05:41
+ Date: 15/03/2025 15:06:46
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `ams_admin_login_logs`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_admin_id`(`admin_id`) USING BTREE,
   CONSTRAINT `fk_login_log_admin` FOREIGN KEY (`admin_id`) REFERENCES `ams_admins` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员登录日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员登录日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ams_admin_operation_logs
@@ -56,7 +56,7 @@ CREATE TABLE `ams_admin_operation_logs`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_admin_id`(`admin_id`) USING BTREE,
   CONSTRAINT `fk_operation_log_admin` FOREIGN KEY (`admin_id`) REFERENCES `ams_admins` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员操作日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员操作日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ams_admin_role_relations
@@ -72,7 +72,7 @@ CREATE TABLE `ams_admin_role_relations`  (
   INDEX `idx_role_id`(`role_id`) USING BTREE,
   CONSTRAINT `fk_relation_admin` FOREIGN KEY (`admin_id`) REFERENCES `ams_admins` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员与角色关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员与角色关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_admin_role_relations
@@ -108,7 +108,7 @@ CREATE TABLE `ams_admins`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_username`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_admins
@@ -140,7 +140,7 @@ CREATE TABLE `ams_menus`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_parent_id`(`parent_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_menus
@@ -187,7 +187,7 @@ CREATE TABLE `ams_permissions`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ams_resource_categories
@@ -200,7 +200,7 @@ CREATE TABLE `ams_resource_categories`  (
   `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源分类表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_resource_categories
@@ -230,7 +230,7 @@ CREATE TABLE `ams_resources`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_resources
@@ -260,7 +260,7 @@ CREATE TABLE `ams_role_menu_relations`  (
   INDEX `idx_menu_id`(`menu_id`) USING BTREE,
   CONSTRAINT `fk_menu_relation_menu` FOREIGN KEY (`menu_id`) REFERENCES `ams_menus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_menu_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与菜单关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与菜单关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ams_role_permission_relations
@@ -301,7 +301,7 @@ CREATE TABLE `ams_role_resource_relations`  (
   INDEX `idx_resource_id`(`resource_id`) USING BTREE,
   CONSTRAINT `fk_resource_relation_resource` FOREIGN KEY (`resource_id`) REFERENCES `ams_resources` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_resource_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与资源关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与资源关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ams_roles
@@ -319,7 +319,7 @@ CREATE TABLE `ams_roles`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_roles
@@ -351,7 +351,7 @@ CREATE TABLE `oms_cart_items`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   INDEX `idx_sku_id`(`sku_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '购物车表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '购物车表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for oms_order_deliveries
@@ -572,7 +572,7 @@ CREATE TABLE `pms_brands`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '品牌表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '品牌表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_attribute_values
@@ -589,7 +589,7 @@ CREATE TABLE `pms_product_attribute_values`  (
   INDEX `idx_attribute_id`(`attribute_id`) USING BTREE,
   CONSTRAINT `fk_attr_value_attribute` FOREIGN KEY (`attribute_id`) REFERENCES `pms_product_attributes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_attr_value_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性值表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性值表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_attributes
@@ -611,7 +611,7 @@ CREATE TABLE `pms_product_attributes`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   CONSTRAINT `fk_attribute_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_categories
@@ -632,7 +632,7 @@ CREATE TABLE `pms_product_categories`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_parent_id`(`parent_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_comments
@@ -656,7 +656,7 @@ CREATE TABLE `pms_product_comments`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_comment_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评论表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评论表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_details
@@ -674,7 +674,7 @@ CREATE TABLE `pms_product_details`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_detail_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品详情表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品详情表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_images
@@ -690,7 +690,7 @@ CREATE TABLE `pms_product_images`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_image_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品图片表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品图片表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_skus
@@ -716,7 +716,7 @@ CREATE TABLE `pms_product_skus`  (
   UNIQUE INDEX `uk_sku_code`(`sku_code`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_sku_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品SKU表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品SKU表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_products
@@ -753,7 +753,7 @@ CREATE TABLE `pms_products`  (
   INDEX `idx_merchant_id`(`merchant_id`) USING BTREE,
   CONSTRAINT `fk_product_brand` FOREIGN KEY (`brand_id`) REFERENCES `pms_brands` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `fk_product_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_ratings
@@ -770,7 +770,7 @@ CREATE TABLE `pms_ratings`  (
   UNIQUE INDEX `uk_user_product_type`(`user_id`, `product_id`, `rating_type`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_rating_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评分表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评分表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_stock_logs
@@ -795,7 +795,7 @@ CREATE TABLE `pms_stock_logs`  (
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_stock_log_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_stock_log_sku` FOREIGN KEY (`sku_id`) REFERENCES `pms_product_skus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存变更日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存变更日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_categories
@@ -812,7 +812,7 @@ CREATE TABLE `sms_coupon_categories`  (
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   CONSTRAINT `fk_category_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用分类关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用分类关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_history
@@ -836,7 +836,7 @@ CREATE TABLE `sms_coupon_history`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_history_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券领取历史表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券领取历史表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_products
@@ -853,7 +853,7 @@ CREATE TABLE `sms_coupon_products`  (
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupons
@@ -884,7 +884,7 @@ CREATE TABLE `sms_coupons`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion
@@ -906,7 +906,7 @@ CREATE TABLE `sms_flash_promotion`  (
   INDEX `idx_start_date`(`start_date`) USING BTREE,
   INDEX `idx_end_date`(`end_date`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion_products
@@ -934,7 +934,7 @@ CREATE TABLE `sms_flash_promotion_products`  (
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_flash` FOREIGN KEY (`flash_promotion_id`) REFERENCES `sms_flash_promotion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_product_session` FOREIGN KEY (`flash_session_id`) REFERENCES `sms_flash_promotion_sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion_sessions
@@ -953,7 +953,7 @@ CREATE TABLE `sms_flash_promotion_sessions`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_flash_promotion_id`(`flash_promotion_id`) USING BTREE,
   CONSTRAINT `fk_session_flash` FOREIGN KEY (`flash_promotion_id`) REFERENCES `sms_flash_promotion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀场次表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀场次表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_logs
@@ -975,7 +975,7 @@ CREATE TABLE `sms_promotion_logs`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_log_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_products
@@ -995,7 +995,7 @@ CREATE TABLE `sms_promotion_products`  (
   INDEX `idx_promotion_id`(`promotion_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotions
@@ -1022,7 +1022,7 @@ CREATE TABLE `sms_promotions`  (
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_merchants
@@ -1067,7 +1067,7 @@ CREATE TABLE `ums_merchants`  (
   UNIQUE INDEX `uk_user_id`(`user_id`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   CONSTRAINT `fk_merchant_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商家表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商家表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_merchants
@@ -1098,7 +1098,7 @@ CREATE TABLE `ums_notifications`  (
   INDEX `idx_receiver_id`(`receiver_id`) USING BTREE,
   INDEX `idx_read_status`(`read_status`) USING BTREE,
   CONSTRAINT `fk_notification_user` FOREIGN KEY (`receiver_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户通知表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户通知表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_notifications
@@ -1131,7 +1131,7 @@ CREATE TABLE `ums_user_addresses`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_address_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户地址表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户地址表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_user_addresses
@@ -1167,7 +1167,7 @@ CREATE TABLE `ums_user_coupons`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   CONSTRAINT `fk_user_coupon_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_favorites
@@ -1188,7 +1188,7 @@ CREATE TABLE `ums_user_favorites`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_favorite_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收藏表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收藏表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_login_logs
@@ -1210,7 +1210,7 @@ CREATE TABLE `ums_user_login_logs`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_login_log_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_roles
@@ -1227,7 +1227,7 @@ CREATE TABLE `ums_user_roles`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_user_role_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_user_roles
@@ -1252,7 +1252,7 @@ CREATE TABLE `ums_user_search_history`  (
   UNIQUE INDEX `uk_user_keyword`(`user_id`, `keyword`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_search_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_users
@@ -1288,7 +1288,7 @@ CREATE TABLE `ums_users`  (
   UNIQUE INDEX `uk_phone`(`phone`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_is_merchant`(`is_merchant`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_users

@@ -312,5 +312,48 @@ public class OrderServiceImpl  implements IOrderService {
         return addressCount;
     }
 
+    @Override
+    public int updateOrderAmount(MoneyInfoParam moneyInfoParam) {
+
+        if (moneyInfoParam == null) {
+            return 0;
+        }
+        // 1. 解析参数
+        Long orderId = moneyInfoParam.getOrderId();
+        Double freightAmount = moneyInfoParam.getFreightAmount();
+        Double discountAmount = moneyInfoParam.getDiscountAmount();
+        int status = moneyInfoParam.getStatus();
+
+        // 2. 更新订单表中的金额信息
+        LambdaUpdateWrapper<OmsOrders> orderUpdateWrapper = new LambdaUpdateWrapper<>();
+        orderUpdateWrapper.eq(OmsOrders::getId, orderId)
+                .set(OmsOrders::getFreightAmount, freightAmount)
+                .set(OmsOrders::getDiscountAmount, discountAmount)
+                .set(OmsOrders::getStatus, status);
+
+        int orderCount = ordersMapper.update(null, orderUpdateWrapper);
+
+        return orderCount;
+    }
+
+    @Override
+    public int updateOrderNote(OrderNoteParam orderNoteParam) {
+        // 1. 解析参数
+        Long orderId = orderNoteParam.getOrderId();
+        String note = orderNoteParam.getNote();
+        int status = orderNoteParam.getStatus();
+
+        // 2. 更新订单表中的备注信息
+        LambdaUpdateWrapper<OmsOrders> orderUpdateWrapper = new LambdaUpdateWrapper<>();
+        orderUpdateWrapper.eq(OmsOrders::getId, orderId)
+                .set(OmsOrders::getOrderNote, note)
+                .set(OmsOrders::getStatus, status);
+
+        int orderCount = ordersMapper.update(null, orderUpdateWrapper);
+
+        return orderCount;
+
+    }
+
 
 }

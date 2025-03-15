@@ -213,10 +213,17 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
 | pay_amount | decimal(10,2) | 实付金额 | |
 | freight_amount | decimal(10,2) | 运费 | |
 | discount_amount | decimal(10,2) | 优惠金额 | |
+| coupon_amount | decimal(10,2) | 优惠券抵扣金额 | |
+| promotion_amount | decimal(10,2) | 促销优惠金额 | |
+| integration_amount | decimal(10,2) | 积分抵扣金额 | |
+| order_note | varchar(500) | 订单备注 | |
 | pay_type | tinyint | 支付方式 | 0-未支付，1-支付宝，2-微信，3-银联 |
 | payment_time | datetime | 支付时间 | |
 | delivery_time | datetime | 发货时间 | |
 | receive_time | datetime | 确认收货时间 | |
+| comment_time | datetime | 评价时间 | |
+| auto_confirm_day | int | 自动确认收货天数 | 默认7天 |
+| is_deleted | tinyint | 是否删除 | 0-否，1-是 |
 | create_time | datetime | 创建时间 | |
 | update_time | datetime | 更新时间 | |
 
@@ -229,12 +236,23 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
 | product_id | bigint | 商品ID | 外键 |
 | product_name | varchar(200) | 商品名称 | |
 | product_image | varchar(500) | 商品图片 | |
+| product_brand | varchar(100) | 品牌名称 | |
+| product_sn | varchar(64) | 商品编号 | |
+| product_category_id | bigint | 商品分类ID | |
 | sku_id | bigint | SKU ID | 外键 |
 | sku_code | varchar(50) | SKU编码 | |
 | sku_specs | varchar(255) | 规格属性 | |
 | quantity | int | 购买数量 | |
 | price | decimal(10,2) | 商品单价 | |
 | real_amount | decimal(10,2) | 实付金额 | |
+| original_amount | decimal(10,2) | 原始金额 | 无优惠时的金额 |
+| coupon_amount | decimal(10,2) | 优惠券优惠分摊金额 | |
+| promotion_amount | decimal(10,2) | 促销优惠分摊金额 | |
+| promotion_name | varchar(200) | 促销活动信息 | |
+| gift_integration | int | 赠送积分 | |
+| gift_growth | int | 赠送成长值 | |
+| refund_status | tinyint | 退款状态 | 0-未退款，1-已申请，2-已退款 |
+| comment_status | tinyint | 评价状态 | 0-未评价，1-已评价 |
 | create_time | datetime | 创建时间 | |
 | update_time | datetime | 更新时间 | |
 
@@ -281,6 +299,50 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
 | create_time | datetime | 创建时间 | |
 | update_time | datetime | 更新时间 | |
 
+##### 1.6 订单日志表 (oms_order_logs)
+| 字段名 | 类型 | 说明 | 备注 |
+|-------|------|------|------|
+| id | bigint | 日志ID | 主键 |
+| order_id | bigint | 订单ID | 外键 |
+| order_sn | varchar(64) | 订单编号 | |
+| operator_id | bigint | 操作人ID | |
+| operator_type | tinyint | 操作人类型 | 0-系统，1-用户，2-商家，3-管理员 |
+| operator_name | varchar(100) | 操作人名称 | |
+| action | varchar(100) | 操作类型 | |
+| note | varchar(500) | 操作备注 | |
+| ip | varchar(64) | 操作IP | |
+| create_time | datetime | 操作时间 | |
+
+##### 1.7 订单状态历史表 (oms_order_status_history)
+| 字段名 | 类型 | 说明 | 备注 |
+|-------|------|------|------|
+| id | bigint | 主键ID | 主键 |
+| order_id | bigint | 订单ID | 外键 |
+| order_sn | varchar(64) | 订单编号 | |
+| previous_status | tinyint | 前置状态 | |
+| current_status | tinyint | 当前状态 | |
+| operator_id | bigint | 操作人ID | |
+| operator_type | tinyint | 操作人类型 | 0-系统，1-用户，2-商家，3-管理员 |
+| operator_name | varchar(100) | 操作人名称 | |
+| note | varchar(500) | 状态变更备注 | |
+| create_time | datetime | 创建时间 | |
+
+##### 1.8 购物车表 (oms_cart_items)
+| 字段名 | 类型 | 说明 | 备注 |
+|-------|------|------|------|
+| id | bigint | 购物车项ID | 主键 |
+| user_id | bigint | 用户ID | 外键 |
+| product_id | bigint | 商品ID | 外键 |
+| product_name | varchar(200) | 商品名称 | |
+| product_image | varchar(500) | 商品图片 | |
+| sku_id | bigint | SKU ID | 外键 |
+| sku_specs | varchar(255) | 规格属性 | 文本表示 |
+| price | decimal(10,2) | 商品单价 | |
+| quantity | int | 数量 | 默认1 |
+| checked | tinyint | 是否选中 | 0-否，1-是 |
+| create_time | datetime | 创建时间 | |
+| update_time | datetime | 更新时间 | |
+
 #### 订单系统关系图
 
 ```
@@ -294,28 +356,29 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
                         +-------+-------+
                                 |
                                 |
-            +------------------+------------------+
-            |                  |                  |
-            v                  v                  v
-  +-----------------+  +---------------+  +---------------+
-  |  oms_order_     |  | oms_order_    |  | oms_payments  |
-  |  items          |  | deliveries    |  +---------------+
-  +-----------------+  +---------------+  | order_id      |
-  | order_id        |  | order_id      |  | payment_sn    |
-  | product_id      |  | delivery_sn   |  | ...           |
-  | ...             |  | ...           |  +---------------+
-  +-----------------+  +---------------+
-            |
-            |
-            v
-  +-----------------+
-  | oms_order_      |
-  | returns         |
-  +-----------------+
-  | order_id        |
-  | return_reason   |
-  | ...             |
-  +-----------------+
+            +------------------+------------------+------------------+
+            |                  |                  |                  |
+            v                  v                  v                  v
+  +-----------------+  +---------------+  +---------------+  +---------------+
+  |  oms_order_     |  | oms_order_    |  | oms_payments  |  | oms_order_    |
+  |  items          |  | deliveries    |  +---------------+  | logs          |
+  +-----------------+  +---------------+  | order_id      |  +---------------+
+  | order_id        |  | order_id      |  | payment_sn    |  | order_id      |
+  | product_id      |  | delivery_sn   |  | ...           |  | action        |
+  | ...             |  | ...           |  +---------------+  | ...           |
+  +-----------------+  +---------------+                     +---------------+
+            |                                                        |
+            |                                                        |
+            v                                                        v
+  +-----------------+                                       +------------------+
+  | oms_order_      |                                       | oms_order_       |
+  | returns         |                                       | status_history   |
+  +-----------------+                                       +------------------+
+  | order_id        |                                       | order_id         |
+  | return_reason   |                                       | previous_status  |
+  | ...             |                                       | current_status   |
+  +-----------------+                                       | ...              |
+                                                            +------------------+
 ```
 
 ### 2. 商品管理系统(PMS)
@@ -334,12 +397,18 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
 | price | decimal(10,2) | 商品价格 | |
 | original_price | decimal(10,2) | 原价 | |
 | main_image | varchar(500) | 主图URL | |
+| keywords | varchar(255) | 关键词 | |
+| brief | varchar(255) | 简短描述 | |
 | sale | int | 销量 | |
 | stock | int | 库存 | |
+| unit | varchar(20) | 单位 | 件/kg等 |
+| weight | decimal(10,2) | 重量 | kg |
+| sort | int | 排序 | |
 | publish_status | tinyint | 上架状态 | 0-下架，1-上架 |
 | new_status | tinyint | 新品状态 | 0-非新品，1-新品 |
 | recommend_status | tinyint | 推荐状态 | 0-不推荐，1-推荐 |
 | verify_status | tinyint | 审核状态 | 0-未审核，1-审核通过，2-审核不通过 |
+| is_deleted | tinyint | 是否删除 | 0-否，1-是 |
 | create_time | datetime | 创建时间 | |
 | update_time | datetime | 更新时间 | |
 
@@ -409,6 +478,32 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
 | create_time | datetime | 创建时间 | |
 | update_time | datetime | 更新时间 | |
 
+##### 2.7 商品评分表 (pms_ratings)
+| 字段名 | 类型 | 说明 | 备注 |
+|-------|------|------|------|
+| id | bigint | 评分ID | 主键 |
+| user_id | bigint | 用户ID | 外键 |
+| product_id | bigint | 商品ID | 外键 |
+| rating | tinyint | 评分 | 1-5分 |
+| rating_type | tinyint | 评分类型 | 0-综合，1-服务，2-质量，3-物流 |
+| create_time | datetime | 评分时间 | |
+
+##### 2.8 库存变更日志表 (pms_stock_logs)
+| 字段名 | 类型 | 说明 | 备注 |
+|-------|------|------|------|
+| id | bigint | 日志ID | 主键 |
+| product_id | bigint | 商品ID | 外键 |
+| sku_id | bigint | SKU ID | 外键 |
+| change_type | tinyint | 变更类型 | 1-销售扣减，2-退货增加，3-后台调整 |
+| change_amount | int | 变更数量 | |
+| before_stock | int | 变更前库存 | |
+| after_stock | int | 变更后库存 | |
+| order_id | bigint | 关联订单ID | |
+| order_item_id | bigint | 关联订单项ID | |
+| operator | varchar(64) | 操作人 | |
+| remark | varchar(500) | 备注 | |
+| create_time | datetime | 操作时间 | |
+
 #### 商品系统关系图
 
 ```
@@ -422,17 +517,27 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
                    | ...            |
                    +-------+--------+
                            |
-         +-----------------+-----------------+
-         |                 |                 |
-         v                 v                 v
-+----------------+ +---------------+ +---------------+
-| pms_product_   | | pms_product_  | | pms_product_  |
-| skus           | | images        | | details       |
-+----------------+ +---------------+ +---------------+
-| product_id     | | product_id    | | product_id    |
-| sku_code       | | image_url     | | description   |
-| ...            | | ...           | | ...           |
-+----------------+ +---------------+ +---------------+
+         +----------------+-------------------+------------------+
+         |                |                   |                  |
+         v                v                   v                  v
++----------------+ +--------------+  +---------------+  +----------------+
+| pms_product_   | | pms_product_ |  | pms_product_  |  | pms_stock_     |
+| skus           | | images       |  | details       |  | logs           |
++----------------+ +--------------+  +---------------+  +----------------+
+| product_id     | | product_id   |  | product_id    |  | product_id     |
+| sku_code       | | image_url    |  | description   |  | sku_id         |
+| ...            | | ...          |  | ...           |  | ...            |
++----------------+ +--------------+  +---------------+  +----------------+
+                                                                |
+                                                                v
+                                                      +------------------+
+                                                      | pms_ratings      |
+                                                      +------------------+
+                                                      | product_id       |
+                                                      | user_id          |
+                                                      | rating           |
+                                                      | ...              |
+                                                      +------------------+
 ```
 
 ### 3. 用户管理系统(UMS)
@@ -453,10 +558,16 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
 | birth | date | 生日 | |
 | avatar | varchar(500) | 头像 | |
 | status | tinyint | 状态 | 0-禁用，1-启用 |
+| status_reason | varchar(500) | 状态原因 | |
+| register_source | tinyint | 注册来源 | 0-PC，1-APP，2-小程序，3-H5 |
+| last_login_time | datetime | 最后登录时间 | |
+| last_login_ip | varchar(64) | 最后登录IP | |
 | is_merchant | tinyint | 是否商家 | 0-否，1-是 |
 | level | int | 会员等级 | |
 | integration | int | 积分 | |
 | growth | int | 成长值 | |
+| region | varchar(100) | 所在地区 | |
+| note | varchar(500) | 备注 | |
 | is_deleted | tinyint | 是否删除 | 0-否，1-是 |
 | create_time | datetime | 创建时间 | |
 | update_time | datetime | 更新时间 | |
@@ -504,6 +615,71 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
 | create_time | datetime | 创建时间 | |
 | update_time | datetime | 更新时间 | |
 
+##### 3.5 商家表 (ums_merchants)
+| 字段名 | 类型 | 说明 | 备注 |
+|-------|------|------|------|
+| id | bigint | 商家ID | 主键 |
+| user_id | bigint | 用户ID | 外键 |
+| shop_name | varchar(100) | 店铺名称 | |
+| shop_logo | varchar(500) | 店铺logo | |
+| shop_banner | varchar(500) | 店铺横幅 | |
+| business_license | varchar(500) | 营业执照 | |
+| identity_card_front | varchar(500) | 身份证正面 | |
+| identity_card_back | varchar(500) | 身份证背面 | |
+| contact_name | varchar(64) | 联系人姓名 | |
+| contact_phone | varchar(20) | 联系电话 | |
+| contact_email | varchar(100) | 联系邮箱 | |
+| business_categories | varchar(500) | 经营类目 | 多个用逗号分隔 |
+| business_scope | text | 经营范围 | |
+| shop_address | varchar(500) | 店铺地址 | |
+| shop_province | varchar(50) | 省份 | |
+| shop_city | varchar(50) | 城市 | |
+| shop_district | varchar(50) | 区县 | |
+| status | tinyint | 状态 | 0-待审核，1-审核通过，2-审核拒绝，3-冻结 |
+| rating | decimal(2,1) | 店铺评分 | |
+| service_rating | decimal(2,1) | 服务评分 | |
+| delivery_rating | decimal(2,1) | 物流评分 | |
+| description_rating | decimal(2,1) | 描述相符评分 | |
+| create_time | datetime | 创建时间 | |
+| update_time | datetime | 更新时间 | |
+
+##### 3.6 用户通知表 (ums_notifications)
+| 字段名 | 类型 | 说明 | 备注 |
+|-------|------|------|------|
+| id | bigint | 通知ID | 主键 |
+| sender_id | bigint | 发送者ID | |
+| sender_type | tinyint | 发送者类型 | 0-系统，1-用户，2-商家，3-管理员 |
+| sender_name | varchar(64) | 发送者名称 | |
+| receiver_id | bigint | 接收者ID | 外键 |
+| title | varchar(200) | 通知标题 | |
+| content | text | 通知内容 | |
+| type | tinyint | 通知类型 | 0-系统通知，1-订单通知，2-活动通知，3-物流通知，4-商家通知 |
+| read_status | tinyint | 阅读状态 | 0-未读，1-已读 |
+| read_time | datetime | 阅读时间 | |
+| create_time | datetime | 创建时间 | |
+| update_time | datetime | 更新时间 | |
+
+##### 3.7 用户角色表 (ums_user_roles)
+| 字段名 | 类型 | 说明 | 备注 |
+|-------|------|------|------|
+| id | bigint | 主键ID | 主键 |
+| user_id | bigint | 用户ID | 外键 |
+| role_name | varchar(100) | 角色名称 | |
+| role_code | varchar(50) | 角色编码 | |
+| note | varchar(500) | 备注 | |
+| create_time | datetime | 创建时间 | |
+| update_time | datetime | 更新时间 | |
+
+##### 3.8 用户搜索历史表 (ums_user_search_history)
+| 字段名 | 类型 | 说明 | 备注 |
+|-------|------|------|------|
+| id | bigint | 搜索ID | 主键 |
+| user_id | bigint | 用户ID | 外键 |
+| keyword | varchar(200) | 搜索关键词 | |
+| search_count | int | 搜索次数 | 默认1 |
+| last_search_time | datetime | 最后搜索时间 | |
+| create_time | datetime | 创建时间 | |
+
 #### 用户系统关系图
 
 ```
@@ -515,17 +691,27 @@ WhaleTide 是一个全功能电商平台，采用模块化设计，实现了用�
                    | ...            |
                    +-------+--------+
                            |
-         +-----------------+------------------+
-         |                 |                  |
-         v                 v                  v
-+----------------+ +---------------+  +---------------+
-| ums_user_      | | ums_user_     |  | ums_user_     |
-| addresses      | | favorites     |  | coupons       |
-+----------------+ +---------------+  +---------------+
-| user_id        | | user_id       |  | user_id       |
-| receiver_name  | | product_id    |  | coupon_id     |
-| ...            | | ...           |  | ...           |
-+----------------+ +---------------+  +---------------+
+         +----------------+-------------------+------------------+------------------+
+         |                |                   |                  |                  |
+         v                v                   v                  v                  v
++----------------+ +--------------+  +---------------+  +----------------+  +----------------+
+| ums_user_      | | ums_user_    |  | ums_user_     |  | ums_merchants  |  | ums_user_      |
+| addresses      | | favorites    |  | coupons       |  +----------------+  | roles          |
++----------------+ +--------------+  +---------------+  | user_id         |  +----------------+
+| user_id        | | user_id      |  | user_id       |  | shop_name      |  | user_id         |
+| receiver_name  | | product_id     |  | coupon_id     |  | ...            |  | role_name       |
+| ...            | | ...          |  | ...           |  +----------------+  | ...             |
++----------------+ +--------------+  +---------------+           |          +----------------+
+                                                                 |                  |
+                                                                 v                  v
+                                                      +------------------+  +------------------+
+                                                      | ums_notifications |  | ums_user_search_ |
+                                                      +------------------+  | history          |
+                                                      | receiver_id      |  +------------------+
+                                                      | sender_id        |  | user_id          |
+                                                      | ...              |  | keyword          |
+                                                      +------------------+  | ...              |
+                                                                            +------------------+
 ```
 
 ## 开发指南

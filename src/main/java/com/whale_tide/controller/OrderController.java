@@ -81,9 +81,26 @@ public class OrderController {
         }
         return CommonResult.failed("更新收货人信息失败");
     }
+    // 更新订单运费信息
+    @ApiOperation("更新订单运费信息")
+    @PostMapping("/update/moneyInfo")
+    public CommonResult<Integer> updateMoneyInfo(@RequestBody MoneyInfoParam moneyInfoParam) {
+        int count = orderService.updateOrderAmount(moneyInfoParam);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed("更新订单运费信息失败");
+    }
 
-    
-
-
+    // 更新订单备注
+    @ApiOperation("更新订单备注")
+    @PostMapping("/update/note")
+    public CommonResult<Integer> updateNote(@RequestBody OrderNoteParam orderNoteParam) {
+        int count = orderService.updateOrderNote(orderNoteParam);
+        if (count > 0) {
+            return CommonResult.success(count);
+        }
+        return CommonResult.failed("更新订单备注失败");
+    }
 
 } 
