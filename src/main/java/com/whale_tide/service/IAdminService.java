@@ -45,8 +45,9 @@ public interface IAdminService {
 
     /**
      * 获取管理员列表（分页）
-     * @param keyword 查询关键词（模糊查询）
-     * @param pageNum 页码
+     *
+     * @param keyword  查询关键词（模糊查询）
+     * @param pageNum  页码
      * @param pageSize 分页大小
      * @return 查询结果
      */
@@ -90,9 +91,9 @@ public interface IAdminService {
      *
      * @param id     管理员ID
      * @param status 状态（0->禁用；1->启用）
-     * @return 更新成功返回true
+     * @return 更新成功返回1，未更新返回0,参数错误返回-2，查找不到管理员返回-1
      */
-    boolean updateStatus(Long id, Integer status);
+    int updateStatus(Long id, Integer status);
 
     /**
      * 获取管理员拥有的角色ID列表

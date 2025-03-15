@@ -225,16 +225,16 @@ public class AdminServiceImpl implements IAdminService {
     }
 
     @Override
-    public boolean updateStatus(Long id, Integer status) {
+    public int updateStatus(Long id, Integer status) {
         if (id == null || status == null) {
-            return false;
+            return -2;
         }
 
         // 查询现有管理员
         AmsAdmins existAdmin = getAdminById(id);
         if (existAdmin == null) {
             log.warn("更新管理员状态失败，ID不存在: {}", id);
-            return false;
+            return -1;
         }
 
         // 更新状态
@@ -242,7 +242,7 @@ public class AdminServiceImpl implements IAdminService {
         int result = adminsMapper.updateById(existAdmin);
 
         log.info("更新管理员状态，ID: {}, 新状态: {}, 结果: {}", id, status, result > 0);
-        return result > 0;
+        return result;
     }
 
     @Override

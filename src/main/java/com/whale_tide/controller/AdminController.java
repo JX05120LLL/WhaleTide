@@ -153,5 +153,22 @@ public class AdminController {
         }
     }
 
+    @PostMapping("/updateStatus/{id}")
+    public CommonResult updataStatus(@RequestBody UpdataStatusParam updataStatusParam, @RequestBody Long id) {
+        int result = adminService.updateStatus(id, updataStatusParam.getStatus());
+        switch (result) {
+            case -1:
+                return CommonResult.failed("更新失败,请检查参数");
+            case -2:
+                return CommonResult.failed("管理员不存在");
+            case 0:
+                return CommonResult.success(result, "无需更新");
+            case 1:
+                return CommonResult.success(result, "更新成功");
+            default:
+                return CommonResult.failed("服务器内部错误");
+        }
+    }
 
+    
 }
