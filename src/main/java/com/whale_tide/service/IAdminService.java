@@ -73,7 +73,6 @@ public interface IAdminService {
     /**
      * 更新管理员信息
      *
-     * @param id    管理员ID
      * @param admin 管理员信息
      * @return 更新成功返回true
      */
@@ -151,5 +150,5 @@ public interface IAdminService {
      * @param roleIds 角色ID列表
      * @return 分配成功返回true
      */
-    boolean allocateRoles(Long adminId, List<Long> roleIds);
+    int allocateRoles(Long adminId, List<Long> roleIds);
 } 

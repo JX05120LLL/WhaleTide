@@ -348,10 +348,29 @@ public class AdminServiceImpl implements IAdminService {
 
     @Override
     @Transactional
-    public boolean allocateRoles(Long adminId, List<Long> roleIds) {
+    public int allocateRoles(Long adminId, List<Long> roleIds) {
         if (adminId == null) {
-            return false;
+            return -2;
         }
+
+        //查询管理员ID是否存在
+        AmsAdmins admin = adminsMapper.selectById(adminId);
+        if (admin == null) {
+            log.warn("管理员ID不存在: {}", adminId);
+            return -1;
+        }
+
+        //查询角色ID是否存在
+        List<AmsRoles> roles = new ArrayList<>();
+        for (Long roleId : roleIds) {
+            AmsRoles role = rolesMapper.selectById(roleId);
+            if (role == null) {
+                log.warn("角色ID不存在: {}", roleId);
+                return -3;
+            }
+            roles.add(role);
+        }
+
 
         log.info("开始为管理员分配角色，管理员ID: {}, 角色数量: {}",
                 adminId, roleIds == null ? 0 : roleIds.size());
@@ -364,7 +383,7 @@ public class AdminServiceImpl implements IAdminService {
         // 如果没有新的角色，直接返回
         if (roleIds == null || roleIds.isEmpty()) {
             log.info("管理员角色已清空，管理员ID: {}", adminId);
-            return true;
+            return -3;
         }
 
         // 批量添加新关系
@@ -379,6 +398,6 @@ public class AdminServiceImpl implements IAdminService {
         log.info("完成角色分配，管理员ID: {}, 分配角色数: {}, 成功: {}",
                 adminId, roleIds.size(), successCount == roleIds.size());
 
-        return successCount == roleIds.size();
+        return roleIds.size();
     }
 } 

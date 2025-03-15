@@ -204,4 +204,26 @@ public class AdminController {
         }
         return CommonResult.success(roleAssignResults);
     }
+
+
+    @PostMapping("/role/updata")
+    public CommonResult updataRole(@RequestBody AdminRoleParam adminRoleParam) {
+        int result = adminService.allocateRoles(adminRoleParam.getAdmin_id(), adminRoleParam.getRole_ids());
+        if (result > 0) {
+            return CommonResult.success(result, "更新成功");
+        }
+        switch (result) {
+            case -1:
+                return CommonResult.failed("更新失败,请检查参数");
+            case -2:
+                return CommonResult.failed("管理员不存在");
+            case -3:
+                return CommonResult.failed("列表中存在不存在的角色");
+            case 0:
+                return CommonResult.success(result, "无需更新");
+            default:
+                return CommonResult.failed("服务器内部错误");
+        }
+    }
+
 }
