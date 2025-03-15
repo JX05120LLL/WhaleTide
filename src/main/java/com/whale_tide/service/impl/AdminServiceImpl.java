@@ -3,10 +3,7 @@ package com.whale_tide.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.whale_tide.entity.AmsAdminRoleRelations;
-import com.whale_tide.entity.AmsAdmins;
-import com.whale_tide.entity.AmsMenus;
-import com.whale_tide.entity.AmsRoleMenuRelations;
+import com.whale_tide.entity.*;
 import com.whale_tide.mapper.*;
 import com.whale_tide.service.IAdminService;
 import lombok.extern.slf4j.Slf4j;
@@ -290,6 +287,32 @@ public class AdminServiceImpl implements IAdminService {
             menuNameList.add(menusMapper.selectById(menuId).getTitle());
         }
         return menuNameList;
+    }
+
+    @Override
+    public List<AmsRoles> getRoleListByAdminId(Long adminId) {
+        if (adminId == null) {
+            return null;
+        }
+
+        //查询管理员ID是否存在
+        AmsAdmins admin = adminsMapper.selectById(adminId);
+        if (admin == null) {
+            log.warn("管理员ID不存在: {}", adminId);
+            return null;
+        }
+
+        //查询管理员角色关系
+        List<Long> roleIds = getRoleIdList(adminId);
+
+        //查询角色信息
+        List<AmsRoles> roles = new ArrayList<>();
+        for (Long roleId : roleIds) {
+            roles.add(rolesMapper.selectById(roleId));
+        }
+
+        log.info("获取管理员角色列表，管理员ID: {}, 角色数量: {}", adminId, roles.size());
+        return roles;
     }
 
     @Override

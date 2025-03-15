@@ -2,6 +2,7 @@ package com.whale_tide.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.entity.AmsAdmins;
+import com.whale_tide.entity.AmsRoles;
 
 import java.util.List;
 
@@ -94,6 +95,14 @@ public interface IAdminService {
      * @return 更新成功返回1，未更新返回0,参数错误返回-2，查找不到管理员返回-1
      */
     int updateStatus(Long id, Integer status);
+
+    /**
+     * 获取角色列表
+     *
+     * @param adminId 管理员ID
+     * @return 角色列表
+     */
+    List<AmsRoles> getRoleListByAdminId(Long adminId);
 
     /**
      * 获取管理员拥有的角色ID列表

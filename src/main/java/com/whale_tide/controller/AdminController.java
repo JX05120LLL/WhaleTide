@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.admin.*;
 import com.whale_tide.entity.AmsAdmins;
+import com.whale_tide.entity.AmsRoles;
 import com.whale_tide.service.IAdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,7 +171,7 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @PostMapping("/delete/{id}")
     public CommonResult delete(@PathVariable("id") Long id) {
         int result = adminService.delete(id);
         switch (result) {
@@ -187,4 +188,20 @@ public class AdminController {
         }
     }
 
+    @GetMapping("/role/{id}")
+    public CommonResult<List<RoleAssignResult>> getRoleList(@PathVariable("id") Long id) {
+        List<AmsRoles> roles = adminService.getRoleListByAdminId(id);
+        List<RoleAssignResult> roleAssignResults = new ArrayList<>();
+        for (AmsRoles role : roles) {
+            RoleAssignResult roleAssignResult = new RoleAssignResult();
+            roleAssignResult.setId(role.getId());
+            roleAssignResult.setName(role.getName());
+            roleAssignResult.setDescription(role.getDescription());
+            roleAssignResult.setStatus(role.getStatus().byteValue());
+            roleAssignResult.setSort(role.getSort());
+            roleAssignResult.setChecked(false);
+            roleAssignResults.add(roleAssignResult);
+        }
+        return CommonResult.success(roleAssignResults);
+    }
 }
