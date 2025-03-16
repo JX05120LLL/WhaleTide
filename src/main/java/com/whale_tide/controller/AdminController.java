@@ -69,7 +69,6 @@ public class AdminController {
         AdminInfoResult infoResult = new AdminInfoResult();
 
         if (amsAdmins == null) {
-            infoResult = null;
             commonResult = CommonResult.failed("未查询到信息");
         } else {
             infoResult.setUsername(username);
