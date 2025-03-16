@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.menu.MenuParam;
-import com.whale_tide.entity.AmsMenus;
+import com.whale_tide.entity.ams.AmsMenus;
 import com.whale_tide.service.IMenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

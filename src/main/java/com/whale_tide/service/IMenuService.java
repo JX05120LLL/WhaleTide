@@ -1,9 +1,8 @@
 package com.whale_tide.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.dto.menu.MenuParam;
-import com.whale_tide.entity.AmsMenus;
+import com.whale_tide.entity.ams.AmsMenus;
 
 import java.util.List;
 

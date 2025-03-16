@@ -3,7 +3,6 @@ package com.whale_tide.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.whale_tide.dto.resource.ResourceParam;
 import com.whale_tide.dto.resource.ResourceResult;
-import com.whale_tide.entity.AmsResources;
 
 import java.util.List;
 

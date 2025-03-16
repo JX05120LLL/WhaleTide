@@ -1,6 +1,5 @@
 package com.whale_tide.dto.admin;
 
-import com.whale_tide.entity.AmsMenus;
 import lombok.Data;
 
 import java.util.List;

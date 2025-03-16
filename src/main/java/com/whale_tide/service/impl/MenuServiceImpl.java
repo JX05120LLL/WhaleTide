@@ -3,8 +3,8 @@ package com.whale_tide.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.dto.menu.MenuParam;
-import com.whale_tide.entity.AmsMenus;
-import com.whale_tide.mapper.AmsMenusMapper;
+import com.whale_tide.entity.ams.AmsMenus;
+import com.whale_tide.mapper.ams.AmsMenusMapper;
 import com.whale_tide.service.IMenuService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;

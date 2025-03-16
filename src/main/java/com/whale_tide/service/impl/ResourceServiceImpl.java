@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.whale_tide.dto.resource.ResourceParam;
 import com.whale_tide.dto.resource.ResourceResult;
-import com.whale_tide.entity.AmsResources;
-import com.whale_tide.mapper.AmsResourcesMapper;
+import com.whale_tide.entity.ams.AmsResources;
+import com.whale_tide.mapper.ams.AmsResourcesMapper;
 import com.whale_tide.service.IResourceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

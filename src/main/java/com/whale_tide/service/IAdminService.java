@@ -6,8 +6,8 @@ import com.whale_tide.dto.resource.ResourceResult;
 import com.whale_tide.dto.role.MenuNodeResult;
 import com.whale_tide.dto.role.RoleParam;
 import com.whale_tide.dto.role.RoleResult;
-import com.whale_tide.entity.AmsAdmins;
-import com.whale_tide.entity.AmsRoles;
+import com.whale_tide.entity.ams.AmsAdmins;
+import com.whale_tide.entity.ams.AmsRoles;
 
 import java.util.List;
 import java.util.Map;
