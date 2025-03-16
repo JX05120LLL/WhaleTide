@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.whale_tide.util.JwtUtil;
 import com.whale_tide.dto.resource.ResourceResult;
 import com.whale_tide.dto.role.MenuNodeResult;
 import com.whale_tide.dto.role.RoleParam;
@@ -59,9 +60,8 @@ public class AdminServiceImpl implements IAdminService {
 //    @Autowired
 //    private PasswordEncoder passwordEncoder;
 
-    // JWT相关服务会在后续实现
-    // @Autowired
-    // private JwtTokenUtil jwtTokenUtil;
+     @Autowired
+     private JwtUtil jwtUtil;
 
     @Override
     public AmsAdmins getAdminByUsername(String username) {
@@ -112,7 +112,7 @@ public class AdminServiceImpl implements IAdminService {
         // 获取管理员信息
         AmsAdmins admin = getAdminByUsername(username);
         if (admin == null) {
-            log.warn("登录失败，用户名不存在: {}", username);
+            log.warn("登录失败，参数错误");
             return "-2";
         }
 
@@ -121,7 +121,7 @@ public class AdminServiceImpl implements IAdminService {
             log.warn("登录失败，密码不正确，用户名: {}", username);
             return "0";
         }
-//        if (!passwordEncoder.matches(password, admin.getPassword())) {                   待修改------------------------------------------------------------------------------------------
+//        if (!passwordEncoder.matches(password, admin.getPassword())) {                   待修改---------------加密---------------------------------------------------------------------------
 //            log.warn("登录失败，密码不正确，用户名: {}", username);
 //            return null;
 //        }
@@ -132,10 +132,7 @@ public class AdminServiceImpl implements IAdminService {
 
         log.info("管理员登录成功: {}", username);
 
-        // 生成JWT token
-        // 由于JWT实现可能需要额外设置，这里先返回模拟token
-        // return jwtTokenUtil.generateToken(username);
-        return "token:" + username;
+        return jwtUtil.generateToken(username);
     }
 
     @Override

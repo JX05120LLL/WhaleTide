@@ -13,6 +13,10 @@ spring:
 #  main:
 #    allow-circular-references: true
 
+token:
+  expireHours: 12  # token 过期时间为 12 小时
+  secret: "YeSky-Author"  # token 的密钥
+
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: com.whale_tide.entity
