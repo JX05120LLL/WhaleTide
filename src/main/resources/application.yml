@@ -14,7 +14,7 @@ spring:
 #    allow-circular-references: true
 
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath:mapper/**/*.xml
   type-aliases-package: com.whale_tide.entity
   global-config:
     db-config:

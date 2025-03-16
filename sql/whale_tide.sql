@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 16/03/2025 13:07:19
+ Date: 16/03/2025 15:54:15
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `ams_admin_login_logs`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_admin_id`(`admin_id`) USING BTREE,
   CONSTRAINT `fk_login_log_admin` FOREIGN KEY (`admin_id`) REFERENCES `ams_admins` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员登录日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员登录日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ams_admin_operation_logs
@@ -56,7 +56,7 @@ CREATE TABLE `ams_admin_operation_logs`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_admin_id`(`admin_id`) USING BTREE,
   CONSTRAINT `fk_operation_log_admin` FOREIGN KEY (`admin_id`) REFERENCES `ams_admins` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员操作日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员操作日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ams_admin_role_relations
@@ -72,14 +72,14 @@ CREATE TABLE `ams_admin_role_relations`  (
   INDEX `idx_role_id`(`role_id`) USING BTREE,
   CONSTRAINT `fk_relation_admin` FOREIGN KEY (`admin_id`) REFERENCES `ams_admins` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员与角色关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员与角色关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_admin_role_relations
 -- ----------------------------
-INSERT INTO `ams_admin_role_relations` VALUES (6, 12, 6, '2025-03-15 18:28:59');
-INSERT INTO `ams_admin_role_relations` VALUES (7, 13, 7, '2025-03-15 18:28:59');
-INSERT INTO `ams_admin_role_relations` VALUES (8, 14, 8, '2025-03-15 18:28:59');
+INSERT INTO `ams_admin_role_relations` VALUES (9, 12, 1, '2025-03-16 14:00:47');
+INSERT INTO `ams_admin_role_relations` VALUES (10, 13, 2, '2025-03-16 14:01:12');
+INSERT INTO `ams_admin_role_relations` VALUES (11, 14, 3, '2025-03-16 14:01:18');
 
 -- ----------------------------
 -- Table structure for ams_admins
@@ -106,13 +106,13 @@ CREATE TABLE `ams_admins`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_username`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_admins
 -- ----------------------------
-INSERT INTO `ams_admins` VALUES (12, 'admin', '123456', '超级管理员', NULL, NULL, NULL, 0, 1, '2025-03-15 18:55:19', NULL, NULL, 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:30:22');
-INSERT INTO `ams_admins` VALUES (13, 'merchant', '123456', '商家', NULL, NULL, NULL, 0, 1, '2025-03-15 19:18:06', NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
+INSERT INTO `ams_admins` VALUES (12, 'admin', '123456', '超级管理员', '123456', NULL, NULL, 0, 1, '2025-03-16 14:34:29', NULL, '超级管理员，拥有所有权限', 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-16 14:35:55');
+INSERT INTO `ams_admins` VALUES (13, 'merchant', '123456', '商家', NULL, NULL, NULL, 0, 1, '2025-03-16 15:10:25', NULL, '拥有 商品 和订单 模块 权限', 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-16 14:36:29');
 INSERT INTO `ams_admins` VALUES (14, 'user', '123456', '普通用户', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
 
 -- ----------------------------
@@ -136,7 +136,7 @@ CREATE TABLE `ams_menus`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_parent_id`(`parent_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 43 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_menus
@@ -187,7 +187,13 @@ CREATE TABLE `ams_permissions`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_code`(`code`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ams_permissions
+-- ----------------------------
+INSERT INTO `ams_permissions` VALUES (1, '查看仪表盘', 'DASHBOARD_VIEW', 2, 0, '/dashboard', NULL, NULL, NULL, 0, 0, 1, '只允许查看仪表盘', '2025-03-16 14:21:52', '2025-03-16 14:21:52');
+INSERT INTO `ams_permissions` VALUES (2, '商品只读', 'PRODUCT_READ_ONLY', 2, 0, '/product', NULL, NULL, NULL, 0, 0, 1, '只允许查看商品，不允许修改', '2025-03-16 14:21:52', '2025-03-16 14:21:52');
 
 -- ----------------------------
 -- Table structure for ams_resource_categories
@@ -200,7 +206,7 @@ CREATE TABLE `ams_resource_categories`  (
   `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源分类表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_resource_categories
@@ -226,7 +232,7 @@ CREATE TABLE `ams_resources`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_resources
@@ -269,39 +275,49 @@ CREATE TABLE `ams_role_menu_relations`  (
   INDEX `idx_menu_id`(`menu_id`) USING BTREE,
   CONSTRAINT `fk_menu_relation_menu` FOREIGN KEY (`menu_id`) REFERENCES `ams_menus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_menu_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与菜单关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 154 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与菜单关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_role_menu_relations
 -- ----------------------------
-INSERT INTO `ams_role_menu_relations` VALUES (35, 6, 20, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (36, 6, 21, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (37, 6, 22, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (38, 6, 23, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (39, 6, 24, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (40, 6, 25, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (41, 6, 26, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (42, 6, 27, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (43, 6, 28, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (44, 6, 29, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (45, 6, 30, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (46, 6, 31, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (47, 6, 32, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (48, 6, 33, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (49, 6, 34, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (50, 6, 35, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (51, 6, 36, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (52, 6, 37, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (53, 6, 38, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (54, 6, 39, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (55, 6, 40, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (56, 6, 41, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (57, 6, 42, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (66, 7, 20, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (67, 7, 21, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (68, 7, 22, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (69, 8, 20, '2025-03-15 18:45:17');
-INSERT INTO `ams_role_menu_relations` VALUES (70, 8, 26, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (116, 1, 20, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (117, 1, 21, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (118, 1, 22, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (119, 1, 23, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (120, 1, 24, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (121, 1, 25, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (122, 1, 26, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (123, 1, 27, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (124, 1, 28, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (125, 1, 29, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (126, 1, 30, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (127, 1, 31, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (128, 1, 32, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (129, 1, 33, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (130, 1, 34, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (131, 1, 35, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (132, 1, 36, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (133, 1, 37, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (134, 1, 38, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (135, 1, 39, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (136, 1, 40, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (137, 1, 41, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (138, 2, 20, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (139, 2, 21, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (140, 2, 22, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (141, 2, 25, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (142, 2, 26, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (143, 2, 27, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (144, 2, 28, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (145, 2, 29, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (146, 2, 30, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (147, 2, 31, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (148, 2, 32, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (149, 2, 33, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (150, 2, 34, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (151, 2, 35, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (152, 3, 20, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_menu_relations` VALUES (153, 3, 25, '2025-03-16 14:21:52');
 
 -- ----------------------------
 -- Table structure for ams_role_permission_relations
@@ -320,15 +336,6 @@ CREATE TABLE `ams_role_permission_relations`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与权限关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Records of ams_role_permission_relations
--- ----------------------------
-INSERT INTO `ams_role_permission_relations` VALUES (1, 1, 1, '2023-01-01 00:00:00');
-INSERT INTO `ams_role_permission_relations` VALUES (2, 1, 2, '2023-01-01 00:00:00');
-INSERT INTO `ams_role_permission_relations` VALUES (3, 1, 3, '2023-01-01 00:00:00');
-INSERT INTO `ams_role_permission_relations` VALUES (4, 2, 1, '2023-01-01 00:00:00');
-INSERT INTO `ams_role_permission_relations` VALUES (5, 3, 2, '2023-01-01 00:00:00');
-
--- ----------------------------
 -- Table structure for ams_role_resource_relations
 -- ----------------------------
 DROP TABLE IF EXISTS `ams_role_resource_relations`;
@@ -342,48 +349,49 @@ CREATE TABLE `ams_role_resource_relations`  (
   INDEX `idx_resource_id`(`resource_id`) USING BTREE,
   CONSTRAINT `fk_resource_relation_resource` FOREIGN KEY (`resource_id`) REFERENCES `ams_resources` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_resource_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与资源关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 133 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与资源关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_role_resource_relations
 -- ----------------------------
-INSERT INTO `ams_role_resource_relations` VALUES (1, 6, 11, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (2, 6, 12, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (3, 6, 13, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (4, 6, 14, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (5, 6, 15, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (6, 6, 16, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (7, 6, 17, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (8, 6, 18, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (9, 6, 19, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (10, 6, 20, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (11, 6, 21, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (12, 6, 22, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (13, 6, 23, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (14, 6, 24, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (15, 6, 25, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (16, 6, 26, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (17, 6, 27, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (18, 6, 28, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (19, 6, 29, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (20, 6, 30, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (21, 6, 31, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (22, 6, 32, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (23, 6, 33, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (32, 8, 11, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (33, 8, 15, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (34, 8, 16, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (35, 8, 17, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (36, 8, 18, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (37, 8, 19, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (38, 8, 22, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (39, 8, 23, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (40, 8, 24, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (41, 8, 26, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (42, 8, 28, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (43, 8, 30, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (44, 8, 32, '2025-03-15 18:45:55');
-INSERT INTO `ams_role_resource_relations` VALUES (45, 8, 33, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (95, 1, 11, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (96, 1, 12, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (97, 1, 13, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (98, 1, 14, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (99, 1, 15, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (100, 1, 16, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (101, 1, 17, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (102, 1, 18, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (103, 1, 19, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (104, 1, 20, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (105, 1, 21, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (106, 1, 22, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (107, 1, 23, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (108, 1, 24, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (109, 1, 25, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (110, 1, 26, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (111, 1, 27, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (112, 1, 28, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (113, 1, 29, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (114, 1, 30, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (115, 1, 31, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (116, 1, 32, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (117, 1, 33, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (118, 2, 11, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (119, 2, 12, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (120, 2, 13, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (121, 2, 14, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (122, 2, 15, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (123, 2, 16, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (124, 2, 17, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (125, 2, 18, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (126, 2, 19, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (127, 2, 20, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (128, 2, 21, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (129, 2, 22, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (130, 2, 23, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (131, 3, 11, '2025-03-16 14:21:52');
+INSERT INTO `ams_role_resource_relations` VALUES (132, 3, 15, '2025-03-16 14:21:52');
 
 -- ----------------------------
 -- Table structure for ams_roles
@@ -401,14 +409,14 @@ CREATE TABLE `ams_roles`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_roles
 -- ----------------------------
-INSERT INTO `ams_roles` VALUES (6, '超级管理员', 'ADMIN', '拥有所有操作权限', 0, 1, 0, '2025-03-15 18:23:32', '2025-03-15 18:30:44');
-INSERT INTO `ams_roles` VALUES (7, '商家', 'MERCHANT', '拥有商品和订单管理权限', 0, 1, 0, '2025-03-15 18:23:32', '2025-03-15 18:23:32');
-INSERT INTO `ams_roles` VALUES (8, '普通用户', 'USER', '拥有基本查看权限', 0, 1, 0, '2025-03-15 18:23:32', '2025-03-15 18:24:03');
+INSERT INTO `ams_roles` VALUES (1, '超级管理员', 'SUPER_ADMIN', '拥有所有操作权限，可以管理整个系统', 0, 1, 0, '2025-03-16 13:58:05', '2025-03-16 13:58:05');
+INSERT INTO `ams_roles` VALUES (2, '商家', 'MERCHANT', '拥有商品、订单、库存、营销管理权限', 1, 1, 0, '2025-03-16 13:58:05', '2025-03-16 13:58:05');
+INSERT INTO `ams_roles` VALUES (3, '普通用户', 'NORMAL_USER', '只具有基本查看权限，无修改权限', 2, 1, 0, '2025-03-16 13:58:05', '2025-03-16 13:58:05');
 
 -- ----------------------------
 -- Table structure for oms_cart_items
@@ -431,7 +439,7 @@ CREATE TABLE `oms_cart_items`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   INDEX `idx_sku_id`(`sku_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '购物车表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '购物车表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for oms_order_deliveries
@@ -652,7 +660,47 @@ CREATE TABLE `pms_brands`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_name`(`name`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '品牌表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '品牌表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pms_brands
+-- ----------------------------
+INSERT INTO `pms_brands` VALUES (1, '小米', '/uploads/brands/xiaomi.png', '小米科技有限责任公司成立于2010年4月，是一家专注于高端智能手机、智能硬件和IoT生态链建设的创新型科技企业。', 'X', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 15:38:35');
+INSERT INTO `pms_brands` VALUES (2, '华为', '/uploads/brands/huawei.png', '华为技术有限公司成立于1987年，是全球领先的ICT（信息与通信）基础设施和智能终端提供商。', 'H', 2, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_brands` VALUES (3, '苹果', '/uploads/brands/apple.png', '苹果公司是美国的一家高科技公司，2007年由苹果电脑公司更名而来，是世界领先的科技公司之一。', 'A', 3, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_brands` VALUES (4, '三星', '/uploads/brands/samsung.png', '三星集团是韩国最大的跨国企业集团，三星电子是三星集团的旗舰子公司。', 'S', 4, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_brands` VALUES (5, '戴尔', '/uploads/brands/dell.png', '戴尔科技集团是一家总部位于美国德克萨斯州朗德罗克的美国跨国科技公司。', 'D', 5, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_brands` VALUES (6, '联想', '/uploads/brands/lenovo.png', '联想集团是一家跨国科技公司，总部位于中国北京和美国北卡罗来纳州。', 'L', 6, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_brands` VALUES (7, '索尼', '/uploads/brands/sony.png', '索尼是一家总部位于日本的跨国公司，提供消费电子、游戏、娱乐和金融服务。', 'S', 7, 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
+INSERT INTO `pms_brands` VALUES (8, 'LG', '/uploads/brands/lg.png', 'LG电子是LG集团的一部分，专注于家电和移动通信设备的制造。', 'L', 8, 0, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
+INSERT INTO `pms_brands` VALUES (9, '松下', '/uploads/brands/panasonic.png', '松下是一家日本的跨国电子制造商，专注于电子设备、家电和工业设备。', 'S', 9, 0, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
+INSERT INTO `pms_brands` VALUES (10, '飞利浦', '/uploads/brands/philips.png', '飞利浦是一家荷兰的健康科技公司，专注于健康科技和家用电器。', 'F', 10, 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
+INSERT INTO `pms_brands` VALUES (11, '索尼', '/uploads/brands/sony.png', '索尼是一家总部位于日本的跨国公司，提供消费电子、游戏、娱乐和金融服务。', 'S', 7, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_brands` VALUES (13, '松下', '/uploads/brands/panasonic.png', '松下是一家日本的跨国电子制造商，专注于电子设备、家电和工业设备。', 'S', 9, 0, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_brands` VALUES (14, '飞利浦', '/uploads/brands/philips.png', '飞利浦是一家荷兰的健康科技公司，专注于健康科技和家用电器。', 'F', 10, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+
+-- ----------------------------
+-- Table structure for pms_product_attribute_categories
+-- ----------------------------
+DROP TABLE IF EXISTS `pms_product_attribute_categories`;
+CREATE TABLE `pms_product_attribute_categories`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '分类名称',
+  `attribute_count` int(0) NULL DEFAULT 0 COMMENT '属性数量',
+  `param_count` int(0) NULL DEFAULT 0 COMMENT '参数数量',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性分类表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pms_product_attribute_categories
+-- ----------------------------
+INSERT INTO `pms_product_attribute_categories` VALUES (1, '服装', 2, 3, '2025-03-16 15:31:53', '2025-03-16 15:31:53');
+INSERT INTO `pms_product_attribute_categories` VALUES (2, '电子产品', 3, 4, '2025-03-16 15:31:53', '2025-03-16 15:31:53');
+INSERT INTO `pms_product_attribute_categories` VALUES (3, '家具', 1, 2, '2025-03-16 15:31:53', '2025-03-16 15:31:53');
+INSERT INTO `pms_product_attribute_categories` VALUES (4, '食品', 2, 1, '2025-03-16 15:31:53', '2025-03-16 15:31:53');
+INSERT INTO `pms_product_attribute_categories` VALUES (5, '玩具', 1, 1, '2025-03-16 15:31:53', '2025-03-16 15:31:53');
 
 -- ----------------------------
 -- Table structure for pms_product_attribute_values
@@ -669,7 +717,7 @@ CREATE TABLE `pms_product_attribute_values`  (
   INDEX `idx_attribute_id`(`attribute_id`) USING BTREE,
   CONSTRAINT `fk_attr_value_attribute` FOREIGN KEY (`attribute_id`) REFERENCES `pms_product_attributes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_attr_value_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性值表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性值表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_attributes
@@ -691,7 +739,30 @@ CREATE TABLE `pms_product_attributes`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   CONSTRAINT `fk_attribute_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pms_product_attributes
+-- ----------------------------
+INSERT INTO `pms_product_attributes` VALUES (1, 4, '屏幕尺寸', 0, 1, '5.5英寸,6.1英寸,6.7英寸,7.0英寸', 1, 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (2, 4, '内存容量', 0, 1, '4GB,6GB,8GB,12GB,16GB', 2, 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (3, 4, '存储容量', 0, 1, '64GB,128GB,256GB,512GB,1TB', 3, 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (4, 4, '电池容量', 1, 0, NULL, 4, 0, 0, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (5, 4, '处理器', 1, 0, NULL, 5, 0, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (6, 4, '摄像头像素', 1, 0, NULL, 6, 0, 0, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (7, 5, '屏幕尺寸', 0, 1, '13.3英寸,14英寸,15.6英寸,16英寸', 1, 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (8, 5, '处理器', 0, 1, 'Intel i5,Intel i7,Intel i9,AMD Ryzen 5,AMD Ryzen 7', 2, 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (9, 5, '内存容量', 0, 1, '8GB,16GB,32GB,64GB', 3, 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (10, 5, '固态硬盘', 0, 1, '256GB,512GB,1TB,2TB', 4, 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_attributes` VALUES (20, 12, '屏幕尺寸', 0, 1, '1.2英寸,1.4英寸,1.6英寸,1.8英寸', 1, 1, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_attributes` VALUES (21, 12, '续航时间', 0, 1, '1天,3天,7天,14天', 2, 1, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_attributes` VALUES (22, 12, '防水等级', 0, 1, 'IP67,IP68,5ATM', 3, 1, 0, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_attributes` VALUES (23, 12, '健康功能', 1, 0, NULL, 4, 0, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_attributes` VALUES (24, 13, '连接方式', 0, 1, 'Wi-Fi,蓝牙,Zigbee,Z-Wave', 1, 1, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_attributes` VALUES (25, 13, '兼容系统', 0, 1, 'iOS,Android,Windows,HomeKit,Alexa,Google Assistant', 2, 1, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_attributes` VALUES (26, 15, '屏幕类型', 0, 1, 'LED,OLED,QLED,Mini LED', 1, 1, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_attributes` VALUES (27, 15, '分辨率', 0, 1, '1080P,4K,8K', 2, 1, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_attributes` VALUES (28, 15, '智能系统', 0, 1, 'Android TV,webOS,VIDAA', 3, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
 
 -- ----------------------------
 -- Table structure for pms_product_categories
@@ -712,12 +783,30 @@ CREATE TABLE `pms_product_categories`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_parent_id`(`parent_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_product_categories
 -- ----------------------------
 INSERT INTO `pms_product_categories` VALUES (1, 0, '默认分类', 1, NULL, 0, NULL, NULL, 1, 0, '2025-03-15 20:57:12', '2025-03-15 20:57:12');
+INSERT INTO `pms_product_categories` VALUES (2, 0, '电子产品', 1, '/uploads/categories/electronics.png', 1, '各类电子产品', '电子,数码,智能', 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_categories` VALUES (3, 0, '家用电器', 1, '/uploads/categories/appliances.png', 2, '家用电器产品', '电器,家电,厨房电器', 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_categories` VALUES (4, 0, '服装鞋包', 1, '/uploads/categories/clothing.png', 3, '服装鞋包产品', '服装,鞋子,包包', 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_categories` VALUES (5, 1, '智能手机', 2, '/uploads/categories/smartphone.png', 1, '智能手机产品', '手机,智能手机,5G', 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_categories` VALUES (6, 1, '笔记本电脑', 2, '/uploads/categories/laptop.png', 2, '笔记本电脑产品', '笔记本,电脑,便携', 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_categories` VALUES (7, 1, '平板电脑', 2, '/uploads/categories/tablet.png', 3, '平板电脑产品', '平板,iPad,触屏', 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_categories` VALUES (8, 2, '冰箱', 2, '/uploads/categories/refrigerator.png', 1, '冰箱产品', '冰箱,冷藏,保鲜', 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_categories` VALUES (9, 2, '洗衣机', 2, '/uploads/categories/washing_machine.png', 2, '洗衣机产品', '洗衣机,洗护,滚筒', 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_product_categories` VALUES (10, 1, '智能穿戴', 2, '/uploads/categories/wearable.png', 4, '智能穿戴设备', '智能手表,手环,耳机', 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
+INSERT INTO `pms_product_categories` VALUES (11, 1, '智能家居', 2, '/uploads/categories/smarthome.png', 5, '智能家居产品', '智能音箱,智能灯泡,智能插座', 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
+INSERT INTO `pms_product_categories` VALUES (12, 1, '相机', 2, '/uploads/categories/camera.png', 6, '相机产品', '相机,单反,微单', 1, 0, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
+INSERT INTO `pms_product_categories` VALUES (13, 2, '电视', 2, '/uploads/categories/tv.png', 3, '电视产品', '电视,智能电视,OLED', 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
+INSERT INTO `pms_product_categories` VALUES (14, 2, '空调', 2, '/uploads/categories/aircon.png', 4, '空调产品', '空调,变频,冷暖', 1, 0, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
+INSERT INTO `pms_product_categories` VALUES (15, 1, '智能穿戴', 2, '/uploads/categories/wearable.png', 4, '智能穿戴设备', '智能手表,手环,耳机', 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_categories` VALUES (16, 1, '智能家居', 2, '/uploads/categories/smarthome.png', 5, '智能家居产品', '智能音箱,智能灯泡,智能插座', 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_categories` VALUES (17, 1, '相机', 2, '/uploads/categories/camera.png', 6, '相机产品', '相机,单反,微单', 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_categories` VALUES (18, 2, '电视', 2, '/uploads/categories/tv.png', 3, '电视产品', '电视,智能电视,OLED', 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_categories` VALUES (19, 2, '空调', 2, '/uploads/categories/aircon.png', 4, '空调产品', '空调,变频,冷暖', 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
 
 -- ----------------------------
 -- Table structure for pms_product_comments
@@ -741,7 +830,7 @@ CREATE TABLE `pms_product_comments`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_comment_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评论表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评论表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_details
@@ -759,7 +848,7 @@ CREATE TABLE `pms_product_details`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_detail_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品详情表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品详情表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_images
@@ -775,7 +864,7 @@ CREATE TABLE `pms_product_images`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_image_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品图片表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品图片表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_skus
@@ -801,7 +890,24 @@ CREATE TABLE `pms_product_skus`  (
   UNIQUE INDEX `uk_sku_code`(`sku_code`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_sku_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品SKU表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品SKU表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pms_product_skus
+-- ----------------------------
+INSERT INTO `pms_product_skus` VALUES (18, 6, 'WH1000XM5-BLACK', 2699.00, 100, 20, '/uploads/skus/wh1000xm5-black.png', '{\"颜色\": \"黑色\"}', '黑色', 0.00, 0.25, 500, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (19, 6, 'WH1000XM5-WHITE', 2699.00, 100, 20, '/uploads/skus/wh1000xm5-white.png', '{\"颜色\": \"白色\"}', '白色', 0.00, 0.25, 356, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (20, 6, 'WH1000XM5-BLUE', 2799.00, 100, 20, '/uploads/skus/wh1000xm5-blue.png', '{\"颜色\": \"蓝色\"}', '蓝色', 0.00, 0.25, 0, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (21, 7, 'MI-BAND8PRO-BLACK', 399.00, 300, 50, '/uploads/skus/miband8pro-black.png', '{\"颜色\": \"黑色\"}', '黑色', 0.00, 0.03, 600, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (22, 7, 'MI-BAND8PRO-BLUE', 399.00, 300, 50, '/uploads/skus/miband8pro-blue.png', '{\"颜色\": \"蓝色\"}', '蓝色', 0.00, 0.03, 520, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (23, 7, 'MI-BAND8PRO-GREEN', 399.00, 300, 50, '/uploads/skus/miband8pro-green.png', '{\"颜色\": \"绿色\"}', '绿色', 0.00, 0.03, 400, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (24, 7, 'MI-BAND8PRO-RED', 459.00, 100, 20, '/uploads/skus/miband8pro-red.png', '{\"颜色\": \"红色\"}', '红色限定版', 0.00, 0.03, 0, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (25, 8, 'HW-TV-V75S-STD', 12999.00, 50, 10, '/uploads/skus/huawei-v75s.png', '{\"版本\": \"标准版\"}', '标准版', 0.50, 30.00, 156, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (26, 8, 'HW-TV-V75S-PRO', 14999.00, 50, 10, '/uploads/skus/huawei-v75s-pro.png', '{\"版本\": \"Pro版\"}', 'Pro版', 0.50, 30.50, 100, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (27, 9, 'PHILIPS-HUE-3BULB', 799.00, 100, 20, '/uploads/skus/philips-hue-3.png', '{\"套装\": \"3个灯泡套装\"}', '3个灯泡套装', 0.01, 0.50, 250, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (28, 9, 'PHILIPS-HUE-5BULB', 1299.00, 100, 20, '/uploads/skus/philips-hue-5.png', '{\"套装\": \"5个灯泡套装\"}', '5个灯泡套装', 0.01, 0.80, 173, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (29, 10, 'SONY-A7IV-BODY', 14999.00, 20, 5, '/uploads/skus/sony-a7iv-body.png', '{\"套装\": \"机身\"}', '机身', 0.01, 0.70, 100, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (30, 10, 'SONY-A7IV-KIT', 17999.00, 30, 5, '/uploads/skus/sony-a7iv-kit.png', '{\"套装\": \"标准镜头套装\"}', '标准镜头套装', 0.01, 1.20, 89, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
 
 -- ----------------------------
 -- Table structure for pms_products
@@ -838,7 +944,21 @@ CREATE TABLE `pms_products`  (
   INDEX `idx_merchant_id`(`merchant_id`) USING BTREE,
   CONSTRAINT `fk_product_brand` FOREIGN KEY (`brand_id`) REFERENCES `pms_brands` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `fk_product_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pms_products
+-- ----------------------------
+INSERT INTO `pms_products` VALUES (3, '小米13', 'MI13-2023', 4, 1, NULL, 3999.00, 4299.00, '/uploads/products/mi13.png', '小米,手机,5G,骁龙8', '小米年度旗舰手机，搭载骁龙8第二代处理器', 1258, 1000, '台', 0.20, 1, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_products` VALUES (4, '华为Mate60 Pro', 'HW-MATE60P', 4, 2, NULL, 6999.00, 7299.00, '/uploads/products/mate60pro.png', '华为,手机,旗舰,麒麟9000', '华为年度旗舰手机，搭载麒麟9000S处理器', 2056, 500, '台', 0.23, 2, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_products` VALUES (5, 'iPhone 15 Pro', 'APPL-IP15P', 4, 3, NULL, 7999.00, 8299.00, '/uploads/products/iphone15pro.png', 'iPhone,苹果,A17,Pro', 'Apple新一代旗舰手机，搭载A17 Pro芯片', 3102, 800, '台', 0.22, 3, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_products` VALUES (6, '联想ThinkPad X1 Carbon', 'LN-X1C2023', 5, 6, NULL, 9999.00, 12999.00, '/uploads/products/thinkpadx1.png', '联想,ThinkPad,笔记本,轻薄', '联想商务旗舰笔记本，轻薄坚固', 458, 200, '台', 1.20, 4, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 15:20:00');
+INSERT INTO `pms_products` VALUES (7, '戴尔XPS 15', 'DELL-XPS15', 5, 5, NULL, 12999.00, 13999.00, '/uploads/products/dellxps15.png', '戴尔,XPS,笔记本,设计', '戴尔高性能创意设计笔记本', 325, 150, '台', 1.80, 5, 1, 0, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 15:48:50');
+INSERT INTO `pms_products` VALUES (8, '索尼WH-1000XM5无线降噪耳机', 'SONY-WH1000XM5', 12, 7, NULL, 2699.00, 2999.00, '/uploads/products/wh1000xm5.png', '索尼,耳机,降噪,蓝牙', '索尼旗舰级无线降噪耳机，提供出色的降噪体验', 856, 300, '台', 0.25, 6, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (9, '小米手环8 Pro', 'MI-BAND8PRO', 12, 1, NULL, 399.00, 459.00, '/uploads/products/miband8pro.png', '小米,手环,健康,运动', '小米全新智能手环，支持运动健康监测', 1520, 1000, '个', 0.03, 7, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (10, '华为智慧屏V75 Super', 'HW-TV-V75S', 15, 2, NULL, 12999.00, 13999.00, '/uploads/products/huawei-v75s.png', '华为,电视,智慧屏,大屏', '华为75英寸旗舰智慧屏，搭载鸿蒙系统', 256, 100, '台', 30.00, 8, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (11, '飞利浦Hue智能灯泡套装', 'PHILIPS-HUE-KIT', 13, 10, NULL, 799.00, 899.00, '/uploads/products/philips-hue.png', '飞利浦,Hue,灯泡,智能家居', '飞利浦Hue智能照明系统，可通过手机APP控制', 423, 200, '套', 0.50, 9, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (12, '索尼Alpha 7 IV全画幅微单相机', 'SONY-A7IV', 14, 7, NULL, 14999.00, 15999.00, '/uploads/products/sony-a7iv.png', '索尼,相机,微单,全画幅', '索尼专业级全画幅微单相机，3300万像素', 189, 50, '台', 0.70, 10, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
 
 -- ----------------------------
 -- Table structure for pms_ratings
@@ -855,7 +975,7 @@ CREATE TABLE `pms_ratings`  (
   UNIQUE INDEX `uk_user_product_type`(`user_id`, `product_id`, `rating_type`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_rating_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评分表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评分表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_stock_logs
@@ -880,7 +1000,7 @@ CREATE TABLE `pms_stock_logs`  (
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_stock_log_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_stock_log_sku` FOREIGN KEY (`sku_id`) REFERENCES `pms_product_skus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存变更日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '库存变更日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_categories
@@ -897,7 +1017,7 @@ CREATE TABLE `sms_coupon_categories`  (
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   CONSTRAINT `fk_category_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用分类关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用分类关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_history
@@ -921,7 +1041,7 @@ CREATE TABLE `sms_coupon_history`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_history_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券领取历史表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券领取历史表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_products
@@ -938,7 +1058,7 @@ CREATE TABLE `sms_coupon_products`  (
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupons
@@ -969,7 +1089,7 @@ CREATE TABLE `sms_coupons`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion
@@ -991,7 +1111,7 @@ CREATE TABLE `sms_flash_promotion`  (
   INDEX `idx_start_date`(`start_date`) USING BTREE,
   INDEX `idx_end_date`(`end_date`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion_products
@@ -1019,7 +1139,7 @@ CREATE TABLE `sms_flash_promotion_products`  (
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_flash` FOREIGN KEY (`flash_promotion_id`) REFERENCES `sms_flash_promotion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_product_session` FOREIGN KEY (`flash_session_id`) REFERENCES `sms_flash_promotion_sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion_sessions
@@ -1038,7 +1158,7 @@ CREATE TABLE `sms_flash_promotion_sessions`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_flash_promotion_id`(`flash_promotion_id`) USING BTREE,
   CONSTRAINT `fk_session_flash` FOREIGN KEY (`flash_promotion_id`) REFERENCES `sms_flash_promotion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀场次表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀场次表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_logs
@@ -1060,7 +1180,7 @@ CREATE TABLE `sms_promotion_logs`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_log_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_products
@@ -1080,7 +1200,7 @@ CREATE TABLE `sms_promotion_products`  (
   INDEX `idx_promotion_id`(`promotion_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotions
@@ -1107,7 +1227,7 @@ CREATE TABLE `sms_promotions`  (
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_merchants
@@ -1152,13 +1272,7 @@ CREATE TABLE `ums_merchants`  (
   UNIQUE INDEX `uk_user_id`(`user_id`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   CONSTRAINT `fk_merchant_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商家表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of ums_merchants
--- ----------------------------
-INSERT INTO `ums_merchants` VALUES (1, 2, '李大卖的小店', 'https://example.com/shop/logo/1.jpg', 'https://example.com/shop/banner/1.jpg', 'https://example.com/license/1.jpg', 'https://example.com/id/front/1.jpg', 'https://example.com/id/back/1.jpg', '李卖', '13900139000', 'merchant456@example.com', '服装,鞋包', '服装、鞋包、配饰', '上海市浦东新区张江高科技园区', '上海市', '上海市', '浦东新区', '200120', '李卖', '6222021234567890123', '中国工商银行', '张江支行', 1, NULL, 4.8, 4.9, 4.7, 4.8, 1250, 78, NULL, 0, '2023-01-01 00:00:00', '2023-01-02 11:00:00');
-INSERT INTO `ums_merchants` VALUES (2, 4, '赵掌柜精品铺', 'https://example.com/shop/logo/2.jpg', 'https://example.com/shop/banner/2.jpg', 'https://example.com/license/2.jpg', 'https://example.com/id/front/2.jpg', 'https://example.com/id/back/2.jpg', '赵柜', '13600136000', 'merchant321@example.com', '数码,家电', '数码产品、家用电器、智能设备', '深圳市南山区科技园', '广东省', '深圳市', '南山区', '518057', '赵柜', '6222021234567890456', '中国建设银行', '科技园支行', 1, NULL, 4.9, 5.0, 4.8, 4.9, 2380, 156, NULL, 0, '2023-01-01 00:00:00', '2023-01-02 13:00:00');
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商家表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_notifications
@@ -1183,16 +1297,7 @@ CREATE TABLE `ums_notifications`  (
   INDEX `idx_receiver_id`(`receiver_id`) USING BTREE,
   INDEX `idx_read_status`(`read_status`) USING BTREE,
   CONSTRAINT `fk_notification_user` FOREIGN KEY (`receiver_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户通知表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of ums_notifications
--- ----------------------------
-INSERT INTO `ums_notifications` VALUES (1, NULL, 0, '系统通知', 1, '欢迎注册WhaleTide商城', '尊敬的用户您好，欢迎注册WhaleTide商城，感谢您的支持!', 0, NULL, NULL, 1, '2023-01-01 10:00:00', '2023-01-01 00:00:00', '2023-01-01 10:00:00');
-INSERT INTO `ums_notifications` VALUES (2, NULL, 0, '系统通知', 2, '欢迎注册WhaleTide商城', '尊敬的商家您好，欢迎注册WhaleTide商城，感谢您的支持!', 0, NULL, NULL, 1, '2023-01-01 11:00:00', '2023-01-01 00:00:00', '2023-01-01 11:00:00');
-INSERT INTO `ums_notifications` VALUES (3, NULL, 0, '系统通知', 3, '欢迎注册WhaleTide商城', '尊敬的用户您好，欢迎注册WhaleTide商城，感谢您的支持!', 0, NULL, NULL, 0, NULL, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ums_notifications` VALUES (4, NULL, 0, '订单系统', 1, '订单已创建', '您的订单(订单号:WTO20230102001)已创建成功，请尽快付款。', 1, 1001, 1, 1, '2023-01-02 10:30:00', '2023-01-02 10:00:00', '2023-01-02 10:30:00');
-INSERT INTO `ums_notifications` VALUES (5, 2, 2, '李大卖的小店', 1, '订单已发货', '您的订单(订单号:WTO20230102001)已发货，物流单号:SF1234567890。', 3, 1001, 1, 0, NULL, '2023-01-03 09:00:00', '2023-01-03 09:00:00');
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户通知表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_addresses
@@ -1216,14 +1321,7 @@ CREATE TABLE `ums_user_addresses`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_address_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户地址表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of ums_user_addresses
--- ----------------------------
-INSERT INTO `ums_user_addresses` VALUES (1, 1, '张明', '13800138000', '北京市', '北京市', '朝阳区', '朝阳路100号', '100000', 1, '家', 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ums_user_addresses` VALUES (2, 1, '张明', '13800138000', '北京市', '北京市', '海淀区', '中关村科技园82号', '100080', 0, '公司', 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ums_user_addresses` VALUES (3, 3, '王红', '13700137000', '广州市', '广州市', '天河区', '天河路200号', '510000', 1, '家', 0, '2023-01-01 00:00:00', '2023-01-01 00:00:00');
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户地址表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_coupons
@@ -1252,7 +1350,7 @@ CREATE TABLE `ums_user_coupons`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   CONSTRAINT `fk_user_coupon_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户优惠券表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_favorites
@@ -1273,7 +1371,7 @@ CREATE TABLE `ums_user_favorites`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_favorite_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收藏表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收藏表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_login_logs
@@ -1295,7 +1393,7 @@ CREATE TABLE `ums_user_login_logs`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_login_log_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户登录日志表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_roles
@@ -1312,15 +1410,7 @@ CREATE TABLE `ums_user_roles`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_user_role_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of ums_user_roles
--- ----------------------------
-INSERT INTO `ums_user_roles` VALUES (1, 1, '普通会员', 'NORMAL_MEMBER', '普通会员', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ums_user_roles` VALUES (2, 2, '商家', 'MERCHANT', '商家角色', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ums_user_roles` VALUES (3, 3, '普通会员', 'NORMAL_MEMBER', '普通会员', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
-INSERT INTO `ums_user_roles` VALUES (4, 4, '商家', 'MERCHANT', '商家角色', '2023-01-01 00:00:00', '2023-01-01 00:00:00');
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_search_history
@@ -1337,7 +1427,7 @@ CREATE TABLE `ums_user_search_history`  (
   UNIQUE INDEX `uk_user_keyword`(`user_id`, `keyword`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_search_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_users
@@ -1373,21 +1463,6 @@ CREATE TABLE `ums_users`  (
   UNIQUE INDEX `uk_phone`(`phone`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_is_merchant`(`is_merchant`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of ums_users
--- ----------------------------
-INSERT INTO `ums_users` VALUES (1, 'user123', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '13800138000', 'user123@example.com', '张小明', '张明', 1, '1990-01-01', 'https://example.com/avatar/1.jpg', 1, NULL, 0, '2023-01-02 10:00:00', '192.168.1.1', 0, 0, 100, 20, '北京市', NULL, 0, '2023-01-01 00:00:00', '2023-01-02 10:00:00');
-INSERT INTO `ums_users` VALUES (2, 'merchant456', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '13900139000', 'merchant456@example.com', '李大卖', '李卖', 1, '1985-05-05', 'https://example.com/avatar/2.jpg', 1, NULL, 1, '2023-01-02 11:00:00', '192.168.1.2', 1, 1, 200, 50, '上海市', NULL, 0, '2023-01-01 00:00:00', '2023-01-02 11:00:00');
-INSERT INTO `ums_users` VALUES (3, 'user789', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '13700137000', 'user789@example.com', '王小红', '王红', 2, '1995-10-10', 'https://example.com/avatar/3.jpg', 1, NULL, 2, '2023-01-02 12:00:00', '192.168.1.3', 0, 0, 50, 10, '广州市', NULL, 0, '2023-01-01 00:00:00', '2023-01-02 12:00:00');
-INSERT INTO `ums_users` VALUES (4, 'merchant321', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '13600136000', 'merchant321@example.com', '赵掌柜', '赵柜', 1, '1980-12-12', 'https://example.com/avatar/4.jpg', 1, NULL, 0, '2023-01-02 13:00:00', '192.168.1.4', 1, 2, 300, 100, '深圳市', NULL, 0, '2023-01-01 00:00:00', '2023-01-02 13:00:00');
-INSERT INTO `ums_users` VALUES (5, 'lisi', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581841', NULL, 'lisi', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:12:38', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:12:38', '2025-03-15 16:57:32');
-INSERT INTO `ums_users` VALUES (6, 'wangwu', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581842', NULL, 'wangwu', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:13:09', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:13:09', '2025-03-15 16:57:32');
-INSERT INTO `ums_users` VALUES (7, 'lion', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581845', NULL, 'lion', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:21:39', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:21:39', '2025-03-15 16:57:32');
-INSERT INTO `ums_users` VALUES (8, 'shari', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581844', NULL, 'shari', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:22:00', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:22:00', '2025-03-15 16:57:32');
-INSERT INTO `ums_users` VALUES (9, 'aewen', '$2a$10$NZ5o7r2E.ayT2ZoxgjlI.eJ6OEYqjH7INR/F.mXDbjZJi9HF0YCVG', '18061581843', NULL, 'aewen', NULL, NULL, NULL, NULL, 1, NULL, NULL, '2018-11-12 14:22:55', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2018-11-12 14:22:55', '2025-03-15 16:57:32');
-INSERT INTO `ums_users` VALUES (10, 'guest', '$2a$10$WQiD4RzEs1iJVWU.2HVu8OdSlExJHWKmwndaw3SUfMyqfKZmXe1vq', '18911111111', NULL, NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, '2020-03-14 14:52:18', NULL, 0, 4, NULL, NULL, NULL, NULL, 0, '2020-03-14 14:52:18', '2025-03-15 16:57:32');
-INSERT INTO `ums_users` VALUES (11, 'member', '$2a$10$Q08uzqvtPj61NnpYQZsVvOnyilJ3AU4VdngAcJFGvPhEeqhhC.hhS', '18961511111', NULL, 'member', NULL, 1, '2009-06-01', 'https://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/icon/github_icon_02.png', 1, NULL, NULL, '2023-05-11 15:22:38', NULL, 0, 4, 5000, 1000, '上海', NULL, 0, '2023-05-11 15:22:38', '2025-03-15 16:57:32');
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

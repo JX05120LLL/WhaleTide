@@ -2,6 +2,7 @@ package com.whale_tide.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.whale_tide.dto.product.*;
+import java.util.List;
 /*
 产品管理接口
 */
@@ -9,8 +10,8 @@ import com.whale_tide.dto.product.*;
 public interface IProductService {
     // 获取产品列表
     IPage<ProductListResult>  getProductList(ProductQueryParam queryParam);
-    // 获取产品详情
-    ProductSimpleResult getProductSimple(String keyword);
+    // 获取产品简单列表
+    List<ProductSimpleResult> getProductSimple(String keyword);
     // 更新产品删除状态
     int updateDeleteStatus(UpdateDeleteStatusParam updateDeleteStatusParam);
     // 更新产品新品状态

@@ -10,11 +10,16 @@ import com.whale_tide.dto.product.*;
 import com.whale_tide.entity.pms.PmsProducts;
 import com.whale_tide.entity.pms.PmsProductAttributeValues;
 import com.whale_tide.entity.pms.PmsProductSkus;
-import com.whale_tide.entity.sms.mapper.pms.PmsProductAttributeValuesMapper;
-import com.whale_tide.entity.sms.mapper.pms.PmsProductSkusMapper;
-import com.whale_tide.entity.sms.mapper.pms.PmsProductsMapper;
-import com.whale_tide.entity.sms.mapper.pms.PmsProductCategoriesMapper;
+import com.whale_tide.entity.pms.PmsProductCategories;
+import com.whale_tide.entity.pms.PmsBrands;
+import com.whale_tide.entity.sms.*;
+import com.whale_tide.mapper.pms.PmsProductAttributeValuesMapper;
+import com.whale_tide.mapper.pms.PmsProductCategoriesMapper;
+import com.whale_tide.mapper.pms.PmsProductSkusMapper;
+import com.whale_tide.mapper.pms.PmsProductsMapper;
+import com.whale_tide.mapper.pms.PmsBrandsMapper;
 import com.whale_tide.service.IProductService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +35,8 @@ import java.util.stream.Collectors;
  * 商品管理服务实现类
  */
 @Service
-public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProducts> implements IProductService {
+@Slf4j
+public class ProductServiceImpl  implements IProductService {
     @Autowired
     private PmsProductsMapper productsMapper;
     @Autowired
@@ -39,6 +45,8 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
     private PmsProductAttributeValuesMapper productAttributeValuesMapper;
     @Autowired
     private PmsProductCategoriesMapper productCategoriesMapper;
+    @Autowired
+    private PmsBrandsMapper brandsMapper;
 
     @Override
     public IPage<ProductListResult> getProductList(ProductQueryParam queryParam) {
@@ -73,44 +81,74 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
                     result.setPic(product.getMainImage());
                     result.setPrice(product.getPrice());
                     result.setSale(product.getSale());
-                 //   result.setBrandName(product.());
-                  //  result.setProductCategoryName(product.());
+                    
+                    // 设置品牌名称 - 需要根据品牌ID查询品牌名称
+                    if (product.getBrandId() != null) {
+                        try {
+                            // 根据brandId查询品牌名称，这里假设有一个getBrandById方法
+                            // 如果没有直接的方法，可以先使用ID显示
+                            PmsBrands brand = brandsMapper.selectById(product.getBrandId());
+                            result.setBrandName(brand != null ? brand.getName() : "品牌ID: " + product.getBrandId());
+                        } catch (Exception e) {
+                            log.error("获取品牌名称失败: {}", e.getMessage());
+                            result.setBrandName("");
+                        }
+                    }
+                    
+                    // 设置产品分类名称 - 需要根据分类ID查询分类名称
+                    if (product.getCategoryId() != null) {
+                        try {
+                            // 通过productCategoriesMapper查询分类信息
+                            PmsProductCategories category = productCategoriesMapper.selectById(product.getCategoryId());
+                            result.setProductCategoryName(category != null ? category.getName() : "分类ID: " + product.getCategoryId());
+                        } catch (Exception e) {
+                            log.error("获取产品分类名称失败: {}", e.getMessage());
+                            result.setProductCategoryName("");
+                        }
+                    }
+                    
                     result.setPublishStatus(product.getPublishStatus());
                     result.setNewStatus(product.getNewStatus());
                     result.setRecommendStatus(product.getRecommendStatus());
                     return result;
                 }).collect(Collectors.toList());
-        // 返回分页结果
-        return new Page<>();
+                
+        // 创建并返回包含真实数据的分页对象
+        Page<ProductListResult> resultPage = new Page<>(productPage.getCurrent(), productPage.getSize(), productPage.getTotal());
+        resultPage.setRecords(resultList);
+        return resultPage;
     }
 
     @Override
-    public ProductSimpleResult getProductSimple(String keyword) {
-    // 创建查询条件包装器
-    LambdaQueryWrapper<PmsProducts> queryWrapper = new LambdaQueryWrapper<>();
+    public List<ProductSimpleResult> getProductSimple(String keyword) {
+        // 创建查询条件包装器
+        LambdaQueryWrapper<PmsProducts> queryWrapper = new LambdaQueryWrapper<>();
 
-    // 添加搜索关键词的模糊查询条件
-    if (StringUtils.isNotBlank(keyword)) {
-        queryWrapper.like(PmsProducts::getName, keyword);
+        // 添加搜索关键词的模糊查询条件
+        if (StringUtils.isNotBlank(keyword)) {
+            queryWrapper.like(PmsProducts::getName, keyword);
+        }
+
+        // 执行查询，获取产品列表
+        List<PmsProducts> productList = productsMapper.selectList(queryWrapper);
+
+        // 判断查询结果是否为空
+        if (productList == null || productList.isEmpty()) {
+            return new ArrayList<>();
+        }
+
+        // 将查询结果转换为 ProductSimpleResult 对象
+        List<ProductSimpleResult> resultList = productList.stream()
+            .map(product -> {
+                ProductSimpleResult result = new ProductSimpleResult();
+                result.setId(product.getId());
+                result.setName(product.getName());
+                return result;
+            })
+            .collect(Collectors.toList());
+            
+        return resultList;
     }
-
-    // 执行查询，获取产品列表
-    List<PmsProducts> productList = productsMapper.selectList(queryWrapper);
-
-    // 判断查询结果是否为空
-    if (productList == null || productList.isEmpty()) {
-        return null;
-    }
-
-    // 将查询结果转换为 ProductSimpleResult 对象
-    ProductSimpleResult result = new ProductSimpleResult();
-    PmsProducts product = productList.get(0); // 假设只返回第一个匹配的产品
-    result.setId(product.getId());
-    result.setName(product.getName());
-
-    // 返回转换后的结果
-    return result;
-}
 
     @Override
     public int updateDeleteStatus(UpdateDeleteStatusParam updateDeleteStatusParam) {
@@ -196,7 +234,7 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
         BeanUtils.copyProperties(basicParam, product);
         
         // 验证分类ID是否有效，如果无效则使用默认值1
-        Long categoryId = basicParam.getProductCategoryId();
+        Long categoryId = basicParam.getCategoryId();
         if (categoryId == null || categoryId == 0 || !isValidCategoryId(categoryId)) {
             log.warn("商品分类ID无效，将使用默认分类ID：1");
             product.setCategoryId(1L); // 使用ID为1的分类
@@ -280,7 +318,7 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
             sku.setSkuCode(skuParam.getSkuCode() != null && !skuParam.getSkuCode().isEmpty() ? 
                     skuParam.getSkuCode() : generateSkuCode(productId));
             sku.setImage(skuParam.getPic()); // 映射图片字段
-            sku.setSpecs(skuParam.getSpData()); // 映射规格数据
+            sku.setSpecs(skuParam.getSpecs()); // 映射规格数据
             sku.setLowStock(10); // 默认预警库存
             sku.setSale(0); // 默认销量
             sku.setLockStock(0); // 默认锁定库存

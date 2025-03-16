@@ -1,6 +1,7 @@
 package com.whale_tide.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.whale_tide.dto.menu.MenuNode;
 import com.whale_tide.dto.menu.MenuParam;
 import com.whale_tide.entity.ams.AmsMenus;
 
@@ -76,5 +77,5 @@ public interface IMenuService {
      * 
      * @return 树形菜单列表
      */
-    List<AmsMenus> treeList();
+    List<MenuNode> treeList();
 } 

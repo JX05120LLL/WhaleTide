@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.whale_tide.dto.resource.ResourceParam;
 import com.whale_tide.dto.resource.ResourceResult;
 import com.whale_tide.entity.ams.AmsResources;
-import com.whale_tide.entity.sms.mapper.ams.AmsResourcesMapper;
+import com.whale_tide.mapper.ams.AmsResourcesMapper;
 import com.whale_tide.service.IResourceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;

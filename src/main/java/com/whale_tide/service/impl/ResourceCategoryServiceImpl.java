@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.whale_tide.dto.resource.ResourceCategoryParam;
 import com.whale_tide.dto.resource.ResourceCategoryResult;
 import com.whale_tide.entity.ams.AmsResourceCategories;
-import com.whale_tide.entity.sms.mapper.ams.AmsResourceCategoriesMapper;
+import com.whale_tide.mapper.ams.AmsResourceCategoriesMapper;
 import com.whale_tide.service.IResourceCategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -51,13 +51,13 @@ public class ResourceCategoryServiceImpl extends ServiceImpl<AmsResourceCategori
 
     @Override
     public boolean update(Long id, ResourceCategoryParam resourceCategoryParam) {
-        // 查询资源分类是否存在
+        // 查询分类是否存在
         AmsResourceCategories category = getById(id);
         if (category == null) {
             return false;
         }
         
-        // 更新资源分类信息
+        // 更新分类信息
         BeanUtils.copyProperties(resourceCategoryParam, category);
         category.setUpdateTime(LocalDateTime.now());
         
