@@ -2,8 +2,8 @@ package com.whale_tide.controller;
 
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
-import com.whale_tide.entity.cms.CmsSubject;
-import com.whale_tide.mapper.cms.CmsSubjectMapper;
+import com.whale_tide.entity.oms.CmsSubject;
+import com.whale_tide.entity.sms.mapper.oms.CmsSubjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

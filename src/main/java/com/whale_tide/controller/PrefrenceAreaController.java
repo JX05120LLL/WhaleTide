@@ -1,8 +1,8 @@
 package com.whale_tide.controller;
 
 import com.whale_tide.common.api.CommonResult;
-import com.whale_tide.entity.cms.CmsPrefrenceArea;
-import com.whale_tide.mapper.cms.CmsPrefrenceAreaMapper;
+import com.whale_tide.entity.oms.CmsPrefrenceArea;
+import com.whale_tide.entity.sms.mapper.oms.CmsPrefrenceAreaMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

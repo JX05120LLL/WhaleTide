@@ -9,7 +9,7 @@ import com.whale_tide.dto.role.MenuNodeResult;
 import com.whale_tide.dto.role.RoleParam;
 import com.whale_tide.dto.role.RoleResult;
 import com.whale_tide.entity.ams.*;
-import com.whale_tide.mapper.ams.*;
+import com.whale_tide.entity.sms.mapper.ams.*;
 import com.whale_tide.service.IAdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;

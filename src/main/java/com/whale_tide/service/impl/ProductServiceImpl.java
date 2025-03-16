@@ -10,10 +10,10 @@ import com.whale_tide.dto.product.*;
 import com.whale_tide.entity.pms.PmsProducts;
 import com.whale_tide.entity.pms.PmsProductAttributeValues;
 import com.whale_tide.entity.pms.PmsProductSkus;
-import com.whale_tide.mapper.pms.PmsProductAttributeValuesMapper;
-import com.whale_tide.mapper.pms.PmsProductSkusMapper;
-import com.whale_tide.mapper.pms.PmsProductsMapper;
-import com.whale_tide.mapper.pms.PmsProductCategoriesMapper;
+import com.whale_tide.entity.sms.mapper.pms.PmsProductAttributeValuesMapper;
+import com.whale_tide.entity.sms.mapper.pms.PmsProductSkusMapper;
+import com.whale_tide.entity.sms.mapper.pms.PmsProductsMapper;
+import com.whale_tide.entity.sms.mapper.pms.PmsProductCategoriesMapper;
 import com.whale_tide.service.IProductService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -196,7 +196,7 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
         BeanUtils.copyProperties(basicParam, product);
         
         // 验证分类ID是否有效，如果无效则使用默认值1
-        Long categoryId = basicParam.getCategoryId();
+        Long categoryId = basicParam.getProductCategoryId();
         if (categoryId == null || categoryId == 0 || !isValidCategoryId(categoryId)) {
             log.warn("商品分类ID无效，将使用默认分类ID：1");
             product.setCategoryId(1L); // 使用ID为1的分类
@@ -280,7 +280,7 @@ public class ProductServiceImpl extends ServiceImpl<PmsProductsMapper, PmsProduc
             sku.setSkuCode(skuParam.getSkuCode() != null && !skuParam.getSkuCode().isEmpty() ? 
                     skuParam.getSkuCode() : generateSkuCode(productId));
             sku.setImage(skuParam.getPic()); // 映射图片字段
-            sku.setSpecs(skuParam.getSpecs()); // 映射规格数据
+            sku.setSpecs(skuParam.getSpData()); // 映射规格数据
             sku.setLowStock(10); // 默认预警库存
             sku.setSale(0); // 默认销量
             sku.setLockStock(0); // 默认锁定库存

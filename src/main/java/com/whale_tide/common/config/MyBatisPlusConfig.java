@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@MapperScan({"com.whale_tide.mapper"})
+@MapperScan({"com.whale_tide.entity.sms.mapper"})
 public class MyBatisPlusConfig {
 
     @Bean

@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 15/03/2025 18:36:41
+ Date: 16/03/2025 13:07:19
 */
 
 SET NAMES utf8mb4;
@@ -111,8 +111,8 @@ CREATE TABLE `ams_admins`  (
 -- ----------------------------
 -- Records of ams_admins
 -- ----------------------------
-INSERT INTO `ams_admins` VALUES (12, 'admin', '123456', '超级管理员', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:30:22');
-INSERT INTO `ams_admins` VALUES (13, 'merchant', '123456', '商家', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
+INSERT INTO `ams_admins` VALUES (12, 'admin', '123456', '超级管理员', NULL, NULL, NULL, 0, 1, '2025-03-15 18:55:19', NULL, NULL, 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:30:22');
+INSERT INTO `ams_admins` VALUES (13, 'merchant', '123456', '商家', NULL, NULL, NULL, 0, 1, '2025-03-15 19:18:06', NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
 INSERT INTO `ams_admins` VALUES (14, 'user', '123456', '普通用户', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
 
 -- ----------------------------
@@ -137,6 +137,33 @@ CREATE TABLE `ams_menus`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_parent_id`(`parent_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ams_menus
+-- ----------------------------
+INSERT INTO `ams_menus` VALUES (20, 0, '首页', 0, 0, 'home', '/home', 'Layout', '/home', 0, 1, '系统首页', '2025-03-15 18:44:35', '2025-03-15 23:12:42');
+INSERT INTO `ams_menus` VALUES (21, 0, '商品', 0, 10, 'product', '/pms', 'Layout', '/pms/product', 0, 1, '商品管理模块', '2025-03-15 18:44:35', '2025-03-15 23:12:57');
+INSERT INTO `ams_menus` VALUES (22, 0, '订单', 0, 20, 'order', '/oms', 'Layout', '/oms/order', 0, 1, '订单管理模块', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (23, 0, '营销', 0, 30, 'sms', '/sms', 'Layout', '/sms/flash', 0, 1, '营销管理模块', '2025-03-15 18:44:35', '2025-03-15 23:13:57');
+INSERT INTO `ams_menus` VALUES (24, 0, '权限', 0, 40, 'ums', '/ums', 'Layout', '/ums/admin', 0, 1, '权限管理模块', '2025-03-15 18:44:35', '2025-03-15 23:13:58');
+INSERT INTO `ams_menus` VALUES (25, 1, '仪表盘', 1, 1, 'dashboard', 'dashboard', 'home/index', NULL, 0, 1, '系统仪表盘', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (26, 2, '商品列表', 1, 1, 'product-list', 'product', 'pms/product/index', NULL, 0, 1, '商品列表', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (27, 2, '添加商品', 1, 2, 'product-add', 'addProduct', 'pms/product/add', NULL, 0, 1, '添加商品', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (28, 2, '商品分类', 1, 3, 'product-cate', 'productCate', 'pms/productCate/index', NULL, 0, 1, '商品分类', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (29, 2, '品牌管理', 1, 4, 'product-brand', 'brand', 'pms/brand/index', NULL, 0, 1, '品牌管理', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (30, 2, '商品类型', 1, 5, 'product-attr', 'productAttr', 'pms/productAttr/index', NULL, 0, 1, '商品类型', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (31, 2, '修改商品', 1, 6, 'product-update', 'updateProduct', 'pms/product/update', NULL, 1, 1, '修改商品', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (32, 3, '订单列表', 1, 1, 'product-list', 'order', 'oms/order/index', NULL, 0, 1, '订单列表', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (33, 3, '订单设置', 1, 2, 'order-setting', 'orderSetting', 'oms/order/setting', NULL, 0, 1, '订单设置', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (34, 3, '退货申请处理', 1, 3, 'order-return', 'returnApply', 'oms/apply/index', NULL, 0, 1, '退货申请处理', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (35, 3, '退货原因设置', 1, 4, 'order-return-reason', 'returnReason', 'oms/apply/reason', NULL, 0, 1, '退货原因设置', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (36, 4, '秒杀活动列表', 1, 1, 'sms-flash', 'flash', 'sms/flash/index', NULL, 0, 1, '秒杀活动列表', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (37, 4, '优惠券列表', 1, 2, 'sms-coupon', 'coupon', 'sms/coupon/index', NULL, 0, 1, '优惠券列表', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (38, 4, '添加优惠券', 1, 3, 'sms-add', 'addCoupon', 'sms/coupon/add', NULL, 1, 1, '添加优惠券', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (39, 5, '用户列表', 1, 1, 'ums-admin', 'admin', 'ums/admin/index', NULL, 0, 1, '用户列表', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (40, 5, '角色列表', 1, 2, 'ums-role', 'role', 'ums/role/index', NULL, 0, 1, '角色列表', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (41, 5, '菜单列表', 1, 3, 'ums-menu', 'menu', 'ums/menu/index', NULL, 0, 1, '菜单列表', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
+INSERT INTO `ams_menus` VALUES (42, 5, '资源列表', 1, 4, 'ums-resource', 'resource', 'ums/resource/index', NULL, 0, 1, '资源列表', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
 
 -- ----------------------------
 -- Table structure for ams_permissions
@@ -176,6 +203,14 @@ CREATE TABLE `ams_resource_categories`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of ams_resource_categories
+-- ----------------------------
+INSERT INTO `ams_resource_categories` VALUES (9, '商品模块', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resource_categories` VALUES (10, '订单模块', 2, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resource_categories` VALUES (11, '营销模块', 3, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resource_categories` VALUES (12, '权限模块', 4, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+
+-- ----------------------------
 -- Table structure for ams_resources
 -- ----------------------------
 DROP TABLE IF EXISTS `ams_resources`;
@@ -194,6 +229,33 @@ CREATE TABLE `ams_resources`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资源表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of ams_resources
+-- ----------------------------
+INSERT INTO `ams_resources` VALUES (11, 1, '商品列表', '/product/list', 'GET', '获取商品列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (12, 1, '添加商品', '/product/create', 'POST', '创建新商品', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (13, 1, '修改商品', '/product/update', 'POST', '更新商品信息', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (14, 1, '删除商品', '/product/delete', 'POST', '删除商品', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (15, 1, '商品详情', '/product/detail', 'GET', '获取商品详情', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (16, 1, '商品分类列表', '/productCate/list', 'GET', '获取商品分类', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (17, 1, '品牌列表', '/brand/list', 'GET', '获取品牌列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (18, 2, '订单列表', '/order/list', 'GET', '获取订单列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (19, 2, '订单详情', '/order/detail', 'GET', '获取订单详情', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (20, 2, '订单发货', '/order/delivery', 'POST', '订单发货', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (21, 2, '关闭订单', '/order/close', 'POST', '关闭订单', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (22, 2, '订单设置', '/order/setting', 'GET', '获取订单设置', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (23, 2, '退货申请列表', '/returnApply/list', 'GET', '获取退货申请列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (24, 3, '秒杀活动列表', '/flash/list', 'GET', '获取秒杀活动列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (25, 3, '添加秒杀活动', '/flash/create', 'POST', '创建秒杀活动', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (26, 3, '优惠券列表', '/coupon/list', 'GET', '获取优惠券列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (27, 3, '添加优惠券', '/coupon/create', 'POST', '创建优惠券', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (28, 4, '用户列表', '/admin/list', 'GET', '获取用户列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (29, 4, '添加用户', '/admin/create', 'POST', '创建用户', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (30, 4, '角色列表', '/role/list', 'GET', '获取角色列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (31, 4, '添加角色', '/role/create', 'POST', '创建角色', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (32, 4, '菜单列表', '/menu/list', 'GET', '获取菜单列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+INSERT INTO `ams_resources` VALUES (33, 4, '资源列表', '/resource/list', 'GET', '获取资源列表', 1, '2025-03-15 18:45:34', '2025-03-15 18:45:34');
+
+-- ----------------------------
 -- Table structure for ams_role_menu_relations
 -- ----------------------------
 DROP TABLE IF EXISTS `ams_role_menu_relations`;
@@ -208,6 +270,38 @@ CREATE TABLE `ams_role_menu_relations`  (
   CONSTRAINT `fk_menu_relation_menu` FOREIGN KEY (`menu_id`) REFERENCES `ams_menus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_menu_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与菜单关系表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ams_role_menu_relations
+-- ----------------------------
+INSERT INTO `ams_role_menu_relations` VALUES (35, 6, 20, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (36, 6, 21, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (37, 6, 22, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (38, 6, 23, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (39, 6, 24, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (40, 6, 25, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (41, 6, 26, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (42, 6, 27, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (43, 6, 28, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (44, 6, 29, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (45, 6, 30, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (46, 6, 31, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (47, 6, 32, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (48, 6, 33, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (49, 6, 34, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (50, 6, 35, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (51, 6, 36, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (52, 6, 37, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (53, 6, 38, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (54, 6, 39, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (55, 6, 40, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (56, 6, 41, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (57, 6, 42, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (66, 7, 20, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (67, 7, 21, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (68, 7, 22, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (69, 8, 20, '2025-03-15 18:45:17');
+INSERT INTO `ams_role_menu_relations` VALUES (70, 8, 26, '2025-03-15 18:45:17');
 
 -- ----------------------------
 -- Table structure for ams_role_permission_relations
@@ -249,6 +343,47 @@ CREATE TABLE `ams_role_resource_relations`  (
   CONSTRAINT `fk_resource_relation_resource` FOREIGN KEY (`resource_id`) REFERENCES `ams_resources` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_resource_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与资源关系表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ams_role_resource_relations
+-- ----------------------------
+INSERT INTO `ams_role_resource_relations` VALUES (1, 6, 11, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (2, 6, 12, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (3, 6, 13, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (4, 6, 14, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (5, 6, 15, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (6, 6, 16, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (7, 6, 17, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (8, 6, 18, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (9, 6, 19, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (10, 6, 20, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (11, 6, 21, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (12, 6, 22, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (13, 6, 23, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (14, 6, 24, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (15, 6, 25, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (16, 6, 26, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (17, 6, 27, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (18, 6, 28, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (19, 6, 29, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (20, 6, 30, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (21, 6, 31, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (22, 6, 32, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (23, 6, 33, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (32, 8, 11, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (33, 8, 15, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (34, 8, 16, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (35, 8, 17, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (36, 8, 18, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (37, 8, 19, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (38, 8, 22, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (39, 8, 23, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (40, 8, 24, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (41, 8, 26, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (42, 8, 28, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (43, 8, 30, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (44, 8, 32, '2025-03-15 18:45:55');
+INSERT INTO `ams_role_resource_relations` VALUES (45, 8, 33, '2025-03-15 18:45:55');
 
 -- ----------------------------
 -- Table structure for ams_roles
@@ -580,6 +715,11 @@ CREATE TABLE `pms_product_categories`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of pms_product_categories
+-- ----------------------------
+INSERT INTO `pms_product_categories` VALUES (1, 0, '默认分类', 1, NULL, 0, NULL, NULL, 1, 0, '2025-03-15 20:57:12', '2025-03-15 20:57:12');
+
+-- ----------------------------
 -- Table structure for pms_product_comments
 -- ----------------------------
 DROP TABLE IF EXISTS `pms_product_comments`;
@@ -673,7 +813,7 @@ CREATE TABLE `pms_products`  (
   `product_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品编号',
   `category_id` bigint(0) NOT NULL COMMENT '分类ID',
   `brand_id` bigint(0) NULL DEFAULT NULL COMMENT '品牌ID',
-  `merchant_id` bigint(0) NOT NULL COMMENT '商家ID',
+  `merchant_id` bigint(0) NULL DEFAULT NULL COMMENT '商家ID',
   `price` decimal(10, 2) NOT NULL COMMENT '商品价格',
   `original_price` decimal(10, 2) NULL DEFAULT NULL COMMENT '原价',
   `main_image` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主图URL',

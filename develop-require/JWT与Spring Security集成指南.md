@@ -514,7 +514,7 @@ package com.whale_tide.service.impl;
 import com.whale_tide.entity.AmsAdmin;
 import com.whale_tide.entity.AmsResource;
 import com.whale_tide.entity.AmsRole;
-import com.whale_tide.mapper.AmsAdminMapper;
+import com.whale_tide.entity.sms.mapper.AmsAdminMapper;
 import com.whale_tide.service.AmsAdminRoleRelationService;
 import com.whale_tide.service.AmsAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -536,7 +536,7 @@ public class AdminUserDetailsServiceImpl implements UserDetailsService {
     private AmsAdminRoleRelationService adminRoleRelationService;
     @Autowired
     private AmsAdminMapper adminMapper;
-    
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 获取管理员信息
@@ -544,13 +544,13 @@ public class AdminUserDetailsServiceImpl implements UserDetailsService {
         if (admin == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }
-        
+
         // 获取管理员角色
         List<AmsRole> roleList = adminRoleRelationService.getRoleListByAdminId(admin.getId());
-        
+
         // 获取管理员权限资源
         List<AmsResource> resourceList = adminRoleRelationService.getResourceListByAdminId(admin.getId());
-        
+
         // 创建并返回SpringSecurity所需的UserDetails对象
         return new AdminUserDetails(admin, roleList, resourceList);
     }
@@ -563,7 +563,7 @@ public class AdminUserDetailsServiceImpl implements UserDetailsService {
 package com.whale_tide.service.impl;
 
 import com.whale_tide.entity.UmsUser;
-import com.whale_tide.mapper.UmsUserMapper;
+import com.whale_tide.entity.sms.mapper.UmsUserMapper;
 import com.whale_tide.service.UmsUserRoleService;
 import com.whale_tide.service.UmsUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -581,7 +581,7 @@ public class MemberUserDetailsServiceImpl implements UserDetailsService {
     private UmsUserService umsUserService;
     @Autowired
     private UmsUserRoleService umsUserRoleService;
-    
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         // 获取用户信息
@@ -589,7 +589,7 @@ public class MemberUserDetailsServiceImpl implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("用户名或密码错误");
         }
-        
+
         // 创建并返回SpringSecurity所需的UserDetails对象
         return new MemberUserDetails(user);
     }
