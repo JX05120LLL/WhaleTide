@@ -50,7 +50,7 @@ public class ProductParam {
         private Long merchantId;
         
         @ApiModelProperty(value = "商品分类ID", required = true)
-        private Long productCategoryId;
+        private Long categoryId;
         
         @ApiModelProperty(value = "运费模板ID")
         private Long feightTemplateId;
@@ -193,7 +193,7 @@ public class ProductParam {
         private Integer stock;
         
         @ApiModelProperty(value = "销售属性组合，格式：[{\"key\":\"颜色\",\"value\":\"红色\"},{\"key\":\"尺寸\",\"value\":\"XL\"}]")
-        private String spData;
+        private String specs;
         
         @ApiModelProperty(value = "SKU图片")
         private String pic;
