@@ -18,7 +18,7 @@ export function createBrand(data) {
 
 export function updateShowStatus(id, showStatus) {
   return request({
-    url: `/brand/${id}/showStatus/${showStatus}`,
+    url: '/brand/' + id + '/showStatus/' + showStatus,
     method: 'post',
   })
 }
