@@ -6,6 +6,7 @@ import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.management.product.*;
 import com.whale_tide.entity.pms.PmsBrands;
 import com.whale_tide.entity.pms.PmsProductCategories;
+import com.whale_tide.entity.pms.PmsProductSkus;
 import com.whale_tide.mapper.pms.PmsBrandsMapper;
 import com.whale_tide.mapper.pms.PmsProductCategoriesMapper;
 import com.whale_tide.service.management.IProductService;
@@ -22,16 +23,16 @@ import java.util.*;
  */
 @Slf4j
 @RestController
-@Api(tags = "ProductController",description = "产品管理")
+@Api(tags = "ProductController", description = "产品管理")
 @RequestMapping("/product")
 public class ProductController {
 
     @Autowired
     private IProductService productService;
-    
+
     @Autowired
     private PmsBrandsMapper brandsMapper;
-    
+
     @Autowired
     private PmsProductCategoriesMapper productCategoriesMapper;
 
@@ -48,10 +49,10 @@ public class ProductController {
             @RequestParam(value = "verifyStatus", required = false) Integer verifyStatus,
             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        
-        log.info("获取商品列表, keyword={}, productSn={}, brandId={}, productCategoryId={}, publishStatus={}, pageNum={}, pageSize={}", 
+
+        log.info("获取商品列表, keyword={}, productSn={}, brandId={}, productCategoryId={}, publishStatus={}, pageNum={}, pageSize={}",
                 keyword, productSn, brandId, productCategoryId, publishStatus, pageNum, pageSize);
-        
+
         // 创建查询参数对象
         ProductQueryParam queryParam = new ProductQueryParam();
         queryParam.setKeyword(keyword);
@@ -62,10 +63,10 @@ public class ProductController {
         queryParam.setVerifyStatus(verifyStatus);
         queryParam.setPageNum(pageNum);
         queryParam.setPageSize(pageSize);
-        
+
         // 调用服务层方法获取真实数据
         IPage<ProductListResult> productPage = productService.getProductList(queryParam);
-        
+
         // 创建响应对象
         Map<String, Object> result = new HashMap<>();
         result.put("list", productPage.getRecords());
@@ -73,29 +74,29 @@ public class ProductController {
         result.put("pageSize", productPage.getSize());
         result.put("total", productPage.getTotal());
         result.put("totalPage", productPage.getPages());
-        
+
         return CommonResult.success(result);
     }
-    
+
     /**
      * 获取单个商品详情
      */
     @GetMapping("/{id}")
     public CommonResult<Map<String, Object>> getItem(@PathVariable Long id) {
         log.info("获取商品详情, id={}", id);
-        
+
         // 获取商品详情
         ProductParam productDetail = productService.getUpdateInfo(id);
         if (productDetail == null) {
             return CommonResult.failed("商品不存在");
         }
-        
+
         // 从ProductParam中获取基本信息
         ProductParam.ProductBasicParam basicInfo = productDetail.getProductParam();
         if (basicInfo == null) {
             return CommonResult.failed("商品基本信息不存在");
         }
-        
+
         // 转换为Map格式
         Map<String, Object> product = new HashMap<>();
         product.put("id", id);
@@ -103,22 +104,22 @@ public class ProductController {
         product.put("productSn", basicInfo.getProductSn());
         product.put("price", basicInfo.getPrice());
         product.put("originalPrice", basicInfo.getOriginalPrice());
-        
+
         // 获取SKU信息
         if (productDetail.getSkuStockList() != null && !productDetail.getSkuStockList().isEmpty()) {
             int totalStock = productDetail.getSkuStockList().stream()
-                .mapToInt(sku -> sku.getStock() != null ? sku.getStock() : 0)
-                .sum();
+                    .mapToInt(sku -> sku.getStock() != null ? sku.getStock() : 0)
+                    .sum();
             product.put("stock", totalStock);
         } else {
             product.put("stock", basicInfo.getStock());
         }
-        
+
         product.put("lowStock", 10); // 预警库存
         product.put("unit", basicInfo.getUnit());
         product.put("weight", basicInfo.getWeight());
         product.put("sort", basicInfo.getSort());
-        
+
         // 获取品牌信息
         if (basicInfo.getBrandId() != null) {
             product.put("brandId", basicInfo.getBrandId());
@@ -130,7 +131,7 @@ public class ProductController {
                 product.put("brandName", "未知品牌");
             }
         }
-        
+
         // 获取分类信息
         if (basicInfo.getCategoryId() != null) {
             product.put("productCategoryId", basicInfo.getCategoryId());
@@ -142,12 +143,12 @@ public class ProductController {
                 product.put("productCategoryName", "未知分类");
             }
         }
-        
+
         product.put("pic", basicInfo.getPic());
         product.put("albumPics", basicInfo.getAlbumPics());
         product.put("description", basicInfo.getDescription());
         product.put("detailDesc", basicInfo.getDetailDesc());
-        
+
         return CommonResult.success(product);
     }
 
@@ -162,10 +163,10 @@ public class ProductController {
             @RequestParam(value = "verifyStatus", required = false) Integer verifyStatus,
             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        
-        log.info("获取产品列表(分页), keyword={}, productSn={}, brandId={}, productCategoryId={}, publishStatus={}, pageNum={}, pageSize={}", 
+
+        log.info("获取产品列表(分页), keyword={}, productSn={}, brandId={}, productCategoryId={}, publishStatus={}, pageNum={}, pageSize={}",
                 keyword, productSn, brandId, productCategoryId, publishStatus, pageNum, pageSize);
-                
+
         // 创建查询参数对象
         ProductQueryParam queryParam = new ProductQueryParam();
         queryParam.setKeyword(keyword);
@@ -176,7 +177,7 @@ public class ProductController {
         queryParam.setVerifyStatus(verifyStatus);
         queryParam.setPageNum(pageNum);
         queryParam.setPageSize(pageSize);
-        
+
         // 调用服务层方法
         IPage<ProductListResult> productlist = productService.getProductList(queryParam);
         return CommonResult.success(CommonPage.restPage(productlist));
@@ -186,24 +187,24 @@ public class ProductController {
     @GetMapping("/simpleList")
     public CommonResult<List<ProductSimpleResult>> simpleList(@RequestParam(value = "keyword", required = false) String keyword) {
         log.info("获取简单产品列表, keyword={}", keyword);
-        
+
         // 调用服务层获取真实数据
         List<ProductSimpleResult> resultList = productService.getProductSimple(keyword);
         return CommonResult.success(resultList);
     }
-    
+
     @ApiOperation("更新删除状态")
     @PostMapping("/update/deleteStatus")
     public CommonResult<Integer> updateDeleteStatus(
             @RequestParam("ids") String ids,
             @RequestParam("deleteStatus") Integer deleteStatus) {
         log.info("更新删除状态, ids={}, deleteStatus={}", ids, deleteStatus);
-        
+
         // 创建参数对象
         UpdateDeleteStatusParam param = new UpdateDeleteStatusParam();
         param.setIds(ids);
         param.setDeleteStatus(deleteStatus);
-        
+
         // 调用服务层方法，更新删除状态
         int count = productService.updateDeleteStatus(param);
 
@@ -214,19 +215,19 @@ public class ProductController {
             return CommonResult.failed("更新失败");
         }
     }
-    
+
     @ApiOperation("更新新品状态")
     @PostMapping("/update/newStatus")
     public CommonResult<Integer> updateNewStatus(
             @RequestParam("ids") String ids,
             @RequestParam("newStatus") Integer newStatus) {
         log.info("更新新品状态, ids={}, newStatus={}", ids, newStatus);
-        
+
         // 创建参数对象
         UpdateNewStatusParam param = new UpdateNewStatusParam();
         param.setIds(ids);
         param.setNewStatus(newStatus);
-        
+
         // 调用服务层方法，更新新品状态
         int count = productService.updateNewStatus(param);
 
@@ -244,12 +245,12 @@ public class ProductController {
             @RequestParam("ids") String ids,
             @RequestParam("recommendStatus") Integer recommendStatus) {
         log.info("更新推荐状态, ids={}, recommendStatus={}", ids, recommendStatus);
-        
+
         // 创建参数对象
         UpdateRecommendStatusParam param = new UpdateRecommendStatusParam();
         param.setIds(ids);
         param.setRecommendStatus(recommendStatus);
-        
+
         // 调用服务层方法，更新推荐状态
         int count = productService.updateRecommendStatus(param);
 
@@ -267,12 +268,12 @@ public class ProductController {
             @RequestParam("ids") String ids,
             @RequestParam("publishStatus") Integer publishStatus) {
         log.info("更新上架状态, ids={}, publishStatus={}", ids, publishStatus);
-        
+
         // 创建参数对象
         UpdatePublishStatusParam param = new UpdatePublishStatusParam();
         param.setIds(ids);
         param.setPublishStatus(publishStatus);
-        
+
         // 调用服务层方法，更新上架状态
         int count = productService.updatePublishStatusParam(param);
 
@@ -302,7 +303,7 @@ public class ProductController {
     @GetMapping("/updateInfo/{id}")
     public CommonResult<ProductParam> getUpdateInfo(@PathVariable Long id) {
         log.info("获取商品编辑信息, id={}", id);
-        
+
         try {
             // 调用服务层方法，获取商品编辑信息
             ProductParam productParam = productService.getUpdateInfo(id);
@@ -330,4 +331,21 @@ public class ProductController {
         }
     }
 
+    @ApiOperation("获取商品SKU")
+    @GetMapping("/sku/{id}")
+    public CommonResult<List<ProductSkuResult>> getProductSkus(@PathVariable Long id) {
+        List<PmsProductSkus> productSkuses = productService.getProductSkus(id);
+        List<ProductSkuResult> results = new ArrayList<>();
+        for (PmsProductSkus productSkus : productSkuses) {
+            ProductSkuResult result = new ProductSkuResult();
+            result.setSkuCode(productSkus.getSkuCode());
+            result.setPrice(productSkus.getPrice());
+            result.setStock(productSkus.getStock());
+            result.setLowStock(productSkus.getLowStock());
+
+            results.add(result);
+        }
+
+        return CommonResult.success(results);
+    }
 }

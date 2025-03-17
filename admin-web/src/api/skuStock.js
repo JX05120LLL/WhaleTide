@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 export function fetchList(pid,params) {
   return request({
-    url:'/sku/'+pid,
+    url:'/product/sku/'+pid,
     method:'get',
     params:params
   })

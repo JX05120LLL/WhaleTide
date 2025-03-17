@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class ProductServiceImpl  implements IProductService {
+public class ProductServiceImpl implements IProductService {
     @Autowired
     private PmsProductsMapper productsMapper;
     @Autowired
@@ -45,6 +45,8 @@ public class ProductServiceImpl  implements IProductService {
     private PmsProductCategoriesMapper productCategoriesMapper;
     @Autowired
     private PmsBrandsMapper brandsMapper;
+    @Autowired
+    private PmsProductSkusMapper productSkusMapper;
 
     @Override
     public IPage<ProductListResult> getProductList(ProductQueryParam queryParam) {
@@ -57,29 +59,29 @@ public class ProductServiceImpl  implements IProductService {
             queryWrapper.like(PmsProducts::getName, queryParam.getKeyword());
         }
         // 添加品牌ID的精确查询条件
-        if (queryParam.getBrandId()!= null) {
+        if (queryParam.getBrandId() != null) {
             queryWrapper.eq(PmsProducts::getBrandId, queryParam.getBrandId());
         }
         // 添加产品分类ID的精确查询条件
-        if (queryParam.getProductCategoryId()!= null) {
+        if (queryParam.getProductCategoryId() != null) {
             queryWrapper.eq(PmsProducts::getCategoryId, queryParam.getProductCategoryId());
         }
         // 添加上架状态的精确查询条件
-        if (queryParam.getPublishStatus()!= null) {
+        if (queryParam.getPublishStatus() != null) {
             queryWrapper.eq(PmsProducts::getPublishStatus, queryParam.getPublishStatus());
         }
         // 执行查询
         IPage<PmsProducts> productPage = productsMapper.selectPage(page, queryWrapper);
         // 将查询结果转换为 ProductListResult 对象
         List<ProductListResult> resultList = productPage.getRecords().stream()
-               .map(product -> {
+                .map(product -> {
                     ProductListResult result = new ProductListResult();
                     result.setId(product.getId());
                     result.setName(product.getName());
                     result.setPic(product.getMainImage());
                     result.setPrice(product.getPrice());
                     result.setSale(product.getSale());
-                    
+
                     // 设置品牌名称 - 需要根据品牌ID查询品牌名称
                     if (product.getBrandId() != null) {
                         try {
@@ -92,7 +94,7 @@ public class ProductServiceImpl  implements IProductService {
                             result.setBrandName("");
                         }
                     }
-                    
+
                     // 设置产品分类名称 - 需要根据分类ID查询分类名称
                     if (product.getCategoryId() != null) {
                         try {
@@ -104,13 +106,13 @@ public class ProductServiceImpl  implements IProductService {
                             result.setProductCategoryName("");
                         }
                     }
-                    
+
                     result.setPublishStatus(product.getPublishStatus());
                     result.setNewStatus(product.getNewStatus());
                     result.setRecommendStatus(product.getRecommendStatus());
                     return result;
                 }).collect(Collectors.toList());
-                
+
         // 创建并返回包含真实数据的分页对象
         Page<ProductListResult> resultPage = new Page<>(productPage.getCurrent(), productPage.getSize(), productPage.getTotal());
         resultPage.setRecords(resultList);
@@ -137,14 +139,14 @@ public class ProductServiceImpl  implements IProductService {
 
         // 将查询结果转换为 ProductSimpleResult 对象
         List<ProductSimpleResult> resultList = productList.stream()
-            .map(product -> {
-                ProductSimpleResult result = new ProductSimpleResult();
-                result.setId(product.getId());
-                result.setName(product.getName());
-                return result;
-            })
-            .collect(Collectors.toList());
-            
+                .map(product -> {
+                    ProductSimpleResult result = new ProductSimpleResult();
+                    result.setId(product.getId());
+                    result.setName(product.getName());
+                    return result;
+                })
+                .collect(Collectors.toList());
+
         return resultList;
     }
 
@@ -220,7 +222,7 @@ public class ProductServiceImpl  implements IProductService {
     @Transactional(rollbackFor = Exception.class)
     public int createProduct(ProductParam productParam) {
         int count = 0;
-        
+
         // 1. 创建并保存商品基本信息
         PmsProducts product = new PmsProducts();
         ProductParam.ProductBasicParam basicParam = productParam.getProductParam();
@@ -230,7 +232,7 @@ public class ProductServiceImpl  implements IProductService {
 
         // 复制基本信息
         BeanUtils.copyProperties(basicParam, product);
-        
+
         // 验证分类ID是否有效，如果无效则使用默认值1
         Long categoryId = basicParam.getCategoryId();
         if (categoryId == null || categoryId == 0 || !isValidCategoryId(categoryId)) {
@@ -239,14 +241,14 @@ public class ProductServiceImpl  implements IProductService {
         } else {
             product.setCategoryId(categoryId);
         }
-        
+
         // 设置一些默认值
         if (StringUtils.isBlank(basicParam.getProductSn())) {
             product.setProductSn(generateProductSn()); // 生成商品编号
         }
         product.setVerifyStatus(0); // 默认未审核
         product.setSale(0); // 默认销量为0
-        
+
         // 设置商户ID - 优先从请求参数获取，如果没有则设置默认值
         if (basicParam.getMerchantId() != null) {
             // 如果请求中有商户ID，则使用请求中的商户ID
@@ -257,23 +259,23 @@ public class ProductServiceImpl  implements IProductService {
             product.setMerchantId(1L);
             log.warn("商品创建时未提供商户ID，使用默认值：1");
         }
-        
+
         // 设置主图
         product.setMainImage(basicParam.getPic());
         product.setIsDeleted(0); // 默认未删除
         LocalDateTime now = LocalDateTime.now();
         product.setCreateTime(now);
         product.setUpdateTime(now);
-        
+
         // 保存商品基本信息
         count = productsMapper.insert(product);
         if (count <= 0) {
             return 0;
         }
-        
+
         // 获取插入后的商品ID
         Long productId = product.getId();
-        
+
         // 2. 处理商品SKU
         if (productParam.getSkuStockList() != null && !productParam.getSkuStockList().isEmpty()) {
             List<PmsProductSkus> skuList = handleSkuList(productParam.getSkuStockList(), productId);
@@ -282,7 +284,7 @@ public class ProductServiceImpl  implements IProductService {
                 count += skusMapper.insert(sku);
             }
         }
-        
+
         // 3. 处理商品属性值
         if (productParam.getProductAttributeValueList() != null && !productParam.getProductAttributeValueList().isEmpty()) {
             List<PmsProductAttributeValues> attributeValueList = handleAttributeList(productParam.getProductAttributeValueList(), productId);
@@ -292,10 +294,10 @@ public class ProductServiceImpl  implements IProductService {
             }
         }
 
-        
+
         return count;
     }
-    
+
     /**
      * 生成商品编号
      */
@@ -303,7 +305,7 @@ public class ProductServiceImpl  implements IProductService {
         // 简单实现，使用时间戳生成商品编号
         return "P" + System.currentTimeMillis();
     }
-    
+
     /**
      * 处理商品SKU列表
      */
@@ -313,7 +315,7 @@ public class ProductServiceImpl  implements IProductService {
             PmsProductSkus sku = new PmsProductSkus();
             BeanUtils.copyProperties(skuParam, sku);
             sku.setProductId(productId);
-            sku.setSkuCode(skuParam.getSkuCode() != null && !skuParam.getSkuCode().isEmpty() ? 
+            sku.setSkuCode(skuParam.getSkuCode() != null && !skuParam.getSkuCode().isEmpty() ?
                     skuParam.getSkuCode() : generateSkuCode(productId));
             sku.setImage(skuParam.getPic()); // 映射图片字段
             sku.setSpecs(skuParam.getSpecs()); // 映射规格数据
@@ -325,14 +327,14 @@ public class ProductServiceImpl  implements IProductService {
             return sku;
         }).collect(Collectors.toList());
     }
-    
+
     /**
      * 处理商品属性列表
      */
     private List<PmsProductAttributeValues> handleAttributeList(List<ProductParam.ProductAttributeValueParam> attributeParamList, Long productId) {
         List<PmsProductAttributeValues> result = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
-        
+
         for (ProductParam.ProductAttributeValueParam attributeParam : attributeParamList) {
             PmsProductAttributeValues attributeValue = new PmsProductAttributeValues();
             attributeValue.setProductId(productId);
@@ -341,10 +343,10 @@ public class ProductServiceImpl  implements IProductService {
             attributeValue.setCreateTime(now);
             result.add(attributeValue);
         }
-        
+
         return result;
     }
-    
+
     /**
      * 生成SKU编码
      */
@@ -360,7 +362,7 @@ public class ProductServiceImpl  implements IProductService {
         if (categoryId == null || categoryId <= 0) {
             return false;
         }
-        
+
         try {
             // 查询该ID是否在分类表中存在
             return productCategoriesMapper.selectById(categoryId) != null;
@@ -381,16 +383,16 @@ public class ProductServiceImpl  implements IProductService {
             if (product == null) {
                 return null;
             }
-            
+
             // 创建返回对象
             ProductParam productParam = new ProductParam();
             BeanUtils.copyProperties(product, productParam);
-            
+
             // 查询商品SKU信息
             LambdaQueryWrapper<PmsProductSkus> skuQueryWrapper = new LambdaQueryWrapper<>();
             skuQueryWrapper.eq(PmsProductSkus::getProductId, id);
             List<PmsProductSkus> skuList = skusMapper.selectList(skuQueryWrapper);
-            
+
             // 转换SKU信息
             if (skuList != null && !skuList.isEmpty()) {
                 List<ProductParam.SkuStockParam> skuStockParams = new ArrayList<>();
@@ -401,12 +403,12 @@ public class ProductServiceImpl  implements IProductService {
                 }
                 productParam.setSkuStockList(skuStockParams);
             }
-            
+
             // 查询商品属性信息
             LambdaQueryWrapper<PmsProductAttributeValues> attributeQueryWrapper = new LambdaQueryWrapper<>();
             attributeQueryWrapper.eq(PmsProductAttributeValues::getProductId, id);
             List<PmsProductAttributeValues> attributeList = productAttributeValuesMapper.selectList(attributeQueryWrapper);
-            
+
             // 转换属性信息
             if (attributeList != null && !attributeList.isEmpty()) {
                 List<ProductParam.ProductAttributeValueParam> attributeValueParams = new ArrayList<>();
@@ -418,7 +420,7 @@ public class ProductServiceImpl  implements IProductService {
                 }
                 productParam.setProductAttributeValueList(attributeValueParams);
             }
-            
+
             return productParam;
         } catch (Exception e) {
             log.error("获取商品编辑信息时发生错误", e);
@@ -438,45 +440,57 @@ public class ProductServiceImpl  implements IProductService {
             if (existingProduct == null) {
                 return 0;
             }
-            
+
             // 更新商品基本信息
             PmsProducts product = new PmsProducts();
             BeanUtils.copyProperties(productParam, product);
             product.setId(id);
             product.setUpdateTime(LocalDateTime.now());
-            
+
             // 执行更新
             int count = productsMapper.updateById(product);
             if (count <= 0) {
                 return 0;
             }
-            
+
             // 删除原有SKU信息
             LambdaQueryWrapper<PmsProductSkus> skuQueryWrapper = new LambdaQueryWrapper<>();
             skuQueryWrapper.eq(PmsProductSkus::getProductId, id);
             skusMapper.delete(skuQueryWrapper);
-            
+
             // 添加新的SKU信息
             List<PmsProductSkus> skuList = handleSkuList(productParam.getSkuStockList(), id);
             for (PmsProductSkus sku : skuList) {
                 skusMapper.insert(sku);
             }
-            
+
             // 删除原有属性信息
             LambdaQueryWrapper<PmsProductAttributeValues> attributeQueryWrapper = new LambdaQueryWrapper<>();
             attributeQueryWrapper.eq(PmsProductAttributeValues::getProductId, id);
             productAttributeValuesMapper.delete(attributeQueryWrapper);
-            
+
             // 添加新的属性信息
             List<PmsProductAttributeValues> attributeList = handleAttributeList(productParam.getProductAttributeValueList(), id);
             for (PmsProductAttributeValues attribute : attributeList) {
                 productAttributeValuesMapper.insert(attribute);
             }
-            
+
             return 1;
         } catch (Exception e) {
             log.error("更新商品信息时发生错误", e);
             throw e;
         }
+    }
+
+    @Override
+    public List<PmsProductSkus> getProductSkus(Long id) {
+        if (id == null) {
+            return new ArrayList<>();
+        }
+
+        LambdaQueryWrapper<PmsProductSkus> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PmsProductSkus::getProductId, id);
+        List<PmsProductSkus> list = productSkusMapper.selectList(wrapper);
+        return list;
     }
 }

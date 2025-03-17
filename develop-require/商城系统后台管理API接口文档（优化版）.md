@@ -473,6 +473,30 @@
   ```
 - **后端DTO**: 需要创建 `ProductResult` 返回产品详细信息
 
+### 2.10 获取产品SKU（不需要分页）
+- **URL**: `/product/sku/{id}`
+- **方法**: GET
+- **路径参数**: id - 产品ID
+- **响应参数**:
+  ```json
+  {
+    "code": 200,
+    "message": "string",
+    "data": {
+      "skuStockList": [
+        {
+          "skuCode": "String",
+          "price": "number",
+          "stock": "number",
+          "lowStock": "number"
+        }
+        // SKU列表
+      ]
+    }
+  }
+  ```
+- **后端DTO**: 需要创建 `ProductSkuResult` 返回产品sku详细信息
+
 ## 3. 订单管理接口
 
 ### 3.1 订单列表（需要分页）

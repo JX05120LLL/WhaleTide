@@ -2,6 +2,7 @@ package com.whale_tide.service.management;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.whale_tide.dto.management.product.*;
+import com.whale_tide.entity.pms.PmsProductSkus;
 
 import java.util.List;
 /*
@@ -27,5 +28,7 @@ public interface IProductService {
     ProductParam getUpdateInfo(Long id);
     // 更新商品
     int updateProduct(Long id, ProductParam productParam);
+    //获取商品SKU
+    List<PmsProductSkus> getProductSkus(Long id);
 
 }
