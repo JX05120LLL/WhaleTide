@@ -6,7 +6,7 @@ import com.whale_tide.dto.admin.*;
 import com.whale_tide.entity.ams.AmsAdmins;
 import com.whale_tide.entity.ams.AmsRoles;
 import com.whale_tide.service.IAdminService;
-import lombok.RequiredArgsConstructor;
+import com.whale_tide.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +18,13 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequestMapping("/admin")
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class AdminController {
-    private final IAdminService adminService;
+
+    @Autowired
+    private IAdminService adminService;
+
+    @Autowired
+    private JwtUtil jwtUitl;
 //    @Autowired
 //    private final JwtTokenUtil jwtTokenUtil;
 
@@ -57,21 +61,20 @@ public class AdminController {
     @GetMapping("/info")
     public CommonResult<AdminInfoResult> info(@RequestHeader("Authorization") String authHeader) {
         //获取admin
-//        String token = authHeader.replace("Bearer ", "");
-//        String username = jwtTokenUtil.getUserNameFromToken(token);
-        String username = authHeader.replace("token:", "");
+        String token = authHeader;
+        String username = jwtUitl.getUsernameFromToken(token);
+        log.info("获取用户信息，token={}, username={}", token, username);
         AmsAdmins amsAdmins = adminService.getAdminByUsername(username);
         CommonResult<AdminInfoResult> commonResult;
         AdminInfoResult infoResult = new AdminInfoResult();
 
         if (amsAdmins == null) {
-            infoResult = null;
             commonResult = CommonResult.failed("未查询到信息");
         } else {
             infoResult.setUsername(username);
             // 获取角色ID列表
             List<Long> roleIds = adminService.getRoleIdList(amsAdmins.getId());
-            
+
             // 获取角色列表
             List<String> roles = adminService.getRoleNameList(roleIds);
             infoResult.setRoles(roles);
@@ -80,12 +83,12 @@ public class AdminController {
             // 获取菜单ID列表
             List<Long> menuIds = adminService.getMenuIdListByRoleIds(roleIds);
             log.info("用户 {} 的菜单ID列表: {}", username, menuIds);
-            
+
             // 获取菜单名称列表
             List<String> menus = adminService.getMenuNameList(menuIds);
             infoResult.setMenus(menus);
             log.info("用户 {} 的菜单名称列表: {}", username, menus);
-            
+
             // 获取菜单详情列表，包含完整的菜单信息
             List<Map<String, Object>> menuDetails = adminService.getMenuDetailList(menuIds);
             infoResult.setMenuDetails(menuDetails);
@@ -103,10 +106,10 @@ public class AdminController {
             log.info("=====================================================");
 
             commonResult = CommonResult.success(infoResult);
-            
+
             // 打印调试信息
-            log.info("用户信息获取成功，用户: {}, 角色数: {}, 菜单数: {}, 菜单详情数: {}, 权限数: {}", 
-                username, roles.size(), menus.size(), menuDetails.size(), permissions.size());
+            log.info("用户信息获取成功，用户: {}, 角色数: {}, 菜单数: {}, 菜单详情数: {}, 权限数: {}",
+                    username, roles.size(), menus.size(), menuDetails.size(), permissions.size());
         }
         return commonResult;
     }
@@ -118,15 +121,15 @@ public class AdminController {
         if (menuDetails == null || menuDetails.isEmpty()) {
             return;
         }
-        
+
         for (Map<String, Object> menu : menuDetails) {
-            log.info("{}菜单: {}, 路径: {}, 组件: {}, 重定向: {}", 
-                indent, 
-                menu.get("title"), 
-                menu.get("path"), 
-                menu.get("component"), 
-                menu.get("redirect"));
-            
+            log.info("{}菜单: {}, 路径: {}, 组件: {}, 重定向: {}",
+                    indent,
+                    menu.get("title"),
+                    menu.get("path"),
+                    menu.get("component"),
+                    menu.get("redirect"));
+
             @SuppressWarnings("unchecked")
             List<Map<String, Object>> children = (List<Map<String, Object>>) menu.get("children");
             if (children != null && !children.isEmpty()) {
@@ -136,7 +139,7 @@ public class AdminController {
     }
 
     @PostMapping("/logout")
-    public CommonResult<Void > logout(@RequestHeader("Authorization") String authHeader) {
+    public CommonResult<Void> logout(@RequestHeader("Authorization") String authHeader) {
         String username = "jwtTokenUtil.getUserNameFromToken(token)";
         if (!adminService.logout(username))
             return CommonResult.failed("操作失败");
@@ -149,9 +152,9 @@ public class AdminController {
             @RequestParam(value = "keyword", required = false) String keyword,
             @RequestParam(value = "pageNum", defaultValue = "1") Long pageNum,
             @RequestParam(value = "pageSize", defaultValue = "10") Long pageSize) {
-        
+
         log.info("查询管理员列表，keyword={}, pageNum={}, pageSize={}", keyword, pageNum, pageSize);
-        
+
         Page<AmsAdmins> page = adminService.list(keyword, pageNum, pageSize);
         AdminListResult result = new AdminListResult();
 
@@ -217,7 +220,7 @@ public class AdminController {
     }
 
     @PostMapping("/updateStatus/{id}")
-    public CommonResult< Integer > updataStatus(@RequestBody UpdataStatusParam updataStatusParam, @PathVariable("id") long id) {
+    public CommonResult<Integer> updataStatus(@RequestBody UpdataStatusParam updataStatusParam, @PathVariable("id") long id) {
         System.out.println("test");
         int result = adminService.updateStatus(id, updataStatusParam.getStatus());
         switch (result) {

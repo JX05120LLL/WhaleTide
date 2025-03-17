@@ -104,6 +104,19 @@
             <version>${mybatis-plus.version}</version>
         </dependency>
 
+        <!--Spring Security依赖 用于密码加密-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
+        <!-- JWT 支持 -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.4.0</version>
+        </dependency>
+
         <!--Velocity模板引擎-->
         <dependency>
             <groupId>org.apache.velocity</groupId>
@@ -117,7 +130,7 @@
             <version>${jaxb-api.version}</version>
         </dependency>
 
-    <!--  阿里云短信        -->
+        <!--  阿里云短信        -->
         <dependency>
             <groupId>com.aliyun</groupId>
             <artifactId>aliyun-java-sdk-core</artifactId>
@@ -135,16 +148,16 @@
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>${docker.maven.plugin.version}</version>
-<!--                <executions>-->
-<!--                    &lt;!&ndash;如果想在项目打包时构建镜像添加&ndash;&gt;-->
-<!--                    <execution>-->
-<!--                        <id>build-image</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>build</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
+                <!--                <executions>-->
+                <!--                    &lt;!&ndash;如果想在项目打包时构建镜像添加&ndash;&gt;-->
+                <!--                    <execution>-->
+                <!--                        <id>build-image</id>-->
+                <!--                        <phase>package</phase>-->
+                <!--                        <goals>-->
+                <!--                            <goal>build</goal>-->
+                <!--                        </goals>-->
+                <!--                    </execution>-->
+                <!--                </executions>-->
                 <configuration>
                     <!-- Docker 远程管理地址-->
                     <dockerHost>${docker.host}</dockerHost>
