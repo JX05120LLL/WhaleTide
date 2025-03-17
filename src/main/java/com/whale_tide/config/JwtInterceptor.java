@@ -26,7 +26,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         String token = request.getHeader("Authorization");
         //验证token
         if (token == null || !jwtUtil.verify(token)) {
-            log.info("token验证失败");
+            log.info("token验证失败接口：{}，请求IP：{}", request.getRequestURI(), request.getRemoteAddr());
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
             return false;
         }
