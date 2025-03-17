@@ -3,7 +3,7 @@ package com.whale_tide.controller.brand;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
-import com.whale_tide.dto.product.BrandParam;
+import com.whale_tide.dto.brand.BrandParam;
 import com.whale_tide.entity.pms.PmsBrands;
 import com.whale_tide.service.IBrandService;
 import io.swagger.annotations.Api;

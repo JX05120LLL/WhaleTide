@@ -1,4 +1,4 @@
-package com.whale_tide.dto.role;
+package com.whale_tide.dto.menu;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -6,13 +6,13 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 分配资源参数
+ * 分配菜单参数
  */
 @Data
-public class AllocResourceParam {
+public class AllocMenuParam {
     @ApiModelProperty("角色ID")
     private Long roleId;
     
-    @ApiModelProperty("资源ID列表")
-    private List<Long> resourceIds;
+    @ApiModelProperty("菜单ID列表")
+    private List<Long> menuIds;
 } 

@@ -1,4 +1,4 @@
-package com.whale_tide.dto.role;
+package com.whale_tide.dto.menu;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

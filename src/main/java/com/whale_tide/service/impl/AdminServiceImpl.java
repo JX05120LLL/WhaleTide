@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.util.JwtUtil;
 import com.whale_tide.dto.resource.ResourceResult;
-import com.whale_tide.dto.role.MenuNodeResult;
+import com.whale_tide.dto.menu.MenuNodeResult;
 import com.whale_tide.dto.role.RoleParam;
 import com.whale_tide.dto.role.RoleResult;
 import com.whale_tide.entity.ams.*;

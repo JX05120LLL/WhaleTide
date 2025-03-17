@@ -1,7 +1,7 @@
 package com.whale_tide.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.whale_tide.dto.product.BrandParam;
+import com.whale_tide.dto.brand.BrandParam;
 import com.whale_tide.entity.pms.PmsBrands;
 
 import java.util.List;

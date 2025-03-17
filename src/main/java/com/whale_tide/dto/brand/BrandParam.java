@@ -1,16 +1,14 @@
-package com.whale_tide.dto.product;
+package com.whale_tide.dto.brand;
 
 import lombok.Data;
 import java.io.Serializable;
 
 /**
- * 品牌DTO，用于返回品牌信息
+ * 品牌参数，用于创建和更新品牌
  */
 @Data
-public class BrandDto implements Serializable {
+public class BrandParam implements Serializable {
     private static final long serialVersionUID = 1L;
-
-    private Long id;
     
     /**
      * 品牌名称
@@ -36,16 +34,6 @@ public class BrandDto implements Serializable {
      * 显示状态：0-不显示，1-显示
      */
     private Integer showStatus;
-    
-    /**
-     * 产品数量
-     */
-    private Integer productCount;
-    
-    /**
-     * 产品评论数量
-     */
-    private Integer productCommentCount;
     
     /**
      * 品牌logo
