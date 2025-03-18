@@ -76,6 +76,12 @@ public class PmsProductCategories implements Serializable {
      */
     private Integer isFeatured;
 
+
+    /**
+     * 导航栏状态：0-否，1-是
+     */
+    private Integer nav_status;
+
     /**
      * 创建时间
      */

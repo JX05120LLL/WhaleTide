@@ -158,7 +158,7 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
     @Override
     public int updateShowStatus(List<Long> ids, Integer showStatus) {
         UpdateWrapper<PmsProductCategories> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("show_status", showStatus)
+        updateWrapper.set("status", showStatus)
                     .in("id", ids);
         
         return productCategoriesMapper.update(null, updateWrapper);

@@ -18,12 +18,13 @@ logging:
     root: info
     com.macro.mall: debug
 
+
 knife4j:
   enable: true
 
-aliyun:
-  sms:
-    access-key-id: LTAI5tLPVCfhNKLceE8Uqhof
-    access-key-secret: epEZ0M7BFssmRCOt6i6A4fPRDxXBYp
-    sign-name:  # 短信签名
-    template-code:  # 验证码模板编号
+#aliyun:
+#  sms:
+#    access-key-id: LTAI5tLPVCfhNKLceE8Uqhof
+#    access-key-secret: epEZ0M7BFssmRCOt6i6A4fPRDxXBYp
+#    sign-name:  # 短信签名
+#    template-code:  # 验证码模板编号

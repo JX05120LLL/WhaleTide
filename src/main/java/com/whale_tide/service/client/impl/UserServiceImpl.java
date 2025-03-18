@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.client.user.LoginResponse;
 import com.whale_tide.dto.client.user.RegisterRequest;
+import com.whale_tide.dto.client.user.UserInfoResponse;
 import com.whale_tide.entity.ums.UmsUsers;
 import com.whale_tide.mapper.ums.UmsUsersMapper;
 import com.whale_tide.service.client.IUserService;
@@ -15,7 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +72,32 @@ public class UserServiceImpl implements IUserService {
         return loginResponse;
     }
 
+    // 获取用户信息
+    @Override
+    public UserInfoResponse getUserInfo() {
+        //header中获取token
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String token = request.getHeader("Authorization").replace("Bearer ", "");
+        String id = jwtUtil.getUsernameFromToken(token); // 从Token中解析用户名
+
+        LambdaQueryWrapper<UmsUsers> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UmsUsers::getId, id);
+        UmsUsers user = umsUsersMapper.selectOne(queryWrapper);
+
+        if (user == null) {
+            throw new RuntimeException("用户不存在");
+        }
+
+        UserInfoResponse response = new UserInfoResponse();
+        response.setId(user.getId());
+        response.setUsername(user.getUsername());
+        response.setNickname(user.getNickname());
+        response.setIcon(user.getAvatar());
+        response.setIntegration(user.getIntegration());
+        response.setGrowth(user.getGrowth());
+        return response;
+    }
+
 
     // 发送验证码
     @Override
@@ -110,6 +140,11 @@ public class UserServiceImpl implements IUserService {
 
         String code = registerRequest.getCode();
         String password = registerRequest.getPassword();
+
+        // 密码长度至少6位
+        if (registerRequest.getPassword().length() < 6) {
+            throw new RuntimeException("密码长度需至少6位");
+        }
 
         // 检查手机号是否已注册
         LambdaQueryWrapper<UmsUsers> queryWrapper = new LambdaQueryWrapper<>();

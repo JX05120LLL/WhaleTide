@@ -4,6 +4,7 @@ import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.client.user.LoginRequest;
 import com.whale_tide.dto.client.user.LoginResponse;
 import com.whale_tide.dto.client.user.RegisterRequest;
+import com.whale_tide.dto.client.user.UserInfoResponse;
 import com.whale_tide.service.client.IUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,16 @@ public class UserController {
             return CommonResult.failed("用户名或密码错误");
         }
         return CommonResult.success(loginResponse);
+    }
+
+    /**
+     * 获取用户信息接口
+     * @return 用户信息
+     */
+    @GetMapping("/info")
+    public CommonResult<UserInfoResponse> getUserInfo() {
+        UserInfoResponse userInfoResponse = userService.getUserInfo();
+        return CommonResult.success(userInfoResponse);
     }
 
     /**

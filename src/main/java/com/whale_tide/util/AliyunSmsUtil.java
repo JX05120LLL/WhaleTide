@@ -6,6 +6,7 @@ import com.aliyuncs.CommonResponse;
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
 import com.aliyuncs.exceptions.ClientException;
+import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
+
 
 /**
  * 阿里云短信工具类
@@ -24,52 +27,42 @@ import java.util.Map;
 @Component
 public class AliyunSmsUtil {
 
-    @Value("${aliyun.sms.access-key-id}")
-    private String accessKeyId;
 
-    @Value("${aliyun.sms.access-key-secret}")
-    private String accessKeySecret;
+    private  final String ACCESS_KEY_ID = "LTAI5tLPVCfhNKLceE8Uqhof";
+    private  final String ACCESS_KEY_SECRET = "epEZ0M7BFssmRCOt6i6A4fPRDxXBYp";
 
-    @Value("${aliyun.sms.sign-name}")
-    private String signName;
 
-    @Value("${aliyun.sms.template-code}")
-    private String templateCode;
-
-    public void sendToPhone(String phone, String code) {
+    public void sendToPhone(String phone, String msg) {
         DefaultProfile profile = DefaultProfile.getProfile(
-                "cn-hangzhou",
-                accessKeyId,
-                accessKeySecret
-        );
-
-        // 创建短信发送客户端
+                "cn-qingdao",
+                ACCESS_KEY_ID, //AccessIdKey
+                ACCESS_KEY_SECRET); //AccessKey Secret
         IAcsClient client = new DefaultAcsClient(profile);
+
         CommonRequest request = new CommonRequest();
         request.setSysMethod(MethodType.POST);
+        //下面这3个不要改动
         request.setSysDomain("dysmsapi.aliyuncs.com");
         request.setSysVersion("2017-05-25");
         request.setSysAction("SendSms");
-        request.putQueryParameter("PhoneNumbers", phone);
-        request.putQueryParameter("SignName", signName);
-        request.putQueryParameter("TemplateCode", templateCode);
-
-        Map<String, String> param = new HashMap<>(1);
-        param.put("code", code);
+        //接收短信的手机号码
+        request.putQueryParameter(phone,"电话号码");//此处写电话号码
+        //短信签名名称
+        request.putQueryParameter("SignName","阿里云短信测试");
+        //短信模板ID
+        request.putQueryParameter("TemplateCode","SMS_154950909");
+        //短信模板变量对应的实际值 ${code} 中的值
+        Map<String,String> param = new HashMap<>(2);
+        param.put("code", String.valueOf(new Random().nextInt(80000)+10000)); //写入的短信内容
         request.putQueryParameter("TemplateParam", JSONObject.toJSONString(param));
 
         try {
             CommonResponse response = client.getCommonResponse(request);
-            JSONObject jsonObject = JSONObject.parseObject(response.getData());
-            String responseCode = jsonObject.getString("Code");
-            if (!"OK".equals(responseCode)) {
-                log.error("短信发送失败: phone={}, response={}", phone, jsonObject);
-                throw new RuntimeException("短信发送失败:" + jsonObject.getString("Message"));
-            }
-            log.info("短信发送成功: phone={}", phone);
+            System.out.println(response.getData());
+        } catch (ServerException e) {
+            e.printStackTrace();
         } catch (ClientException e) {
-            log.error("短信发送异常: phone={}, error={}", phone, e.getMessage());
-            throw new RuntimeException("短信发送异常:" + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
