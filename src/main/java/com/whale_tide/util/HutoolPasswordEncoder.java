@@ -16,4 +16,7 @@ public class HutoolPasswordEncoder implements PasswordEncoder {
     public boolean matches(CharSequence rawPassword, String encodedPassword) {
         return BCrypt.checkpw(rawPassword.toString(), encodedPassword);
     }
+
+
+
 }

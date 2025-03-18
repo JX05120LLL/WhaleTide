@@ -19,7 +19,7 @@ public interface IUserService {
     LoginResponse login(String username, String password);
 
     //获取用户信息
-    UserInfoResponse getUserInfo();
+    UserInfoResponse getUserInfo(String username);
 
     //发送验证码
     String sendVerificationCode(String phone);

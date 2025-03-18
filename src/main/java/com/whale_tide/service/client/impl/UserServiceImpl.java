@@ -30,15 +30,13 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private UmsUsersMapper umsUsersMapper;
-    
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-    
-    @Autowired
-    private JwtUtil jwtUtil;
+
 
     @Override
     public LoginResponse login(String username, String password) {
@@ -50,51 +48,46 @@ public class UserServiceImpl implements IUserService {
             log.error("用户名不存在: {}", username);
             return null;
         }
-        
+
         // 验证密码
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            log.error("密码错误: {}", username);
+            log.error("密码错误: {}", password);
             return null;
         }
-        
+
         // 更新最后登录时间
         user.setLastLoginTime(LocalDateTime.now());
         umsUsersMapper.updateById(user);
-        
-        // 生成token
-        String token = jwtUtil.generateToken(username);
-        
+
+
         LoginResponse loginResponse = new LoginResponse();
-        loginResponse.setToken(token);
+
         loginResponse.setTokenHead("Bearer");
-        
+
         log.info("用户登录成功: {}", username);
         return loginResponse;
     }
 
     // 获取用户信息
     @Override
-    public UserInfoResponse getUserInfo() {
-        //header中获取token
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String token = request.getHeader("Authorization").replace("Bearer ", "");
-        String id = jwtUtil.getUsernameFromToken(token); // 从Token中解析用户名
+    public UserInfoResponse getUserInfo(String username) {
+
 
         LambdaQueryWrapper<UmsUsers> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(UmsUsers::getId, id);
+        queryWrapper.eq(UmsUsers::getUsername, username);
         UmsUsers user = umsUsersMapper.selectOne(queryWrapper);
+        UserInfoResponse response = null;
+        if (user != null) {
 
-        if (user == null) {
-            throw new RuntimeException("用户不存在");
+
+            response = new UserInfoResponse();
+            response.setId(user.getId());
+            response.setUsername(user.getUsername());
+            response.setNickname(user.getNickname());
+            response.setIcon(user.getAvatar());
+            response.setIntegration(user.getIntegration());
+            response.setGrowth(user.getGrowth());
         }
-
-        UserInfoResponse response = new UserInfoResponse();
-        response.setId(user.getId());
-        response.setUsername(user.getUsername());
-        response.setNickname(user.getNickname());
-        response.setIcon(user.getAvatar());
-        response.setIntegration(user.getIntegration());
-        response.setGrowth(user.getGrowth());
         return response;
     }
 
@@ -122,7 +115,7 @@ public class UserServiceImpl implements IUserService {
         // 发送短信
         try {
             AliyunSmsUtil aliyunSmsUtil = new AliyunSmsUtil();
-            aliyunSmsUtil.sendToPhone(phone, code);
+            aliyunSmsUtil.sendToPhone(phone, "test");
             // 将验证码保存到Redis，设置5分钟过期
             redisTemplate.opsForValue().set("SMS:CODE:" + phone, code, 5, TimeUnit.MINUTES);
             // 设置发送频率限制
