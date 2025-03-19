@@ -785,6 +785,40 @@
   ```
 - **后端DTO**: 需要创建 `OrderNoteParam` 接收订单备注更新参数
 
+### 3.9 获取退货订单列表（需要分页）
+
+- **URL**: `/order/return/list`
+- **方法**: GET
+- **请求参数**:
+  ```
+  pageNum: number          // 页码，必填
+  pageSize: number         // 每页记录数，必填
+  ```
+- **响应参数**:
+  ```json
+  {
+    "code": 200,
+    "message": "string",
+    "data": {
+      "list": [
+        {
+          "id": "number",
+          "orderId": "string",
+          "createTime": "date",
+          "memberUsername": "string",
+          "returnAmount": "number",
+          "status": "number",
+          "handleTime": "date"
+        }
+      ],
+      "total": "number",
+      "pageNum": "number",
+      "pageSize": "number"
+    }
+  }
+  ```
+- **后端DTO**: 需要创建 `OrderReturnResult` 返回订单列表信息
+
 ## 4. 营销管理接口
 
 ### 4.1 优惠券列表（需要分页）
@@ -914,7 +948,7 @@
 
 ## 5. 商品分类管理接口
 
-### 6.1 更新商品导航状态
+### 5.1 更新商品导航状态
 
 - **URL**: `/productCategory/update/{id}/navStatus/{status}`
 - **方法**: POST
@@ -1003,7 +1037,7 @@ public class CommonResult<T> {
 }
 ```
 
-### 5.2 分页结果DTO
+### 6.2 分页结果DTO
 
 为分页查询结果创建通用分页结果类：
 
@@ -1035,7 +1069,7 @@ public class CommonPage<T> {
 }
 ```
 
-### 5.3 请求参数DTO建议
+### 6.3 请求参数DTO建议
 
 为每个接口创建对应的请求参数DTO，使用注解进行参数验证：
 
@@ -1073,7 +1107,7 @@ public class CloseOrderParam {
 }
 ```
 
-### 5.4 响应结果DTO建议
+### 6.4 响应结果DTO建议
 
 为每个接口创建对应的响应结果DTO，保持一致的命名规范：
 
@@ -1115,7 +1149,7 @@ public class OrderDetailResult {
 }
 ```
 
-### 5.5 后端实现优化建议
+### 6.5 后端实现优化建议
 
 1. **参数验证**：
     - 所有必填参数应该添加 `@NotNull`, `@NotEmpty` 等验证注解

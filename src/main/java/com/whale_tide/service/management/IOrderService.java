@@ -1,7 +1,9 @@
 package com.whale_tide.service.management;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.dto.management.order.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.whale_tide.entity.oms.OmsOrderReturns;
 
 /**
  * 订单管理接口
@@ -10,20 +12,23 @@ public interface IOrderService {
 
     /**
      * 获取订单列表
+     *
      * @param queryParam 查询参数
      * @return 订单列表分页信息
      */
     IPage<OrderResult> getOrderList(OrderQueryParam queryParam);
-    
+
     /**
      * 关闭订单
+     *
      * @param closeOrderParam 关闭订单参数
      * @return 关闭成功的订单数量
      */
     int closeOrder(CloseOrderParam closeOrderParam);
-    
+
     /**
      * 删除订单
+     *
      * @param deleteOrderParam 删除订单参数
      * @return 删除成功的订单数量
      */
@@ -31,6 +36,7 @@ public interface IOrderService {
 
     /**
      * 发货
+     *
      * @param orderDeliveryParam 订单发货参数
      * @return 成功发货的订单数量
      */
@@ -45,14 +51,16 @@ public interface IOrderService {
     OrderDetailResult getOrderDetail(Long orderId);
 
     /**
-     *更新收货人信息
+     * 更新收货人信息
+     *
      * @param receiverInfoParam 收货人信息参数
      * @return 更新成功的订单数量
      */
     int updateReceiverInfo(ReceiverInfoParam receiverInfoParam);
 
     /**
-     *更新订单费用信息
+     * 更新订单费用信息
+     *
      * @param moneyInfoParam 订单费用信息参数
      * @return 更新成功的订单数量
      */
@@ -60,9 +68,18 @@ public interface IOrderService {
 
     /**
      * 更新订单备注信息
+     *
      * @param orderNoteParam
      * @return
      */
     int updateOrderNote(OrderNoteParam orderNoteParam);
 
+    /**
+     * 获取退货订单列表
+     *
+     * @param pageNum 页码
+     * @param pageSize 每页记录数
+     * @return 退货订单列表分页信息
+     */
+    Page<OmsOrderReturns> getReturnOrderList(long pageNum, long pageSize);
 }

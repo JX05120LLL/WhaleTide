@@ -77,7 +77,7 @@
           <template slot-scope="scope">{{scope.row.memberUsername}}</template>
         </el-table-column>
         <el-table-column label="退款金额" width="180" align="center">
-          <template slot-scope="scope">￥{{scope.row | formatReturnAmount}}</template>
+          <template slot-scope="scope">￥{{scope.row.returnAmount | formatReturnAmount}}</template>
         </el-table-column>
         <el-table-column label="申请状态" width="180" align="center">
           <template slot-scope="scope">{{scope.row.status | formatStatus}}</template>
