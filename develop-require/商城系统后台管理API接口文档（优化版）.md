@@ -11,6 +11,7 @@
 ## 1. 用户认证与管理接口
 
 ### 1.1 登录接口
+
 - **URL**: `/admin/login`
 - **方法**: POST
 - **请求参数**:
@@ -34,6 +35,7 @@
 - **后端DTO**: 需要创建 `AdminLoginParam` 用于接收登录请求参数，`AdminLoginResult` 用于返回登录结果
 
 ### 1.2 获取当前登录用户信息
+
 - **URL**: `/admin/info`
 - **方法**: GET
 - **请求头**: 需要携带 Authorization 令牌
@@ -54,6 +56,7 @@
 - **后端DTO**: 需要创建 `AdminInfoResult` 用于返回用户信息
 
 ### 1.3 登出
+
 - **URL**: `/admin/logout`
 - **方法**: POST
 - **请求头**: 需要携带 Authorization 令牌
@@ -67,6 +70,7 @@
   ```
 
 ### 1.4 管理员列表（需要分页）
+
 - **URL**: `/admin/list`
 - **方法**: GET
 - **请求参数**:
@@ -100,6 +104,7 @@
 - **后端DTO**: 需要创建 `AdminListParam` 接收查询参数，`AdminResult` 返回管理员信息
 
 ### 1.5 创建管理员
+
 - **URL**: `/admin/register`
 - **方法**: POST
 - **请求参数**:
@@ -123,6 +128,7 @@
 - **后端DTO**: 需要创建 `AdminParam` 接收创建管理员的参数
 
 ### 1.6 更新管理员
+
 - **URL**: `/admin/update/{id}`
 - **方法**: POST
 - **路径参数**: id - 管理员ID
@@ -147,6 +153,7 @@
 - **后端DTO**: 复用 `AdminParam` 接收更新管理员的参数
 
 ### 1.7 更新管理员状态
+
 - **URL**: `/admin/updateStatus/{id}`
 - **方法**: POST
 - **路径参数**: id - 管理员ID
@@ -165,6 +172,7 @@
 - **后端DTO**: 需要创建 `UpdateStatusParam` 接收状态更新参数
 
 ### 1.8 删除管理员
+
 - **URL**: `/admin/delete/{id}`
 - **方法**: POST
 - **路径参数**: id - 管理员ID
@@ -178,6 +186,7 @@
   ```
 
 ### 1.9 获取管理员角色（不需要分页）
+
 - **URL**: `/admin/role/{id}`
 - **方法**: GET
 - **路径参数**: id - 管理员ID
@@ -201,6 +210,7 @@
 - **后端DTO**: 需要创建 `RoleAssignResult` 返回角色分配信息
 
 ### 1.10 分配角色
+
 - **URL**: `/admin/role/update`
 - **方法**: POST
 - **请求参数**:
@@ -223,6 +233,7 @@
 ## 2. 产品管理接口
 
 ### 2.1 产品列表（需要分页）
+
 - **URL**: `/product/list`
 - **方法**: GET
 - **请求参数**:
@@ -263,6 +274,7 @@
 - **后端DTO**: 需要创建 `ProductQueryParam` 接收查询参数，`ProductListResult` 返回产品列表信息
 
 ### 2.2 简单产品列表（不需要分页）
+
 - **URL**: `/product/simpleList`
 - **方法**: GET
 - **请求参数**:
@@ -270,7 +282,7 @@
   keyword: string  // 搜索关键词，可选
   ```
 - **响应参数**:
-  
+
   ```json
   {
     "code": 200,
@@ -286,6 +298,7 @@
 - **后端DTO**: 需要创建 `ProductSimpleResult` 返回简单产品信息
 
 ### 2.3 更新删除状态
+
 - **URL**: `/product/update/deleteStatus`
 - **方法**: POST
 - **请求参数**:
@@ -304,6 +317,7 @@
 - **后端DTO**: 需要创建 `UpdateDeleteStatusParam` 接收状态更新参数
 
 ### 2.4 更新新品状态
+
 - **URL**: `/product/update/newStatus`
 - **方法**: POST
 - **请求参数**:
@@ -322,6 +336,7 @@
 - **后端DTO**: 需要创建 `UpdateNewStatusParam` 接收状态更新参数
 
 ### 2.5 更新推荐状态
+
 - **URL**: `/product/update/recommendStatus`
 - **方法**: POST
 - **请求参数**:
@@ -340,6 +355,7 @@
 - **后端DTO**: 需要创建 `UpdateRecommendStatusParam` 接收状态更新参数
 
 ### 2.6 更新上架状态
+
 - **URL**: `/product/update/publishStatus`
 - **方法**: POST
 - **请求参数**:
@@ -358,6 +374,7 @@
 - **后端DTO**: 需要创建 `UpdatePublishStatusParam` 接收状态更新参数
 
 ### 2.7 创建产品
+
 - **URL**: `/product/create`
 - **方法**: POST
 - **请求参数**: 复杂对象，包含产品基本信息、规格参数、SKU库存等
@@ -429,6 +446,7 @@
 - **后端DTO**: 需要创建 `ProductParam` 接收创建产品的参数，包含多个嵌套对象
 
 ### 2.8 更新产品
+
 - **URL**: `/product/update/{id}`
 - **方法**: POST
 - **路径参数**: id - 产品ID
@@ -444,6 +462,7 @@
 - **后端DTO**: 复用 `ProductParam` 接收更新产品的参数
 
 ### 2.9 获取产品详情（不需要分页）
+
 - **URL**: `/product/updateInfo/{id}`
 - **方法**: GET
 - **路径参数**: id - 产品ID
@@ -474,6 +493,7 @@
 - **后端DTO**: 需要创建 `ProductResult` 返回产品详细信息
 
 ### 2.10 获取产品SKU（不需要分页）
+
 - **URL**: `/product/sku/{id}`
 - **方法**: GET
 - **路径参数**: id - 产品ID
@@ -500,6 +520,7 @@
 ## 3. 订单管理接口
 
 ### 3.1 订单列表（需要分页）
+
 - **URL**: `/order/list`
 - **方法**: GET
 - **请求参数**:
@@ -542,6 +563,7 @@
 - **后端DTO**: 需要创建 `OrderQueryParam` 接收查询参数，`OrderResult` 返回订单列表信息
 
 ### 3.2 关闭订单
+
 - **URL**: `/order/update/close`
 - **方法**: POST
 - **请求参数**:
@@ -560,6 +582,7 @@
 - **后端DTO**: 需要创建 `CloseOrderParam` 接收关闭订单的参数
 
 ### 3.3 删除订单
+
 - **URL**: `/order/delete`
 - **方法**: POST
 - **请求参数**:
@@ -577,6 +600,7 @@
 - **后端DTO**: 需要创建 `DeleteOrderParam` 接收删除订单的参数
 
 ### 3.4 发货
+
 - **URL**: `/order/update/delivery`
 - **方法**: POST
 - **请求参数**:
@@ -599,6 +623,7 @@
 - **后端DTO**: 需要创建 `OrderDeliveryParam` 接收发货参数
 
 ### 3.5 订单详情（不需要分页）
+
 - **URL**: `/order/{id}`
 - **方法**: GET
 - **路径参数**: id - 订单ID
@@ -690,6 +715,7 @@
 - **后端DTO**: 需要创建 `OrderDetailResult` 返回订单详细信息
 
 ### 3.6 更新收货人信息
+
 - **URL**: `/order/update/receiverInfo`
 - **方法**: POST
 - **请求参数**:
@@ -717,6 +743,7 @@
 - **后端DTO**: 需要创建 `ReceiverInfoParam` 接收收货人信息更新参数
 
 ### 3.7 更新订单费用信息
+
 - **URL**: `/order/update/moneyInfo`
 - **方法**: POST
 - **请求参数**:
@@ -739,6 +766,7 @@
 - **后端DTO**: 需要创建 `MoneyInfoParam` 接收费用信息更新参数
 
 ### 3.8 更新订单备注
+
 - **URL**: `/order/update/note`
 - **方法**: POST
 - **请求参数**:
@@ -760,6 +788,7 @@
 ## 4. 营销管理接口
 
 ### 4.1 优惠券列表（需要分页）
+
 - **URL**: `/coupon/list`
 - **方法**: GET
 - **请求参数**:
@@ -799,6 +828,7 @@
 - **后端DTO**: 需要创建 `CouponQueryParam` 接收查询参数，`CouponResult` 返回优惠券列表信息
 
 ### 4.2 创建优惠券
+
 - **URL**: `/coupon/create`
 - **方法**: POST
 - **请求参数**:
@@ -838,6 +868,7 @@
 - **后端DTO**: 需要创建 `CouponParam` 接收创建优惠券的参数
 
 ### 4.3 获取优惠券详情（不需要分页）
+
 - **URL**: `/coupon/{id}`
 - **方法**: GET
 - **路径参数**: id - 优惠券ID
@@ -881,9 +912,39 @@
   ```
 - **后端DTO**: 需要创建 `CouponDetailResult` 返回优惠券详细信息
 
-## 5. 后端DTO设计建议
+## 5. 商品分类管理接口
 
-### 5.1 通用响应DTO
+### 6.1 更新商品导航状态
+
+- **URL**: `/productCategory/update/{id}/navStatus/{status}`
+- **方法**: POST
+- **路径参数**: id - 商品分类ID
+- **响应参数**:
+  ```json
+  {
+    "code": 200,
+    "message": "string",
+    "data": "number"  // 更新成功的条数
+  }
+  ```
+
+### 6.2 更新商品显示状态
+
+- **URL**: `/productCategory/update/{id}/showStatus/{status}`
+- **方法**: POST
+- **路径参数**: id - 商品分类ID
+- **响应参数**:
+  ```json
+  {
+    "code": 200,
+    "message": "string",
+    "data": "number"  // 更新成功的条数
+  }
+  ```
+
+## 6. 后端DTO设计建议
+
+### 6.1 通用响应DTO
 
 所有接口应该使用统一的响应格式，建议创建通用响应类：
 
@@ -895,44 +956,44 @@ public class CommonResult<T> {
     private long code;
     private String message;
     private T data;
-    
+
     // 省略构造方法和getter/setter
-    
+
     /**
      * 成功返回结果
      */
     public static <T> CommonResult<T> success(T data) {
         return new CommonResult<T>(ResultCode.SUCCESS.getCode(), ResultCode.SUCCESS.getMessage(), data);
     }
-    
+
     /**
      * 成功返回结果
      */
     public static <T> CommonResult<T> success(T data, String message) {
         return new CommonResult<T>(ResultCode.SUCCESS.getCode(), message, data);
     }
-    
+
     /**
      * 失败返回结果
      */
     public static <T> CommonResult<T> failed(String message) {
         return new CommonResult<T>(ResultCode.FAILED.getCode(), message, null);
     }
-    
+
     /**
      * 参数验证失败返回结果
      */
     public static <T> CommonResult<T> validateFailed(String message) {
         return new CommonResult<T>(ResultCode.VALIDATE_FAILED.getCode(), message, null);
     }
-    
+
     /**
      * 未登录返回结果
      */
     public static <T> CommonResult<T> unauthorized(T data) {
         return new CommonResult<T>(ResultCode.UNAUTHORIZED.getCode(), ResultCode.UNAUTHORIZED.getMessage(), data);
     }
-    
+
     /**
      * 未授权返回结果
      */
@@ -956,9 +1017,9 @@ public class CommonPage<T> {
     private Integer totalPage;
     private Long total;
     private List<T> list;
-    
+
     // 省略构造方法和getter/setter
-    
+
     /**
      * 将MyBatis Plus分页后的对象转为分页信息
      */
@@ -990,11 +1051,11 @@ public class OrderQueryParam {
     private Integer orderType;
     private Integer sourceType;
     private String createTime;
-    
+
     @NotNull(message = "页码不能为空")
     @Min(value = 1, message = "页码最小为1")
     private Integer pageNum;
-    
+
     @NotNull(message = "每页条数不能为空")
     @Min(value = 1, message = "每页条数最小为1")
     @Max(value = 100, message = "每页条数最大为100")
@@ -1046,7 +1107,7 @@ public class OrderDetailResult {
     private String memberUsername;
     private BigDecimal totalAmount;
     // 其他订单属性...
-    
+
     // 订单商品列表
     private List<OrderItem> orderItemList;
     // 订单操作历史列表
@@ -1057,26 +1118,26 @@ public class OrderDetailResult {
 ### 5.5 后端实现优化建议
 
 1. **参数验证**：
-   - 所有必填参数应该添加 `@NotNull`, `@NotEmpty` 等验证注解
-   - 对数值类型参数添加范围验证，如 `@Min`, `@Max`
-   - 对字符串类型参数添加长度验证，如 `@Size`
+    - 所有必填参数应该添加 `@NotNull`, `@NotEmpty` 等验证注解
+    - 对数值类型参数添加范围验证，如 `@Min`, `@Max`
+    - 对字符串类型参数添加长度验证，如 `@Size`
 
 2. **分页处理**：
-   - 所有列表查询接口应明确是否需要分页
-   - 需要分页的接口必须包含 `pageNum` 和 `pageSize` 参数
-   - 使用MyBatis Plus的Page对象进行分页查询
+    - 所有列表查询接口应明确是否需要分页
+    - 需要分页的接口必须包含 `pageNum` 和 `pageSize` 参数
+    - 使用MyBatis Plus的Page对象进行分页查询
 
 3. **错误处理**：
-   - 使用全局异常处理器捕获并统一处理各类异常
-   - 对参数验证异常返回详细的错误信息
-   - 对业务逻辑异常返回友好的错误提示
+    - 使用全局异常处理器捕获并统一处理各类异常
+    - 对参数验证异常返回详细的错误信息
+    - 对业务逻辑异常返回友好的错误提示
 
 4. **日志记录**：
-   - 关键操作（如订单状态变更）应记录操作日志
-   - 记录操作人、操作时间、操作内容等信息
-   - 设计合理的日志查询接口方便追溯
+    - 关键操作（如订单状态变更）应记录操作日志
+    - 记录操作人、操作时间、操作内容等信息
+    - 设计合理的日志查询接口方便追溯
 
 5. **接口性能**：
-   - 对于大数据量的查询，应使用索引优化查询性能
-   - 合理使用缓存减少数据库压力
-   - 考虑使用异步处理方式处理耗时操作 
+    - 对于大数据量的查询，应使用索引优化查询性能
+    - 合理使用缓存减少数据库压力
+    - 考虑使用异步处理方式处理耗时操作 

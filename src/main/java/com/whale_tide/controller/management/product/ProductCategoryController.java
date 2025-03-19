@@ -33,7 +33,7 @@ public class ProductCategoryController {
     @GetMapping("/list/withChildren")
     public CommonResult<List<Map<String, Object>>> getListWithChildren() {
         log.info("获取商品分类及其子分类");
-        
+
         try {
             List<Map<String, Object>> result = productCategoryService.getListWithChildren();
             return CommonResult.success(result);
@@ -42,7 +42,7 @@ public class ProductCategoryController {
             return CommonResult.failed("获取商品分类及其子分类失败: " + e.getMessage());
         }
     }
-    
+
     /**
      * 获取分页分类列表
      */
@@ -51,13 +51,13 @@ public class ProductCategoryController {
             @PathVariable Long parentId,
             @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize) {
-        
-        log.info("获取分类列表, 父类ID={}, pageNum={}, pageSize={}", 
+
+        log.info("获取分类列表, 父类ID={}, pageNum={}, pageSize={}",
                 parentId, pageNum, pageSize);
-        
+
         try {
             Page<ProductCategoryDto> pageResult = productCategoryService.getList(parentId, pageNum, pageSize);
-            
+
             // 创建响应对象
             Map<String, Object> result = new HashMap<>();
             result.put("list", pageResult.getRecords());
@@ -65,21 +65,21 @@ public class ProductCategoryController {
             result.put("pageSize", pageResult.getSize());
             result.put("total", pageResult.getTotal());
             result.put("totalPage", pageResult.getPages());
-            
+
             return CommonResult.success(result);
         } catch (Exception e) {
             log.error("获取分类列表失败", e);
             return CommonResult.failed("获取分类列表失败: " + e.getMessage());
         }
     }
-    
+
     /**
      * 获取单个分类详情
      */
     @GetMapping("/{id}")
     public CommonResult<ProductCategoryDto> getItem(@PathVariable Long id) {
         log.info("获取分类详情, id={}", id);
-        
+
         try {
             ProductCategoryDto category = productCategoryService.getItem(id);
             if (category != null) {
@@ -92,14 +92,14 @@ public class ProductCategoryController {
             return CommonResult.failed("获取分类详情失败: " + e.getMessage());
         }
     }
-    
+
     /**
      * 创建商品分类
      */
     @PostMapping("/create")
     public CommonResult<Long> create(@RequestBody ProductCategoryParam param) {
         log.info("创建商品分类");
-        
+
         try {
             Long id = productCategoryService.create(param);
             if (id > 0) {
@@ -112,7 +112,7 @@ public class ProductCategoryController {
             return CommonResult.failed("创建分类失败: " + e.getMessage());
         }
     }
-    
+
     /**
      * 更新商品分类
      */
@@ -121,7 +121,7 @@ public class ProductCategoryController {
             @PathVariable Long id,
             @RequestBody ProductCategoryParam param) {
         log.info("更新商品分类, id={}", id);
-        
+
         try {
             int count = productCategoryService.update(id, param);
             if (count > 0) {
@@ -134,14 +134,14 @@ public class ProductCategoryController {
             return CommonResult.failed("更新分类失败: " + e.getMessage());
         }
     }
-    
+
     /**
      * 删除商品分类
      */
     @PostMapping("/delete/{id}")
     public CommonResult<Integer> delete(@PathVariable Long id) {
         log.info("删除商品分类, id={}", id);
-        
+
         try {
             int count = productCategoryService.delete(id);
             if (count > 0) {
@@ -156,7 +156,27 @@ public class ProductCategoryController {
             return CommonResult.failed("删除分类失败: " + e.getMessage());
         }
     }
-    
+
+    /**
+     * 更新导航状态
+     */
+    @PostMapping("/update/{id}/navStatus/{navStatus}")
+    public CommonResult<Integer> updateNavStatus(@PathVariable Long id, @PathVariable Integer navStatus) {
+        log.info("更新导航状态, id={}, navStatus={}", id, navStatus);
+
+        try {
+            int count = productCategoryService.updateNavStatus(id, navStatus);
+            if (count > 0) {
+                return CommonResult.success(count);
+            } else {
+                return CommonResult.failed("更新导航状态失败");
+            }
+        } catch (Exception e) {
+            log.error("更新导航状态失败", e);
+            return CommonResult.failed("更新导航状态失败: " + e.getMessage());
+        }
+    }
+
     /**
      * 批量更新导航状态
      */
@@ -167,7 +187,7 @@ public class ProductCategoryController {
                     .map(Long::valueOf)
                     .collect(Collectors.toList());
             Integer navStatus = (Integer) params.get("navStatus");
-            
+
             int count = productCategoryService.updateNavStatus(ids, navStatus);
             if (count > 0) {
                 return CommonResult.success(count);
@@ -179,7 +199,27 @@ public class ProductCategoryController {
             return CommonResult.failed("更新导航状态失败: " + e.getMessage());
         }
     }
-    
+
+    /**
+     * 更新显示状态
+     */
+    @PostMapping("/update/{id}/showStatus/{showStatus}")
+    public CommonResult<Integer> updateShowStatus(@PathVariable Long id, @PathVariable Integer showStatus) {
+        log.info("更新显示状态, id={}, showStatus={}", id, showStatus);
+
+        try {
+            int count = productCategoryService.updateShowStatus(id, showStatus);
+            if (count > 0) {
+                return CommonResult.success(count);
+            } else {
+                return CommonResult.failed("更新显示状态失败");
+            }
+        } catch (Exception e) {
+            log.error("更新显示状态失败", e);
+            return CommonResult.failed("更新显示状态失败: " + e.getMessage());
+        }
+    }
+
     /**
      * 批量更新显示状态
      */
@@ -190,7 +230,7 @@ public class ProductCategoryController {
                     .map(Long::valueOf)
                     .collect(Collectors.toList());
             Integer showStatus = (Integer) params.get("showStatus");
-            
+
             int count = productCategoryService.updateShowStatus(ids, showStatus);
             if (count > 0) {
                 return CommonResult.success(count);

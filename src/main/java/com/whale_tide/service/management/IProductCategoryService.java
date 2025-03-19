@@ -41,11 +41,21 @@ public interface IProductCategoryService {
      * 删除商品分类
      */
     int delete(Long id);
-    
+
+    /**
+     * 更新导航状态
+     */
+    int updateNavStatus(Long id, Integer navStatus);
+
     /**
      * 批量更新导航状态
      */
     int updateNavStatus(List<Long> ids, Integer navStatus);
+
+    /**
+     * 更新显示状态
+     */
+    int updateShowStatus(Long id, Integer showStatus);
     
     /**
      * 批量更新显示状态

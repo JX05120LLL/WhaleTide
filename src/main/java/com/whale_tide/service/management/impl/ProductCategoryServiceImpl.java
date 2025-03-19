@@ -34,51 +34,51 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
     public Page<ProductCategoryDto> getList(Long parentId, Integer pageNum, Integer pageSize) {
         // 创建分页对象
         Page<PmsProductCategories> page = new Page<>(pageNum, pageSize);
-        
+
         // 创建查询条件
         LambdaQueryWrapper<PmsProductCategories> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(PmsProductCategories::getParentId, parentId)
-                    .orderByAsc(PmsProductCategories::getSort);
-        
+                .orderByAsc(PmsProductCategories::getSort);
+
         // 执行查询
         Page<PmsProductCategories> categoryPage = productCategoriesMapper.selectPage(page, queryWrapper);
-        
+
         // 转换结果
         List<ProductCategoryDto> categoryDtoList = categoryPage.getRecords().stream()
                 .map(this::convertToCategoryDto)
                 .collect(Collectors.toList());
-        
+
         // 创建返回的分页对象
         Page<ProductCategoryDto> resultPage = new Page<>(categoryPage.getCurrent(), categoryPage.getSize(), categoryPage.getTotal());
         resultPage.setRecords(categoryDtoList);
-        
+
         return resultPage;
     }
 
     @Override
     public List<Map<String, Object>> getListWithChildren() {
         List<Map<String, Object>> result = new ArrayList<>();
-        
+
         // 查询所有一级分类
         LambdaQueryWrapper<PmsProductCategories> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(PmsProductCategories::getParentId, 0)
-                    .orderByAsc(PmsProductCategories::getSort);
-        
+                .orderByAsc(PmsProductCategories::getSort);
+
         List<PmsProductCategories> parentCategories = productCategoriesMapper.selectList(queryWrapper);
-        
+
         // 为每个一级分类查询其子分类
         for (PmsProductCategories parentCategory : parentCategories) {
             Map<String, Object> categoryMap = new HashMap<>();
             categoryMap.put("id", parentCategory.getId());
             categoryMap.put("name", parentCategory.getName());
-            
+
             // 查询子分类
             LambdaQueryWrapper<PmsProductCategories> childQueryWrapper = new LambdaQueryWrapper<>();
             childQueryWrapper.eq(PmsProductCategories::getParentId, parentCategory.getId())
-                            .orderByAsc(PmsProductCategories::getSort);
-            
+                    .orderByAsc(PmsProductCategories::getSort);
+
             List<PmsProductCategories> childCategories = productCategoriesMapper.selectList(childQueryWrapper);
-            
+
             // 转换子分类为简单Map对象
             List<Map<String, Object>> children = childCategories.stream().map(child -> {
                 Map<String, Object> childMap = new HashMap<>();
@@ -86,11 +86,11 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
                 childMap.put("name", child.getName());
                 return childMap;
             }).collect(Collectors.toList());
-            
+
             categoryMap.put("children", children);
             result.add(categoryMap);
         }
-        
+
         return result;
     }
 
@@ -107,13 +107,13 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
     public Long create(ProductCategoryParam productCategoryParam) {
         PmsProductCategories category = new PmsProductCategories();
         BeanUtils.copyProperties(productCategoryParam, category);
-        
+
         // 设置默认值
         category.setCreateTime(LocalDateTime.now());
         category.setUpdateTime(LocalDateTime.now());
         // 初始产品数量为0 - 如果实体类没有setProductCount方法，则跳过
         // category.setProductCount(0);
-        
+
         productCategoriesMapper.insert(category);
         return category.getId();
     }
@@ -124,11 +124,11 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
         if (category == null) {
             return 0;
         }
-        
+
         BeanUtils.copyProperties(productCategoryParam, category);
         category.setId(id); // 确保ID不被覆盖
         category.setUpdateTime(LocalDateTime.now());
-        
+
         return productCategoriesMapper.updateById(category);
     }
 
@@ -138,20 +138,36 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
         LambdaQueryWrapper<PmsProductCategories> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(PmsProductCategories::getParentId, id);
         long count = productCategoriesMapper.selectCount(queryWrapper);
-        
+
         if (count > 0) {
             return -1; // 有子分类，不能删除
         }
-        
+
         return productCategoriesMapper.deleteById(id);
+    }
+
+    @Override
+    public int updateNavStatus(Long id, Integer navStatus) {
+        UpdateWrapper<PmsProductCategories> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("nav_status", navStatus)
+                .eq("id", id);
+        return productCategoriesMapper.update(null, updateWrapper);
     }
 
     @Override
     public int updateNavStatus(List<Long> ids, Integer navStatus) {
         UpdateWrapper<PmsProductCategories> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("nav_status", navStatus)
-                    .in("id", ids);
-        
+                .in("id", ids);
+
+        return productCategoriesMapper.update(null, updateWrapper);
+    }
+
+    @Override
+    public int updateShowStatus(Long id, Integer showStatus) {
+        UpdateWrapper<PmsProductCategories> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("status", showStatus)
+                .eq("id", id);
         return productCategoriesMapper.update(null, updateWrapper);
     }
 
@@ -159,8 +175,8 @@ public class ProductCategoryServiceImpl implements IProductCategoryService {
     public int updateShowStatus(List<Long> ids, Integer showStatus) {
         UpdateWrapper<PmsProductCategories> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("status", showStatus)
-                    .in("id", ids);
-        
+                .in("id", ids);
+
         return productCategoriesMapper.update(null, updateWrapper);
     }
 

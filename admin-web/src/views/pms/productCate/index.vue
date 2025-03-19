@@ -16,19 +16,19 @@
                 :data="list"
                 v-loading="listLoading" border>
         <el-table-column label="编号" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.id}}</template>
+          <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
         <el-table-column label="分类名称" align="center">
-          <template slot-scope="scope">{{scope.row.name}}</template>
+          <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
         <el-table-column label="级别" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.level | levelFilter}}</template>
+          <template slot-scope="scope">{{ scope.row.level | levelFilter }}</template>
         </el-table-column>
         <el-table-column label="商品数量" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.productCount }}</template>
+          <template slot-scope="scope">{{ scope.row.productCount }}</template>
         </el-table-column>
         <el-table-column label="数量单位" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.productUnit }}</template>
+          <template slot-scope="scope">{{ scope.row.productUnit }}</template>
         </el-table-column>
         <el-table-column label="导航栏" width="100" align="center">
           <template slot-scope="scope">
@@ -51,7 +51,7 @@
           </template>
         </el-table-column>
         <el-table-column label="排序" width="100" align="center">
-          <template slot-scope="scope">{{scope.row.sort }}</template>
+          <template slot-scope="scope">{{ scope.row.sort }}</template>
         </el-table-column>
         <el-table-column label="设置" width="200" align="center">
           <template slot-scope="scope">
@@ -97,132 +97,122 @@
 </template>
 
 <script>
-  import {fetchList,deleteProductCate,updateShowStatus,updateNavStatus} from '@/api/productCate'
+import {fetchList, deleteProductCate, updateShowStatus, updateNavStatus} from '@/api/productCate'
 
-  export default {
-    name: "productCateList",
-    data() {
-      return {
-        list: null,
-        total: null,
-        listLoading: true,
-        listQuery: {
-          pageNum: 1,
-          pageSize: 5
-        },
-        parentId: 0
-      }
-    },
-    created() {
+export default {
+  name: "productCateList",
+  data() {
+    return {
+      list: null,
+      total: null,
+      listLoading: true,
+      listQuery: {
+        pageNum: 1,
+        pageSize: 5
+      },
+      parentId: 0
+    }
+  },
+  created() {
+    this.resetParentId();
+    this.getList();
+  },
+  watch: {
+    $route(route) {
       this.resetParentId();
       this.getList();
-    },
-    watch: {
-      $route(route) {
-        this.resetParentId();
-        this.getList();
+    }
+  },
+  methods: {
+    resetParentId() {
+      this.listQuery.pageNum = 1;
+      if (this.$route.query.parentId != null) {
+        this.parentId = this.$route.query.parentId;
+      } else {
+        this.parentId = 0;
       }
     },
-    methods: {
-      resetParentId(){
-        this.listQuery.pageNum = 1;
-        if (this.$route.query.parentId != null) {
-          this.parentId = this.$route.query.parentId;
-        } else {
-          this.parentId = 0;
-        }
-      },
-      handleAddProductCate() {
-        this.$router.push('/pms/addProductCate');
-      },
-      getList() {
-        this.listLoading = true;
-        fetchList(this.parentId, this.listQuery).then(response => {
-          this.listLoading = false;
-          this.list = response.data.list;
-          this.total = response.data.total;
+    handleAddProductCate() {
+      this.$router.push('/pms/addProductCate');
+    },
+    getList() {
+      this.listLoading = true;
+      fetchList(this.parentId, this.listQuery).then(response => {
+        this.listLoading = false;
+        this.list = response.data.list;
+        this.total = response.data.total;
+      });
+    },
+    handleSizeChange(val) {
+      this.listQuery.pageNum = 1;
+      this.listQuery.pageSize = val;
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      this.listQuery.pageNum = val;
+      this.getList();
+    },
+    handleNavStatusChange(index, row) {
+      updateNavStatus(row.id, row.navStatus).then(response => {
+        this.$message({
+          message: '修改成功',
+          type: 'success',
+          duration: 1000
         });
-      },
-      handleSizeChange(val) {
-        this.listQuery.pageNum = 1;
-        this.listQuery.pageSize = val;
-        this.getList();
-      },
-      handleCurrentChange(val) {
-        this.listQuery.pageNum = val;
-        this.getList();
-      },
-      handleNavStatusChange(index, row) {
-        let data = new URLSearchParams();
-        let ids=[];
-        ids.push(row.id)
-        data.append('ids',ids);
-        data.append('navStatus',row.navStatus);
-        updateNavStatus(data).then(response=>{
+      });
+    },
+    handleShowStatusChange(index, row) {
+      updateShowStatus(row.id, row.showStatus).then(response => {
+        this.$message({
+          message: '修改成功',
+          type: 'success',
+          duration: 1000
+        });
+      });
+    },
+    handleShowNextLevel(index, row) {
+      this.$router.push({path: '/pms/productCate', query: {parentId: row.id}})
+    },
+    handleTransferProduct(index, row) {
+      console.log('handleAddProductCate');
+    },
+    handleUpdate(index, row) {
+      this.$router.push({path: '/pms/updateProductCate', query: {id: row.id}});
+    },
+    handleDelete(index, row) {
+      this.$confirm('是否要删除该品牌', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteProductCate(row.id).then(response => {
           this.$message({
-            message: '修改成功',
+            message: '删除成功',
             type: 'success',
             duration: 1000
           });
+          this.getList();
         });
-      },
-      handleShowStatusChange(index, row) {
-        let data = new URLSearchParams();
-        let ids=[];
-        ids.push(row.id)
-        data.append('ids',ids);
-        data.append('showStatus',row.showStatus);
-        updateShowStatus(data).then(response=>{
-          this.$message({
-            message: '修改成功',
-            type: 'success',
-            duration: 1000
-          });
-        });
-      },
-      handleShowNextLevel(index, row) {
-        this.$router.push({path: '/pms/productCate', query: {parentId: row.id}})
-      },
-      handleTransferProduct(index, row) {
-        console.log('handleAddProductCate');
-      },
-      handleUpdate(index, row) {
-        this.$router.push({path:'/pms/updateProductCate',query:{id:row.id}});
-      },
-      handleDelete(index, row) {
-        this.$confirm('是否要删除该品牌', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          deleteProductCate(row.id).then(response => {
-            this.$message({
-              message: '删除成功',
-              type: 'success',
-              duration: 1000
-            });
-            this.getList();
-          });
-        });
+      });
+    }
+  },
+  filters: {
+    levelFilter(value) {
+      if (value === 0) {
+        return '一级';
+      } else if (value === 1) {
+        return '二级';
       }
     },
-    filters: {
-      levelFilter(value) {
-        if (value === 0) {
-          return '一级';
-        } else if (value === 1) {
-          return '二级';
-        }
-      },
-      disableNextLevel(value) {
-        if (value === 0) {
-          return false;
-        } else {
-          return true;
-        }
+    disableNextLevel(value) {
+      if (value === 0) {
+        return false;
+      } else {
+        return true;
       }
     }
   }
+}
 </script>
 
 <style scoped>
