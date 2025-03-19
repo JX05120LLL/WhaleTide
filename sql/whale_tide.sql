@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 16/03/2025 15:54:15
+ Date: 19/03/2025 12:53:08
 */
 
 SET NAMES utf8mb4;
@@ -106,14 +106,15 @@ CREATE TABLE `ams_admins`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_username`(`username`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_admins
 -- ----------------------------
-INSERT INTO `ams_admins` VALUES (12, 'admin', '123456', '超级管理员', '123456', NULL, NULL, 0, 1, '2025-03-16 14:34:29', NULL, '超级管理员，拥有所有权限', 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-16 14:35:55');
+INSERT INTO `ams_admins` VALUES (12, 'admin', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '超级管理员', '123456', NULL, NULL, 0, 1, '2025-03-18 14:21:53', NULL, '超级管理员，拥有所有权限', 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-17 09:51:25');
 INSERT INTO `ams_admins` VALUES (13, 'merchant', '123456', '商家', NULL, NULL, NULL, 0, 1, '2025-03-16 15:10:25', NULL, '拥有 商品 和订单 模块 权限', 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-16 14:36:29');
 INSERT INTO `ams_admins` VALUES (14, 'user', '123456', '普通用户', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
+INSERT INTO `ams_admins` VALUES (17, 'admin1', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', NULL, '', NULL, NULL, 0, 1, '2025-03-18 14:21:38', NULL, 'testNote', 0, NULL, NULL, 0, '2025-03-17 09:48:23', '2025-03-17 09:48:23');
 
 -- ----------------------------
 -- Table structure for ams_menus
@@ -141,7 +142,7 @@ CREATE TABLE `ams_menus`  (
 -- ----------------------------
 -- Records of ams_menus
 -- ----------------------------
-INSERT INTO `ams_menus` VALUES (20, 0, '首页', 0, 0, 'home', '/home', 'Layout', '/home', 0, 1, '系统首页', '2025-03-15 18:44:35', '2025-03-15 23:12:42');
+INSERT INTO `ams_menus` VALUES (20, 0, '首页', 0, 0, 'home', '/home', 'Layout', '/home', 0, 1, '系统首页', '2025-03-15 18:44:35', '2025-03-18 14:29:06');
 INSERT INTO `ams_menus` VALUES (21, 0, '商品', 0, 10, 'product', '/pms', 'Layout', '/pms/product', 0, 1, '商品管理模块', '2025-03-15 18:44:35', '2025-03-15 23:12:57');
 INSERT INTO `ams_menus` VALUES (22, 0, '订单', 0, 20, 'order', '/oms', 'Layout', '/oms/order', 0, 1, '订单管理模块', '2025-03-15 18:44:35', '2025-03-15 18:44:35');
 INSERT INTO `ams_menus` VALUES (23, 0, '营销', 0, 30, 'sms', '/sms', 'Layout', '/sms/flash', 0, 1, '营销管理模块', '2025-03-15 18:44:35', '2025-03-15 23:13:57');
@@ -333,7 +334,7 @@ CREATE TABLE `ams_role_permission_relations`  (
   INDEX `idx_permission_id`(`permission_id`) USING BTREE,
   CONSTRAINT `fk_permission_relation_permission` FOREIGN KEY (`permission_id`) REFERENCES `ams_permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_permission_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与权限关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与权限关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ams_role_resource_relations
@@ -666,7 +667,7 @@ CREATE TABLE `pms_brands`  (
 -- Records of pms_brands
 -- ----------------------------
 INSERT INTO `pms_brands` VALUES (1, '小米', '/uploads/brands/xiaomi.png', '小米科技有限责任公司成立于2010年4月，是一家专注于高端智能手机、智能硬件和IoT生态链建设的创新型科技企业。', 'X', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 15:38:35');
-INSERT INTO `pms_brands` VALUES (2, '华为', '/uploads/brands/huawei.png', '华为技术有限公司成立于1987年，是全球领先的ICT（信息与通信）基础设施和智能终端提供商。', 'H', 2, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_brands` VALUES (2, '华为', '/uploads/brands/huawei.png', '华为技术有限公司成立于1987年，是全球领先的ICT（信息与通信）基础设施和智能终端提供商。', 'H', 2, 1, 1, '2025-03-16 13:15:47', '2025-03-18 14:28:36');
 INSERT INTO `pms_brands` VALUES (3, '苹果', '/uploads/brands/apple.png', '苹果公司是美国的一家高科技公司，2007年由苹果电脑公司更名而来，是世界领先的科技公司之一。', 'A', 3, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
 INSERT INTO `pms_brands` VALUES (4, '三星', '/uploads/brands/samsung.png', '三星集团是韩国最大的跨国企业集团，三星电子是三星集团的旗舰子公司。', 'S', 4, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
 INSERT INTO `pms_brands` VALUES (5, '戴尔', '/uploads/brands/dell.png', '戴尔科技集团是一家总部位于美国德克萨斯州朗德罗克的美国跨国科技公司。', 'D', 5, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
@@ -778,6 +779,7 @@ CREATE TABLE `pms_product_categories`  (
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '分类描述',
   `keywords` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '关键词',
   `status` tinyint(0) NULL DEFAULT 1 COMMENT '状态：0-禁用，1-启用',
+  `nav_status` tinyint(0) NULL DEFAULT NULL COMMENT '是否显示导航栏 0-否，1-是',
   `is_featured` tinyint(0) NULL DEFAULT 0 COMMENT '是否推荐：0-否，1-是',
   `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
@@ -788,25 +790,25 @@ CREATE TABLE `pms_product_categories`  (
 -- ----------------------------
 -- Records of pms_product_categories
 -- ----------------------------
-INSERT INTO `pms_product_categories` VALUES (1, 0, '默认分类', 1, NULL, 0, NULL, NULL, 1, 0, '2025-03-15 20:57:12', '2025-03-15 20:57:12');
-INSERT INTO `pms_product_categories` VALUES (2, 0, '电子产品', 1, '/uploads/categories/electronics.png', 1, '各类电子产品', '电子,数码,智能', 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_product_categories` VALUES (3, 0, '家用电器', 1, '/uploads/categories/appliances.png', 2, '家用电器产品', '电器,家电,厨房电器', 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_product_categories` VALUES (4, 0, '服装鞋包', 1, '/uploads/categories/clothing.png', 3, '服装鞋包产品', '服装,鞋子,包包', 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_product_categories` VALUES (5, 1, '智能手机', 2, '/uploads/categories/smartphone.png', 1, '智能手机产品', '手机,智能手机,5G', 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_product_categories` VALUES (6, 1, '笔记本电脑', 2, '/uploads/categories/laptop.png', 2, '笔记本电脑产品', '笔记本,电脑,便携', 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_product_categories` VALUES (7, 1, '平板电脑', 2, '/uploads/categories/tablet.png', 3, '平板电脑产品', '平板,iPad,触屏', 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_product_categories` VALUES (8, 2, '冰箱', 2, '/uploads/categories/refrigerator.png', 1, '冰箱产品', '冰箱,冷藏,保鲜', 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_product_categories` VALUES (9, 2, '洗衣机', 2, '/uploads/categories/washing_machine.png', 2, '洗衣机产品', '洗衣机,洗护,滚筒', 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_product_categories` VALUES (10, 1, '智能穿戴', 2, '/uploads/categories/wearable.png', 4, '智能穿戴设备', '智能手表,手环,耳机', 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
-INSERT INTO `pms_product_categories` VALUES (11, 1, '智能家居', 2, '/uploads/categories/smarthome.png', 5, '智能家居产品', '智能音箱,智能灯泡,智能插座', 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
-INSERT INTO `pms_product_categories` VALUES (12, 1, '相机', 2, '/uploads/categories/camera.png', 6, '相机产品', '相机,单反,微单', 1, 0, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
-INSERT INTO `pms_product_categories` VALUES (13, 2, '电视', 2, '/uploads/categories/tv.png', 3, '电视产品', '电视,智能电视,OLED', 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
-INSERT INTO `pms_product_categories` VALUES (14, 2, '空调', 2, '/uploads/categories/aircon.png', 4, '空调产品', '空调,变频,冷暖', 1, 0, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
-INSERT INTO `pms_product_categories` VALUES (15, 1, '智能穿戴', 2, '/uploads/categories/wearable.png', 4, '智能穿戴设备', '智能手表,手环,耳机', 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_categories` VALUES (16, 1, '智能家居', 2, '/uploads/categories/smarthome.png', 5, '智能家居产品', '智能音箱,智能灯泡,智能插座', 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_categories` VALUES (17, 1, '相机', 2, '/uploads/categories/camera.png', 6, '相机产品', '相机,单反,微单', 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_categories` VALUES (18, 2, '电视', 2, '/uploads/categories/tv.png', 3, '电视产品', '电视,智能电视,OLED', 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_categories` VALUES (19, 2, '空调', 2, '/uploads/categories/aircon.png', 4, '空调产品', '空调,变频,冷暖', 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_categories` VALUES (1, 0, '默认分类', 1, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-03-15 20:57:12', '2025-03-15 20:57:12');
+INSERT INTO `pms_product_categories` VALUES (2, 0, '电子产品', 1, '/uploads/categories/electronics.png', 1, '各类电子产品', '电子,数码,智能', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-18 16:00:55');
+INSERT INTO `pms_product_categories` VALUES (3, 0, '家用电器', 1, '/uploads/categories/appliances.png', 2, '家用电器产品', '电器,家电,厨房电器', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-18 16:00:57');
+INSERT INTO `pms_product_categories` VALUES (4, 0, '服装鞋包', 1, '/uploads/categories/clothing.png', 3, '服装鞋包产品', '服装,鞋子,包包', 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 16:01:00');
+INSERT INTO `pms_product_categories` VALUES (5, 1, '智能手机', 2, '/uploads/categories/smartphone.png', 1, '智能手机产品', '手机,智能手机,5G', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-18 16:01:01');
+INSERT INTO `pms_product_categories` VALUES (6, 1, '笔记本电脑', 2, '/uploads/categories/laptop.png', 2, '笔记本电脑产品', '笔记本,电脑,便携', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-18 16:01:04');
+INSERT INTO `pms_product_categories` VALUES (7, 1, '平板电脑', 2, '/uploads/categories/tablet.png', 3, '平板电脑产品', '平板,iPad,触屏', 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 16:01:06');
+INSERT INTO `pms_product_categories` VALUES (8, 2, '冰箱', 2, '/uploads/categories/refrigerator.png', 1, '冰箱产品', '冰箱,冷藏,保鲜', 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 16:01:08');
+INSERT INTO `pms_product_categories` VALUES (9, 2, '洗衣机', 2, '/uploads/categories/washing_machine.png', 2, '洗衣机产品', '洗衣机,洗护,滚筒', 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 16:01:10');
+INSERT INTO `pms_product_categories` VALUES (10, 1, '智能穿戴', 2, '/uploads/categories/wearable.png', 4, '智能穿戴设备', '智能手表,手环,耳机', 1, 1, 1, '2025-03-16 13:19:44', '2025-03-18 16:01:11');
+INSERT INTO `pms_product_categories` VALUES (11, 1, '智能家居', 2, '/uploads/categories/smarthome.png', 5, '智能家居产品', '智能音箱,智能灯泡,智能插座', 1, 1, 1, '2025-03-16 13:19:44', '2025-03-18 16:01:13');
+INSERT INTO `pms_product_categories` VALUES (12, 1, '相机', 2, '/uploads/categories/camera.png', 6, '相机产品', '相机,单反,微单', 1, 1, 0, '2025-03-16 13:19:44', '2025-03-18 16:01:15');
+INSERT INTO `pms_product_categories` VALUES (13, 2, '电视', 2, '/uploads/categories/tv.png', 3, '电视产品', '电视,智能电视,OLED', 1, 1, 1, '2025-03-16 13:19:44', '2025-03-18 16:01:16');
+INSERT INTO `pms_product_categories` VALUES (14, 2, '空调', 2, '/uploads/categories/aircon.png', 4, '空调产品', '空调,变频,冷暖', 1, 1, 0, '2025-03-16 13:19:44', '2025-03-18 16:01:17');
+INSERT INTO `pms_product_categories` VALUES (15, 1, '智能穿戴', 2, '/uploads/categories/wearable.png', 4, '智能穿戴设备', '智能手表,手环,耳机', 1, 1, 1, '2025-03-16 13:24:09', '2025-03-18 16:01:18');
+INSERT INTO `pms_product_categories` VALUES (16, 1, '智能家居', 2, '/uploads/categories/smarthome.png', 5, '智能家居产品', '智能音箱,智能灯泡,智能插座', 1, 1, 1, '2025-03-16 13:24:09', '2025-03-18 16:01:19');
+INSERT INTO `pms_product_categories` VALUES (17, 1, '相机', 2, '/uploads/categories/camera.png', 6, '相机产品', '相机,单反,微单', 1, 1, 0, '2025-03-16 13:24:09', '2025-03-18 16:01:20');
+INSERT INTO `pms_product_categories` VALUES (18, 2, '电视', 2, '/uploads/categories/tv.png', 3, '电视产品', '电视,智能电视,OLED', 1, 1, 1, '2025-03-16 13:24:09', '2025-03-18 16:01:21');
+INSERT INTO `pms_product_categories` VALUES (19, 2, '空调', 2, '/uploads/categories/aircon.png', 4, '空调产品', '空调,变频,冷暖', 1, 1, 0, '2025-03-16 13:24:09', '2025-03-18 16:01:24');
 
 -- ----------------------------
 -- Table structure for pms_product_comments
@@ -949,7 +951,7 @@ CREATE TABLE `pms_products`  (
 -- ----------------------------
 -- Records of pms_products
 -- ----------------------------
-INSERT INTO `pms_products` VALUES (3, '小米13', 'MI13-2023', 4, 1, NULL, 3999.00, 4299.00, '/uploads/products/mi13.png', '小米,手机,5G,骁龙8', '小米年度旗舰手机，搭载骁龙8第二代处理器', 1258, 1000, '台', 0.20, 1, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_products` VALUES (3, '小米13', 'MI13-2023', 4, 1, NULL, 3999.00, 4299.00, '/uploads/products/mi13.png', '小米,手机,5G,骁龙8', '小米年度旗舰手机，搭载骁龙8第二代处理器', 1258, 1000, '台', 0.20, 1, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 14:30:37');
 INSERT INTO `pms_products` VALUES (4, '华为Mate60 Pro', 'HW-MATE60P', 4, 2, NULL, 6999.00, 7299.00, '/uploads/products/mate60pro.png', '华为,手机,旗舰,麒麟9000', '华为年度旗舰手机，搭载麒麟9000S处理器', 2056, 500, '台', 0.23, 2, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
 INSERT INTO `pms_products` VALUES (5, 'iPhone 15 Pro', 'APPL-IP15P', 4, 3, NULL, 7999.00, 8299.00, '/uploads/products/iphone15pro.png', 'iPhone,苹果,A17,Pro', 'Apple新一代旗舰手机，搭载A17 Pro芯片', 3102, 800, '台', 0.22, 3, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
 INSERT INTO `pms_products` VALUES (6, '联想ThinkPad X1 Carbon', 'LN-X1C2023', 5, 6, NULL, 9999.00, 12999.00, '/uploads/products/thinkpadx1.png', '联想,ThinkPad,笔记本,轻薄', '联想商务旗舰笔记本，轻薄坚固', 458, 200, '台', 1.20, 4, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 15:20:00');
@@ -1464,5 +1466,10 @@ CREATE TABLE `ums_users`  (
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_is_merchant`(`is_merchant`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ums_users
+-- ----------------------------
+INSERT INTO `ums_users` VALUES (12, '张三', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '123464984166', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-03-18 18:38:24', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-03-18 17:42:20', '2025-03-18 17:50:26');
 
 SET FOREIGN_KEY_CHECKS = 1;
