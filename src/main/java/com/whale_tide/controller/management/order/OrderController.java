@@ -1,9 +1,11 @@
 package com.whale_tide.controller.management.order;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.management.order.*;
+import com.whale_tide.dto.management.product.ProductListResult;
 import com.whale_tide.service.management.IOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -25,7 +27,10 @@ public class OrderController {
     @GetMapping("/list")
     public CommonResult<CommonPage<OrderResult>> list(OrderQueryParam queryParam) {
         IPage<OrderResult> orderList = orderService.getOrderList(queryParam);
-        return CommonResult.success(CommonPage.restPage(orderList));
+
+        CommonPage<OrderResult> commonPage = CommonPage.restPage((Page<OrderResult>) orderList);
+
+        return CommonResult.success(commonPage);
     }
     
     @ApiOperation("关闭订单")

@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-@Service
+@Service("clientUserService")
 @Slf4j
 public class UserServiceImpl implements IUserService {
 

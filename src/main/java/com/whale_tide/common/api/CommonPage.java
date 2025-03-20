@@ -44,18 +44,7 @@ public class CommonPage<T> {
         return result;
     }
     
-    /**
-     * 将MyBatis Plus IPage分页结果转化为通用结果
-     */
-    public static <T> CommonPage<T> restPage(IPage<T> pageResult) {
-        CommonPage<T> result = new CommonPage<T>();
-        result.setPageNum(pageResult.getCurrent());
-        result.setPageSize(pageResult.getSize());
-        result.setTotal(pageResult.getTotal());
-        result.setTotalPage(pageResult.getPages());
-        result.setList(pageResult.getRecords());
-        return result;
-    }
+
 
     public Long getPageNum() {
         return pageNum;

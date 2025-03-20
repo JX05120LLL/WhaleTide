@@ -1,6 +1,7 @@
 package com.whale_tide.controller.management.product;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.management.product.*;
@@ -22,7 +23,7 @@ import java.util.*;
  * 商品管理Controller
  */
 @Slf4j
-@RestController
+@RestController("managementProductController")
 @Api(tags = "ProductController", description = "产品管理")
 @RequestMapping("/product")
 public class ProductController {
@@ -178,9 +179,12 @@ public class ProductController {
         queryParam.setPageNum(pageNum);
         queryParam.setPageSize(pageSize);
 
+
         // 调用服务层方法
-        IPage<ProductListResult> productlist = productService.getProductList(queryParam);
-        return CommonResult.success(CommonPage.restPage(productlist));
+        IPage<ProductListResult> productPage = productService.getProductList(queryParam);
+        CommonPage<ProductListResult> commonPage = CommonPage.restPage((Page<ProductListResult>) productPage);
+
+        return CommonResult.success(commonPage);
     }
 
     @ApiOperation("获取简单产品列表")

@@ -1,6 +1,7 @@
 package com.whale_tide.controller.management.role;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.management.menu.AllocMenuParam;
@@ -41,7 +42,13 @@ public class RoleController {
         
         // 调用服务获取角色列表
         IPage<RoleResult> rolePage = adminService.listRoles(keyword, pageNum, pageSize);
-        return CommonResult.success(CommonPage.restPage(rolePage));
+        // 将 IPage 转换为 Page
+        Page<RoleResult> page = new Page<>(rolePage.getCurrent(), rolePage.getSize());
+        page.setRecords(rolePage.getRecords());
+        page.setTotal(rolePage.getTotal());
+        page.setPages(rolePage.getPages());
+
+        return CommonResult.success(CommonPage.restPage(page));
     }
 
     @ApiOperation("获取所有角色")

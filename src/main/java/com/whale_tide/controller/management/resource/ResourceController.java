@@ -1,6 +1,7 @@
 package com.whale_tide.controller.management.resource;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.management.resource.ResourceParam;
@@ -29,18 +30,21 @@ public class ResourceController {
     @ApiOperation("获取资源列表")
     @GetMapping("/list")
     public CommonResult<CommonPage<ResourceResult>> getList(
-            @RequestParam(value = "nameKeyword", required = false) String nameKeyword,
-            @RequestParam(value = "urlKeyword", required = false) String urlKeyword,
-            @RequestParam(value = "categoryId", required = false) Long categoryId,
-            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
-            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        
-        log.info("获取资源列表, nameKeyword={}, urlKeyword={}, categoryId={}, pageNum={}, pageSize={}", 
-                nameKeyword, urlKeyword, categoryId, pageNum, pageSize);
-        
+        @RequestParam(value = "nameKeyword", required = false) String nameKeyword,
+        @RequestParam(value = "urlKeyword", required = false) String urlKeyword,
+        @RequestParam(value = "categoryId", required = false) Long categoryId,
+        @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+        @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+
+        log.info("获取资源列表, nameKeyword={}, urlKeyword={}, categoryId={}, pageNum={}, pageSize={}",
+            nameKeyword, urlKeyword, categoryId, pageNum, pageSize);
+
         IPage<ResourceResult> resourcePage = resourceService.list(nameKeyword, urlKeyword, categoryId, pageNum, pageSize);
-        return CommonResult.success(CommonPage.restPage(resourcePage));
+        // 将resourcePage转换为CommonPage
+        CommonPage<ResourceResult> resourceResultPage = CommonPage.restPage((Page<ResourceResult>) resourcePage);
+        return CommonResult.success(resourceResultPage);
     }
+
 
     @ApiOperation("获取所有资源")
     @GetMapping("/listAll")

@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 19/03/2025 12:53:08
+ Date: 19/03/2025 22:32:39
 */
 
 SET NAMES utf8mb4;
@@ -920,6 +920,7 @@ CREATE TABLE `pms_products`  (
   `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品名称',
   `product_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品编号',
   `category_id` bigint(0) NOT NULL COMMENT '分类ID',
+  `attribute_id` bigint(0) NOT NULL COMMENT '属性ID',
   `brand_id` bigint(0) NULL DEFAULT NULL COMMENT '品牌ID',
   `merchant_id` bigint(0) NULL DEFAULT NULL COMMENT '商家ID',
   `price` decimal(10, 2) NOT NULL COMMENT '商品价格',
@@ -951,16 +952,16 @@ CREATE TABLE `pms_products`  (
 -- ----------------------------
 -- Records of pms_products
 -- ----------------------------
-INSERT INTO `pms_products` VALUES (3, '小米13', 'MI13-2023', 4, 1, NULL, 3999.00, 4299.00, '/uploads/products/mi13.png', '小米,手机,5G,骁龙8', '小米年度旗舰手机，搭载骁龙8第二代处理器', 1258, 1000, '台', 0.20, 1, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 14:30:37');
-INSERT INTO `pms_products` VALUES (4, '华为Mate60 Pro', 'HW-MATE60P', 4, 2, NULL, 6999.00, 7299.00, '/uploads/products/mate60pro.png', '华为,手机,旗舰,麒麟9000', '华为年度旗舰手机，搭载麒麟9000S处理器', 2056, 500, '台', 0.23, 2, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_products` VALUES (5, 'iPhone 15 Pro', 'APPL-IP15P', 4, 3, NULL, 7999.00, 8299.00, '/uploads/products/iphone15pro.png', 'iPhone,苹果,A17,Pro', 'Apple新一代旗舰手机，搭载A17 Pro芯片', 3102, 800, '台', 0.22, 3, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_products` VALUES (6, '联想ThinkPad X1 Carbon', 'LN-X1C2023', 5, 6, NULL, 9999.00, 12999.00, '/uploads/products/thinkpadx1.png', '联想,ThinkPad,笔记本,轻薄', '联想商务旗舰笔记本，轻薄坚固', 458, 200, '台', 1.20, 4, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 15:20:00');
-INSERT INTO `pms_products` VALUES (7, '戴尔XPS 15', 'DELL-XPS15', 5, 5, NULL, 12999.00, 13999.00, '/uploads/products/dellxps15.png', '戴尔,XPS,笔记本,设计', '戴尔高性能创意设计笔记本', 325, 150, '台', 1.80, 5, 1, 0, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 15:48:50');
-INSERT INTO `pms_products` VALUES (8, '索尼WH-1000XM5无线降噪耳机', 'SONY-WH1000XM5', 12, 7, NULL, 2699.00, 2999.00, '/uploads/products/wh1000xm5.png', '索尼,耳机,降噪,蓝牙', '索尼旗舰级无线降噪耳机，提供出色的降噪体验', 856, 300, '台', 0.25, 6, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (9, '小米手环8 Pro', 'MI-BAND8PRO', 12, 1, NULL, 399.00, 459.00, '/uploads/products/miband8pro.png', '小米,手环,健康,运动', '小米全新智能手环，支持运动健康监测', 1520, 1000, '个', 0.03, 7, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (10, '华为智慧屏V75 Super', 'HW-TV-V75S', 15, 2, NULL, 12999.00, 13999.00, '/uploads/products/huawei-v75s.png', '华为,电视,智慧屏,大屏', '华为75英寸旗舰智慧屏，搭载鸿蒙系统', 256, 100, '台', 30.00, 8, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (11, '飞利浦Hue智能灯泡套装', 'PHILIPS-HUE-KIT', 13, 10, NULL, 799.00, 899.00, '/uploads/products/philips-hue.png', '飞利浦,Hue,灯泡,智能家居', '飞利浦Hue智能照明系统，可通过手机APP控制', 423, 200, '套', 0.50, 9, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (12, '索尼Alpha 7 IV全画幅微单相机', 'SONY-A7IV', 14, 7, NULL, 14999.00, 15999.00, '/uploads/products/sony-a7iv.png', '索尼,相机,微单,全画幅', '索尼专业级全画幅微单相机，3300万像素', 189, 50, '台', 0.70, 10, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (3, '小米13', 'MI13-2023', 4, 0, 1, NULL, 3999.00, 4299.00, '/uploads/products/mi13.png', '小米,手机,5G,骁龙8', '小米年度旗舰手机，搭载骁龙8第二代处理器', 1258, 1000, '台', 0.20, 1, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 14:30:37');
+INSERT INTO `pms_products` VALUES (4, '华为Mate60 Pro', 'HW-MATE60P', 4, 0, 2, NULL, 6999.00, 7299.00, '/uploads/products/mate60pro.png', '华为,手机,旗舰,麒麟9000', '华为年度旗舰手机，搭载麒麟9000S处理器', 2056, 500, '台', 0.23, 2, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_products` VALUES (5, 'iPhone 15 Pro', 'APPL-IP15P', 4, 0, 3, NULL, 7999.00, 8299.00, '/uploads/products/iphone15pro.png', 'iPhone,苹果,A17,Pro', 'Apple新一代旗舰手机，搭载A17 Pro芯片', 3102, 800, '台', 0.22, 3, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_products` VALUES (6, '联想ThinkPad X1 Carbon', 'LN-X1C2023', 5, 0, 6, NULL, 9999.00, 12999.00, '/uploads/products/thinkpadx1.png', '联想,ThinkPad,笔记本,轻薄', '联想商务旗舰笔记本，轻薄坚固', 458, 200, '台', 1.20, 4, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 15:20:00');
+INSERT INTO `pms_products` VALUES (7, '戴尔XPS 15', 'DELL-XPS15', 5, 0, 5, NULL, 12999.00, 13999.00, '/uploads/products/dellxps15.png', '戴尔,XPS,笔记本,设计', '戴尔高性能创意设计笔记本', 325, 150, '台', 1.80, 5, 1, 0, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 15:48:50');
+INSERT INTO `pms_products` VALUES (8, '索尼WH-1000XM5无线降噪耳机', 'SONY-WH1000XM5', 12, 0, 7, NULL, 2699.00, 2999.00, '/uploads/products/wh1000xm5.png', '索尼,耳机,降噪,蓝牙', '索尼旗舰级无线降噪耳机，提供出色的降噪体验', 856, 300, '台', 0.25, 6, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (9, '小米手环8 Pro', 'MI-BAND8PRO', 12, 0, 1, NULL, 399.00, 459.00, '/uploads/products/miband8pro.png', '小米,手环,健康,运动', '小米全新智能手环，支持运动健康监测', 1520, 1000, '个', 0.03, 7, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (10, '华为智慧屏V75 Super', 'HW-TV-V75S', 15, 0, 2, NULL, 12999.00, 13999.00, '/uploads/products/huawei-v75s.png', '华为,电视,智慧屏,大屏', '华为75英寸旗舰智慧屏，搭载鸿蒙系统', 256, 100, '台', 30.00, 8, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (11, '飞利浦Hue智能灯泡套装', 'PHILIPS-HUE-KIT', 13, 0, 10, NULL, 799.00, 899.00, '/uploads/products/philips-hue.png', '飞利浦,Hue,灯泡,智能家居', '飞利浦Hue智能照明系统，可通过手机APP控制', 423, 200, '套', 0.50, 9, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (12, '索尼Alpha 7 IV全画幅微单相机', 'SONY-A7IV', 14, 0, 7, NULL, 14999.00, 15999.00, '/uploads/products/sony-a7iv.png', '索尼,相机,微单,全画幅', '索尼专业级全画幅微单相机，3300万像素', 189, 50, '台', 0.70, 10, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
 
 -- ----------------------------
 -- Table structure for pms_ratings
@@ -1465,7 +1466,7 @@ CREATE TABLE `ums_users`  (
   UNIQUE INDEX `uk_phone`(`phone`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_is_merchant`(`is_merchant`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_users
