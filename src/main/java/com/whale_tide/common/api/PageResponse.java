@@ -14,6 +14,12 @@ public class PageResponse<T> {
     private int pageSize;     // 每页记录数
     private long total;       // 总记录数
     private int totalPage;    // 总页数
+    
+    /**
+     * 无参构造函数
+     */
+    public PageResponse() {
+    }
 
     /**
      * 构造方法
