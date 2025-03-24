@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.PageResponse;
+import com.whale_tide.common.exception.product.ProductNotFoundException;
 import com.whale_tide.dto.client.product.*;
 import com.whale_tide.entity.pms.*;
 import com.whale_tide.mapper.pms.*;
@@ -226,7 +227,7 @@ public class ProductServiceImpl implements IProductService {
     public ProductDetailResponse getProductDetail(Long id) {
         // 查询商品基本信息
         PmsProducts product = pmsProductsMapper.selectById(id);
-        ProductAsserts.notNull(product); // 使用断言工具验证商品存在
+        if (product == null) throw new ProductNotFoundException("商品不存在");
         
         // 查询商品图片
         LambdaQueryWrapper<PmsProductImages> imagesQuery = new LambdaQueryWrapper<>();
