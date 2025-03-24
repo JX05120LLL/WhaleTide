@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * Cookie 工具类
+ *
+ */
 
 @Component
 public class CookieUtil {

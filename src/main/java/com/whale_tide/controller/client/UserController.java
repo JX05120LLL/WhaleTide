@@ -8,6 +8,7 @@ import com.whale_tide.dto.client.user.UserInfoResponse;
 import com.whale_tide.service.client.IUserService;
 import com.whale_tide.util.CookieUtil;
 import com.whale_tide.util.JwtUtil;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 @Slf4j
 @RestController("clientUserController")
 @RequestMapping("/sso")
+@Api(tags = "用户相关接口")
 public class UserController {
 
     @Autowired

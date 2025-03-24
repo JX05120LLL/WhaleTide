@@ -6,6 +6,7 @@ import com.whale_tide.common.api.PageResponse;
 import com.whale_tide.dto.client.product.*;
 import com.whale_tide.service.client.IBrandService;
 import com.whale_tide.service.client.IProductService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController("clientBrandController")
 @RequestMapping("/brand")
+@Api(tags = "品牌相关接口")
 public class BrandController {
 
     @Autowired

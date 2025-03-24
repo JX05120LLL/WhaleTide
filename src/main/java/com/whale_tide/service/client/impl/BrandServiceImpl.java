@@ -3,6 +3,8 @@ package com.whale_tide.service.client.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.whale_tide.common.api.PageResponse;
+import com.whale_tide.common.exception.brand.BrandNotFoundException;
+import com.whale_tide.common.exception.product.ProductNotFoundException;
 import com.whale_tide.dto.client.product.*;
 import com.whale_tide.entity.pms.PmsBrands;
 import com.whale_tide.entity.pms.PmsProductComments;
@@ -46,12 +48,16 @@ public class BrandServiceImpl implements IBrandService {
     public BrandDetailResponse getBrandDetail(Long id) {
         // 根据id拿到商品
         PmsProducts product = pmsProductsMapper.selectById(id);
+        if (product == null) throw new ProductNotFoundException("商品不存在");
         // 获得品牌id
         Long brandId = product.getBrandId();
         // 根据品牌id查询品牌信息
         LambdaQueryWrapper<PmsBrands> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(PmsBrands::getId, brandId);
         PmsBrands brand = brandsMapper.selectOne(queryWrapper);
+
+        if (brand == null) throw new BrandNotFoundException("品牌不存在");
+
         //查询商品数量
         Long l = pmsProductSkusMapper.selectCount(new LambdaQueryWrapper<PmsProductSkus>().eq(PmsProductSkus::getProductId, id));
         //查询评论数量
