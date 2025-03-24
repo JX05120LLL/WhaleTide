@@ -3,6 +3,7 @@ package com.whale_tide.controller.client;
 
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.common.api.PageResponse;
+import com.whale_tide.common.exception.base.ProductException;
 import com.whale_tide.dto.client.product.CategoryTreeResponse;
 import com.whale_tide.dto.client.product.ProductDetailResponse;
 import com.whale_tide.dto.client.product.ProductListItemResponse;
