@@ -6,6 +6,8 @@ spring:
     name: WhaleTide
   profiles:
     active: dev
+  main:
+    allow-bean-definition-overriding: true
   datasource:
     url: jdbc:mysql://db:3306/whale_tide?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root

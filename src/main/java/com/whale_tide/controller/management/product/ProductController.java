@@ -292,6 +292,31 @@ public class ProductController {
     @ApiOperation("创建商品")
     @PostMapping("/create")
     public CommonResult<Integer> createProduct(@RequestBody ProductParam productParam) {
+        // 添加详细日志记录
+        log.info("接收到创建商品请求，参数详情:");
+        log.info("productParam是否为null: {}", productParam == null);
+        
+        if (productParam != null) {
+            log.info("productParam.productParam是否为null: {}", productParam.getProductParam() == null);
+            if (productParam.getProductParam() != null) {
+                log.info("基本信息: name={}, categoryId={}, pic={}, price={}", 
+                    productParam.getProductParam().getName(),
+                    productParam.getProductParam().getCategoryId(),
+                    productParam.getProductParam().getPic(),
+                    productParam.getProductParam().getPrice());
+            }
+            
+            log.info("skuStockList是否为null: {}", productParam.getSkuStockList() == null);
+            if (productParam.getSkuStockList() != null) {
+                log.info("skuStockList大小: {}", productParam.getSkuStockList().size());
+            }
+            
+            log.info("attributeValueList是否为null: {}", productParam.getProductAttributeValueList() == null);
+            if (productParam.getProductAttributeValueList() != null) {
+                log.info("attributeValueList大小: {}", productParam.getProductAttributeValueList().size());
+            }
+        }
+        
         // 调用服务层方法，创建商品
         int count = productService.createProduct(productParam);
 
