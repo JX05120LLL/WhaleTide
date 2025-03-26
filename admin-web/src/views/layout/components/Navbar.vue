@@ -2,7 +2,7 @@
   <el-menu class="navbar" mode="horizontal">
     <hamburger class="hamburger-container" :toggleClick="toggleSideBar" :isActive="sidebar.opened"></hamburger>
     <breadcrumb></breadcrumb>
-    <div class="logo-container">
+    <div class="logo-container" v-if="$route.path === '/home'" @click="goToHome">
       <svg class="logo-svg" width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
         <!-- 背景圆形 -->
         <circle cx="100" cy="100" r="90" fill="#E6F3FF" stroke="#409EFF" stroke-width="4"/>
@@ -55,6 +55,9 @@ export default {
   methods: {
     toggleSideBar() {
       this.$store.dispatch('ToggleSideBar')
+    },
+    goToHome() {
+      this.$router.push('/home')
     }
   }
 }
@@ -76,20 +79,25 @@ export default {
 
   .logo-container {
     position: fixed;
-    top: 60px;
+    top: 20px;
     right: 20px;
     width: 200px;
     height: 200px;
-    z-index: 2000;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
 
     .logo-svg {
       width: 100%;
       height: 100%;
-      transition: transform 0.3s;
-
-      &:hover {
-        transform: scale(1.05);
-      }
     }
   }
 }

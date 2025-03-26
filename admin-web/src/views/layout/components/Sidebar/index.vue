@@ -79,6 +79,11 @@ export default {
   flex-direction: column;
 }
 
+.sidebar-container {
+  height: 100%;
+  overflow: hidden;
+}
+
 .logo-container {
   display: flex;
   align-items: center;
