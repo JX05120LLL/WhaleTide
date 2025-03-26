@@ -10,33 +10,33 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-
 /**
  * 阿里云短信工具类
  */
-
-
 @Slf4j
 @Component
 public class AliyunSmsUtil {
 
+    private static final String accessKeyId = "LTAI5t7bvZj1ydU5YcjnNPid";
+    private static final String accessKeySecret = "IwkYVa94n19aZUFEFbqHdlqlafdKWq";
+    private static final String SIGN_NAME = "Whale鲸浪"; // 审核通过的签名
+    private static final String TEMPLATE_CODE = "SMS_480900082"; // 审核通过的模板CODE
 
-    private  final String ACCESS_KEY_ID = "LTAI5tLPVCfhNKLceE8Uqhof";
-    private  final String ACCESS_KEY_SECRET = "epEZ0M7BFssmRCOt6i6A4fPRDxXBYp";
 
 
+    // 阿里云短信发送
     public void sendToPhone(String phone, String msg) {
         DefaultProfile profile = DefaultProfile.getProfile(
                 "cn-qingdao",
-                ACCESS_KEY_ID, //AccessIdKey
-                ACCESS_KEY_SECRET); //AccessKey Secret
+                accessKeyId, //AccessIdKey
+                accessKeySecret); //AccessKey Secret
         IAcsClient client = new DefaultAcsClient(profile);
 
         CommonRequest request = new CommonRequest();
@@ -46,11 +46,11 @@ public class AliyunSmsUtil {
         request.setSysVersion("2017-05-25");
         request.setSysAction("SendSms");
         //接收短信的手机号码
-        request.putQueryParameter(phone,"电话号码");//此处写电话号码
+        request.putQueryParameter("PhoneNumbers", phone);//此处写电话号码
         //短信签名名称
-        request.putQueryParameter("SignName","阿里云短信测试");
+        request.putQueryParameter("SignName", SIGN_NAME);
         //短信模板ID
-        request.putQueryParameter("TemplateCode","SMS_154950909");
+        request.putQueryParameter("TemplateCode", TEMPLATE_CODE);
         //短信模板变量对应的实际值 ${code} 中的值
         Map<String,String> param = new HashMap<>(2);
         param.put("code", String.valueOf(new Random().nextInt(80000)+10000)); //写入的短信内容

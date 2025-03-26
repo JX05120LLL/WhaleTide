@@ -1,6 +1,7 @@
 package com.whale_tide.controller.management.product;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.management.product.*;
@@ -22,7 +23,7 @@ import java.util.*;
  * 商品管理Controller
  */
 @Slf4j
-@RestController
+@RestController("managementProductController")
 @Api(tags = "ProductController", description = "产品管理")
 @RequestMapping("/product")
 public class ProductController {
@@ -178,9 +179,12 @@ public class ProductController {
         queryParam.setPageNum(pageNum);
         queryParam.setPageSize(pageSize);
 
+
         // 调用服务层方法
-        IPage<ProductListResult> productlist = productService.getProductList(queryParam);
-        return CommonResult.success(CommonPage.restPage(productlist));
+        IPage<ProductListResult> productPage = productService.getProductList(queryParam);
+        CommonPage<ProductListResult> commonPage = CommonPage.restPage((Page<ProductListResult>) productPage);
+
+        return CommonResult.success(commonPage);
     }
 
     @ApiOperation("获取简单产品列表")
@@ -288,6 +292,31 @@ public class ProductController {
     @ApiOperation("创建商品")
     @PostMapping("/create")
     public CommonResult<Integer> createProduct(@RequestBody ProductParam productParam) {
+        // 添加详细日志记录
+        log.info("接收到创建商品请求，参数详情:");
+        log.info("productParam是否为null: {}", productParam == null);
+        
+        if (productParam != null) {
+            log.info("productParam.productParam是否为null: {}", productParam.getProductParam() == null);
+            if (productParam.getProductParam() != null) {
+                log.info("基本信息: name={}, categoryId={}, pic={}, price={}", 
+                    productParam.getProductParam().getName(),
+                    productParam.getProductParam().getCategoryId(),
+                    productParam.getProductParam().getPic(),
+                    productParam.getProductParam().getPrice());
+            }
+            
+            log.info("skuStockList是否为null: {}", productParam.getSkuStockList() == null);
+            if (productParam.getSkuStockList() != null) {
+                log.info("skuStockList大小: {}", productParam.getSkuStockList().size());
+            }
+            
+            log.info("attributeValueList是否为null: {}", productParam.getProductAttributeValueList() == null);
+            if (productParam.getProductAttributeValueList() != null) {
+                log.info("attributeValueList大小: {}", productParam.getProductAttributeValueList().size());
+            }
+        }
+        
         // 调用服务层方法，创建商品
         int count = productService.createProduct(productParam);
 

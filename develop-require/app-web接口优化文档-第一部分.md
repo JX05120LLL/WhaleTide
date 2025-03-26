@@ -244,6 +244,7 @@ public class SmsCodeRequest {
 ```
 
 **建议DTO设计**:
+
 ```java
 // 请求
 public class ProductSearchRequest extends PageRequest {
@@ -262,7 +263,6 @@ public class ProductListItemResponse {
     private String pic;
     private BigDecimal price;
     private Integer sale;
-    private String subTitle;
     // getter和setter
 }
 ```
@@ -299,6 +299,7 @@ public class ProductListItemResponse {
 ```
 
 **建议DTO设计**:
+
 ```java
 public class CategoryTreeResponse {
     private Long id;
@@ -349,12 +350,12 @@ public class CategoryTreeResponse {
 ```
 
 **建议DTO设计**:
+
 ```java
 public class ProductDetailResponse {
     private Long id;
     private String name;
     private String pic;
-    private List<String> pics;
     private BigDecimal price;
     private BigDecimal originalPrice;
     private Integer sale;
@@ -407,6 +408,7 @@ public class ProductDetailResponse {
 ```
 
 **建议DTO设计**:
+
 ```java
 public class BrandDetailResponse {
     private Long id;
@@ -462,6 +464,7 @@ public class BrandDetailResponse {
 ```
 
 **建议DTO设计**:
+
 ```java
 // 请求
 public class BrandProductRequest extends PageRequest {

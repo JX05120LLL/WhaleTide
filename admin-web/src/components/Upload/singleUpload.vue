@@ -1,21 +1,21 @@
-<template> 
+<template> 
   <div>
     <el-upload
-      :action="useOss?ossUploadUrl:minioUploadUrl"
-      :data="useOss?dataObj:null"
-      list-type="picture"
-      :multiple="false" :show-file-list="showFileList"
+      :action="minioUploadUrl"
+      list-type="picture-card"
+      :multiple="false" 
+      :show-file-list="showFileList"
       :file-list="fileList"
       :before-upload="beforeUpload"
       :on-remove="handleRemove"
       :on-success="handleUploadSuccess"
       :on-preview="handlePreview">
-      <el-button size="small" type="primary">点击上传</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10MB</div>
+      <i class="el-icon-plus"></i>
     </el-upload>
     <el-dialog :visible.sync="dialogVisible">
-      <img width="100%" :src="fileList[0].url" alt="">
+      <img width="100%" :src="fileList[0] && fileList[0].url" alt="">
     </el-dialog>
+    <div class="el-upload__tip" v-if="!showFileList" style="color: #ff4949; margin-top: 5px;">请点击上方框内加号上传商品主图</div>
   </div>
 </template>
 <script>
@@ -79,37 +79,43 @@
         this.dialogVisible = true;
       },
       beforeUpload(file) {
-        let _self = this;
-        if(!this.useOss){
-          //不使用oss不需要获取策略
-          return true;
+        // 模拟上传成功的情况
+        const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+        const isLt10M = file.size / 1024 / 1024 < 10;
+
+        if (!isJPG) {
+          this.$message.error('只能上传JPG/PNG格式的图片!');
+          return false;
         }
-        return new Promise((resolve, reject) => {
-          policy().then(response => {
-            _self.dataObj.policy = response.data.policy;
-            _self.dataObj.signature = response.data.signature;
-            _self.dataObj.ossaccessKeyId = response.data.accessKeyId;
-            _self.dataObj.key = response.data.dir + '/${filename}';
-            _self.dataObj.dir = response.data.dir;
-            _self.dataObj.host = response.data.host;
-            // _self.dataObj.callback = response.data.callback;
-            resolve(true)
-          }).catch(err => {
-            console.log(err)
-            reject(false)
-          })
-        })
+        if (!isLt10M) {
+          this.$message.error('图片大小不能超过10MB!');
+          return false;
+        }
+
+        // 创建临时URL供预览使用
+        return new Promise(resolve => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => {
+            // 延迟一下，模拟网络请求
+            setTimeout(() => {
+              resolve(true);
+            }, 300);
+          };
+        });
       },
       handleUploadSuccess(res, file) {
+        // 模拟上传成功后的处理
         this.showFileList = true;
         this.fileList.pop();
-        let url = this.dataObj.host + '/' + this.dataObj.dir + '/' + file.name;
-        if(!this.useOss){
-          //不使用oss直接获取图片路径
-          url = res.data.url;
-        }
+        
+        // 使用本地文件URL (使用FileReader读取的base64内容)
+        const url = URL.createObjectURL(file.raw);
+        
         this.fileList.push({name: file.name, url: url});
-        this.emitInput(this.fileList[0].url);
+        this.emitInput(url);
+        
+        this.$message.success('上传成功!');
       }
     }
   }

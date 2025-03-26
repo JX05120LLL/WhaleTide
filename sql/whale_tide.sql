@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 19/03/2025 12:53:08
+ Date: 25/03/2025 20:42:04
 */
 
 SET NAMES utf8mb4;
@@ -111,10 +111,10 @@ CREATE TABLE `ams_admins`  (
 -- ----------------------------
 -- Records of ams_admins
 -- ----------------------------
-INSERT INTO `ams_admins` VALUES (12, 'admin', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '超级管理员', '123456', NULL, NULL, 0, 1, '2025-03-18 14:21:53', NULL, '超级管理员，拥有所有权限', 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-17 09:51:25');
+INSERT INTO `ams_admins` VALUES (12, 'admin', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '超级管理员', '123456', NULL, NULL, 0, 1, '2025-03-25 20:08:06', NULL, '超级管理员，拥有所有权限', 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-17 09:51:25');
 INSERT INTO `ams_admins` VALUES (13, 'merchant', '123456', '商家', NULL, NULL, NULL, 0, 1, '2025-03-16 15:10:25', NULL, '拥有 商品 和订单 模块 权限', 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-16 14:36:29');
 INSERT INTO `ams_admins` VALUES (14, 'user', '123456', '普通用户', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
-INSERT INTO `ams_admins` VALUES (17, 'admin1', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', NULL, '', NULL, NULL, 0, 1, '2025-03-18 14:21:38', NULL, 'testNote', 0, NULL, NULL, 0, '2025-03-17 09:48:23', '2025-03-17 09:48:23');
+INSERT INTO `ams_admins` VALUES (17, 'admin1', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', NULL, '', NULL, NULL, 0, 1, '2025-03-25 16:35:16', NULL, 'testNote', 0, NULL, NULL, 0, '2025-03-17 09:48:23', '2025-03-17 09:48:23');
 
 -- ----------------------------
 -- Table structure for ams_menus
@@ -188,7 +188,7 @@ CREATE TABLE `ams_permissions`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_permissions
@@ -334,7 +334,7 @@ CREATE TABLE `ams_role_permission_relations`  (
   INDEX `idx_permission_id`(`permission_id`) USING BTREE,
   CONSTRAINT `fk_permission_relation_permission` FOREIGN KEY (`permission_id`) REFERENCES `ams_permissions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_permission_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与权限关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与权限关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ams_role_resource_relations
@@ -350,7 +350,7 @@ CREATE TABLE `ams_role_resource_relations`  (
   INDEX `idx_resource_id`(`resource_id`) USING BTREE,
   CONSTRAINT `fk_resource_relation_resource` FOREIGN KEY (`resource_id`) REFERENCES `ams_resources` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_resource_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 133 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与资源关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 132 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与资源关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_role_resource_relations
@@ -410,14 +410,14 @@ CREATE TABLE `ams_roles`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_roles
 -- ----------------------------
 INSERT INTO `ams_roles` VALUES (1, '超级管理员', 'SUPER_ADMIN', '拥有所有操作权限，可以管理整个系统', 0, 1, 0, '2025-03-16 13:58:05', '2025-03-16 13:58:05');
 INSERT INTO `ams_roles` VALUES (2, '商家', 'MERCHANT', '拥有商品、订单、库存、营销管理权限', 1, 1, 0, '2025-03-16 13:58:05', '2025-03-16 13:58:05');
-INSERT INTO `ams_roles` VALUES (3, '普通用户', 'NORMAL_USER', '只具有基本查看权限，无修改权限', 2, 1, 0, '2025-03-16 13:58:05', '2025-03-16 13:58:05');
+INSERT INTO `ams_roles` VALUES (3, '普通用户', 'NORMAL_USER', '只具有基本查看权限，无修改权限', 2, 1, 0, '2025-03-16 13:58:05', '2025-03-24 18:13:55');
 
 -- ----------------------------
 -- Table structure for oms_cart_items
@@ -666,10 +666,10 @@ CREATE TABLE `pms_brands`  (
 -- ----------------------------
 -- Records of pms_brands
 -- ----------------------------
-INSERT INTO `pms_brands` VALUES (1, '小米', '/uploads/brands/xiaomi.png', '小米科技有限责任公司成立于2010年4月，是一家专注于高端智能手机、智能硬件和IoT生态链建设的创新型科技企业。', 'X', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-16 15:38:35');
-INSERT INTO `pms_brands` VALUES (2, '华为', '/uploads/brands/huawei.png', '华为技术有限公司成立于1987年，是全球领先的ICT（信息与通信）基础设施和智能终端提供商。', 'H', 2, 1, 1, '2025-03-16 13:15:47', '2025-03-18 14:28:36');
+INSERT INTO `pms_brands` VALUES (1, '小米', '/uploads/brands/xiaomi.png', '小米科技有限责任公司成立于2010年4月，是一家专注于高端智能手机、智能硬件和IoT生态链建设的创新型科技企业。', 'X', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-25 16:43:15');
+INSERT INTO `pms_brands` VALUES (2, '华为', '/uploads/brands/huawei.png', '华为技术有限公司成立于1987年，是全球领先的ICT（信息与通信）基础设施和智能终端提供商。', 'H', 2, 1, 1, '2025-03-16 13:15:47', '2025-03-25 16:37:51');
 INSERT INTO `pms_brands` VALUES (3, '苹果', '/uploads/brands/apple.png', '苹果公司是美国的一家高科技公司，2007年由苹果电脑公司更名而来，是世界领先的科技公司之一。', 'A', 3, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_brands` VALUES (4, '三星', '/uploads/brands/samsung.png', '三星集团是韩国最大的跨国企业集团，三星电子是三星集团的旗舰子公司。', 'S', 4, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
+INSERT INTO `pms_brands` VALUES (4, '三星', '/uploads/brands/samsung.png', '三星集团是韩国最大的跨国企业集团，三星电子是三星集团的旗舰子公司。', 'S', 4, 0, 1, '2025-03-16 13:15:47', '2025-03-25 16:37:49');
 INSERT INTO `pms_brands` VALUES (5, '戴尔', '/uploads/brands/dell.png', '戴尔科技集团是一家总部位于美国德克萨斯州朗德罗克的美国跨国科技公司。', 'D', 5, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
 INSERT INTO `pms_brands` VALUES (6, '联想', '/uploads/brands/lenovo.png', '联想集团是一家跨国科技公司，总部位于中国北京和美国北卡罗来纳州。', 'L', 6, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
 INSERT INTO `pms_brands` VALUES (7, '索尼', '/uploads/brands/sony.png', '索尼是一家总部位于日本的跨国公司，提供消费电子、游戏、娱乐和金融服务。', 'S', 7, 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
@@ -718,7 +718,7 @@ CREATE TABLE `pms_product_attribute_values`  (
   INDEX `idx_attribute_id`(`attribute_id`) USING BTREE,
   CONSTRAINT `fk_attr_value_attribute` FOREIGN KEY (`attribute_id`) REFERENCES `pms_product_attributes` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_attr_value_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性值表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性值表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_attributes
@@ -740,7 +740,7 @@ CREATE TABLE `pms_product_attributes`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   CONSTRAINT `fk_attribute_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_product_attributes
@@ -815,24 +815,32 @@ INSERT INTO `pms_product_categories` VALUES (19, 2, '空调', 2, '/uploads/categ
 -- ----------------------------
 DROP TABLE IF EXISTS `pms_product_comments`;
 CREATE TABLE `pms_product_comments`  (
-  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '评论ID',
-  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '评价ID',
   `product_id` bigint(0) NOT NULL COMMENT '商品ID',
-  `order_id` bigint(0) NULL DEFAULT NULL COMMENT '订单ID',
-  `order_item_id` bigint(0) NULL DEFAULT NULL COMMENT '订单商品ID',
-  `title` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '评论标题',
-  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '评论内容',
-  `rating` tinyint(0) NULL DEFAULT 5 COMMENT '评分：1-5分',
-  `images` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '评论图片，多个以逗号分隔',
+  `sku_id` bigint(0) NULL DEFAULT NULL COMMENT 'SKU ID',
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `order_id` bigint(0) NOT NULL COMMENT '订单ID',
+  `order_item_id` bigint(0) NOT NULL COMMENT '订单项ID',
+  `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '评价内容',
+  `images` json NULL COMMENT '评价图片（JSON格式）',
+  `videos` json NULL COMMENT '评价视频（JSON格式）',
+  `rating` decimal(2, 1) NOT NULL COMMENT '评分',
   `is_anonymous` tinyint(0) NULL DEFAULT 0 COMMENT '是否匿名：0-否，1-是',
-  `is_show` tinyint(0) NULL DEFAULT 1 COMMENT '是否显示：0-不显示，1-显示',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '评论时间',
+  `is_show` tinyint(0) NULL DEFAULT 1 COMMENT '是否显示：0-否，1-是',
+  `is_reply` tinyint(0) NULL DEFAULT 0 COMMENT '是否回复：0-否，1-是',
+  `reply_content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '回复内容',
+  `reply_time` datetime(0) NULL DEFAULT NULL COMMENT '回复时间',
+  `reply_user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '回复人',
+  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
+  INDEX `idx_sku_id`(`sku_id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
-  CONSTRAINT `fk_comment_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评论表' ROW_FORMAT = Dynamic;
+  CONSTRAINT `fk_comment_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_comment_sku` FOREIGN KEY (`sku_id`) REFERENCES `pms_product_skus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_details
@@ -869,6 +877,52 @@ CREATE TABLE `pms_product_images`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品图片表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for pms_product_promotions
+-- ----------------------------
+DROP TABLE IF EXISTS `pms_product_promotions`;
+CREATE TABLE `pms_product_promotions`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '促销ID',
+  `product_id` bigint(0) NOT NULL COMMENT '商品ID',
+  `sku_id` bigint(0) NULL DEFAULT NULL COMMENT 'SKU ID',
+  `promotion_type` tinyint(0) NOT NULL COMMENT '促销类型：0-无促销，1-特价促销，2-会员价格，3-阶梯价格，4-满减价格',
+  `promotion_price` decimal(10, 2) NOT NULL COMMENT '促销价格',
+  `promotion_start_time` datetime(0) NOT NULL COMMENT '促销开始时间',
+  `promotion_end_time` datetime(0) NOT NULL COMMENT '促销结束时间',
+  `promotion_limit` int(0) NULL DEFAULT NULL COMMENT '促销限购数量',
+  `promotion_rules` json NULL COMMENT '促销规则（JSON格式）',
+  `promotion_status` tinyint(0) NULL DEFAULT 0 COMMENT '促销状态：0-未开始，1-进行中，2-已结束',
+  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_product_id`(`product_id`) USING BTREE,
+  INDEX `idx_sku_id`(`sku_id`) USING BTREE,
+  CONSTRAINT `fk_promotion_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_promotion_sku` FOREIGN KEY (`sku_id`) REFERENCES `pms_product_skus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品促销表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for pms_product_service_guarantees
+-- ----------------------------
+DROP TABLE IF EXISTS `pms_product_service_guarantees`;
+CREATE TABLE `pms_product_service_guarantees`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '服务保障ID',
+  `product_id` bigint(0) NOT NULL COMMENT '商品ID',
+  `sku_id` bigint(0) NULL DEFAULT NULL COMMENT 'SKU ID',
+  `service_type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '服务类型',
+  `service_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '服务名称',
+  `service_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '服务描述',
+  `service_rules` json NULL COMMENT '服务规则（JSON格式）',
+  `service_status` tinyint(0) NULL DEFAULT 0 COMMENT '服务状态：0-禁用，1-启用',
+  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_product_id`(`product_id`) USING BTREE,
+  INDEX `idx_sku_id`(`sku_id`) USING BTREE,
+  CONSTRAINT `fk_service_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_service_sku` FOREIGN KEY (`sku_id`) REFERENCES `pms_product_skus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品服务保障表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for pms_product_skus
 -- ----------------------------
 DROP TABLE IF EXISTS `pms_product_skus`;
@@ -876,10 +930,44 @@ CREATE TABLE `pms_product_skus`  (
   `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT 'SKU ID',
   `product_id` bigint(0) NOT NULL COMMENT '商品ID',
   `sku_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'SKU编码',
+  `sku_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU名称',
+  `sku_brief` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU简介',
+  `sku_keywords` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU关键词',
   `price` decimal(10, 2) NOT NULL COMMENT '价格',
   `stock` int(0) NULL DEFAULT 0 COMMENT '库存',
   `low_stock` int(0) NULL DEFAULT 0 COMMENT '预警库存',
   `image` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU图片',
+  `sku_images` json NULL COMMENT 'SKU图片（JSON格式）',
+  `sku_videos` json NULL COMMENT 'SKU视频（JSON格式）',
+  `sku_details` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT 'SKU详情',
+  `sku_attributes` json NULL COMMENT 'SKU属性（JSON格式）',
+  `sku_promotion_type` tinyint(0) NULL DEFAULT 0 COMMENT 'SKU促销类型：0-无促销，1-特价促销，2-会员价格，3-阶梯价格，4-满减价格',
+  `sku_promotion_price` decimal(10, 2) NULL DEFAULT NULL COMMENT 'SKU促销价格',
+  `sku_promotion_start_time` datetime(0) NULL DEFAULT NULL COMMENT 'SKU促销开始时间',
+  `sku_promotion_end_time` datetime(0) NULL DEFAULT NULL COMMENT 'SKU促销结束时间',
+  `sku_promotion_limit` int(0) NULL DEFAULT NULL COMMENT 'SKU促销限购数量',
+  `sku_service_guarantees` json NULL COMMENT 'SKU服务保障（JSON格式）',
+  `sku_rating` decimal(2, 1) NULL DEFAULT 0.0 COMMENT 'SKU评分',
+  `sku_rating_count` int(0) NULL DEFAULT 0 COMMENT 'SKU评分数量',
+  `sku_comment_count` int(0) NULL DEFAULT 0 COMMENT 'SKU评价数量',
+  `sku_view_count` int(0) NULL DEFAULT 0 COMMENT 'SKU浏览量',
+  `sku_favorite_count` int(0) NULL DEFAULT 0 COMMENT 'SKU收藏量',
+  `sku_share_count` int(0) NULL DEFAULT 0 COMMENT 'SKU分享量',
+  `sku_sale_count` int(0) NULL DEFAULT 0 COMMENT 'SKU销量',
+  `sku_return_count` int(0) NULL DEFAULT 0 COMMENT 'SKU退货量',
+  `sku_refund_count` int(0) NULL DEFAULT 0 COMMENT 'SKU退款量',
+  `sku_complaint_count` int(0) NULL DEFAULT 0 COMMENT 'SKU投诉量',
+  `sku_audit_status` tinyint(0) NULL DEFAULT 0 COMMENT 'SKU审核状态：0-待审核，1-审核通过，2-审核不通过',
+  `sku_audit_time` datetime(0) NULL DEFAULT NULL COMMENT 'SKU审核时间',
+  `sku_audit_user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU审核人',
+  `sku_audit_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU审核备注',
+  `sku_status` tinyint(0) NULL DEFAULT 0 COMMENT 'SKU状态：0-下架，1-上架，2-删除',
+  `sku_status_time` datetime(0) NULL DEFAULT NULL COMMENT 'SKU状态变更时间',
+  `sku_status_user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU状态变更人',
+  `sku_status_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU状态变更备注',
+  `sku_version` int(0) NULL DEFAULT 1 COMMENT 'SKU版本号',
+  `sku_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU备注',
+  `sku_extra` json NULL COMMENT 'SKU扩展信息（JSON格式）',
   `specs` json NULL COMMENT '规格属性（JSON格式）',
   `specs_text` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '规格文本，用于展示',
   `volume` decimal(10, 2) NULL DEFAULT NULL COMMENT '体积(m³)',
@@ -892,24 +980,25 @@ CREATE TABLE `pms_product_skus`  (
   UNIQUE INDEX `uk_sku_code`(`sku_code`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_sku_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品SKU表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 32 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品SKU表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_product_skus
 -- ----------------------------
-INSERT INTO `pms_product_skus` VALUES (18, 6, 'WH1000XM5-BLACK', 2699.00, 100, 20, '/uploads/skus/wh1000xm5-black.png', '{\"颜色\": \"黑色\"}', '黑色', 0.00, 0.25, 500, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (19, 6, 'WH1000XM5-WHITE', 2699.00, 100, 20, '/uploads/skus/wh1000xm5-white.png', '{\"颜色\": \"白色\"}', '白色', 0.00, 0.25, 356, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (20, 6, 'WH1000XM5-BLUE', 2799.00, 100, 20, '/uploads/skus/wh1000xm5-blue.png', '{\"颜色\": \"蓝色\"}', '蓝色', 0.00, 0.25, 0, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (21, 7, 'MI-BAND8PRO-BLACK', 399.00, 300, 50, '/uploads/skus/miband8pro-black.png', '{\"颜色\": \"黑色\"}', '黑色', 0.00, 0.03, 600, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (22, 7, 'MI-BAND8PRO-BLUE', 399.00, 300, 50, '/uploads/skus/miband8pro-blue.png', '{\"颜色\": \"蓝色\"}', '蓝色', 0.00, 0.03, 520, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (23, 7, 'MI-BAND8PRO-GREEN', 399.00, 300, 50, '/uploads/skus/miband8pro-green.png', '{\"颜色\": \"绿色\"}', '绿色', 0.00, 0.03, 400, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (24, 7, 'MI-BAND8PRO-RED', 459.00, 100, 20, '/uploads/skus/miband8pro-red.png', '{\"颜色\": \"红色\"}', '红色限定版', 0.00, 0.03, 0, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (25, 8, 'HW-TV-V75S-STD', 12999.00, 50, 10, '/uploads/skus/huawei-v75s.png', '{\"版本\": \"标准版\"}', '标准版', 0.50, 30.00, 156, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (26, 8, 'HW-TV-V75S-PRO', 14999.00, 50, 10, '/uploads/skus/huawei-v75s-pro.png', '{\"版本\": \"Pro版\"}', 'Pro版', 0.50, 30.50, 100, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (27, 9, 'PHILIPS-HUE-3BULB', 799.00, 100, 20, '/uploads/skus/philips-hue-3.png', '{\"套装\": \"3个灯泡套装\"}', '3个灯泡套装', 0.01, 0.50, 250, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (28, 9, 'PHILIPS-HUE-5BULB', 1299.00, 100, 20, '/uploads/skus/philips-hue-5.png', '{\"套装\": \"5个灯泡套装\"}', '5个灯泡套装', 0.01, 0.80, 173, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (29, 10, 'SONY-A7IV-BODY', 14999.00, 20, 5, '/uploads/skus/sony-a7iv-body.png', '{\"套装\": \"机身\"}', '机身', 0.01, 0.70, 100, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_product_skus` VALUES (30, 10, 'SONY-A7IV-KIT', 17999.00, 30, 5, '/uploads/skus/sony-a7iv-kit.png', '{\"套装\": \"标准镜头套装\"}', '标准镜头套装', 0.01, 1.20, 89, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (18, 6, 'WH1000XM5-BLACK', NULL, NULL, NULL, 2699.00, 100, 20, '/uploads/skus/wh1000xm5-black.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"颜色\": \"黑色\"}', '黑色', 0.00, 0.25, 500, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (19, 6, 'WH1000XM5-WHITE', NULL, NULL, NULL, 2699.00, 100, 20, '/uploads/skus/wh1000xm5-white.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"颜色\": \"白色\"}', '白色', 0.00, 0.25, 356, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (20, 6, 'WH1000XM5-BLUE', NULL, NULL, NULL, 2799.00, 100, 20, '/uploads/skus/wh1000xm5-blue.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"颜色\": \"蓝色\"}', '蓝色', 0.00, 0.25, 0, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (21, 7, 'MI-BAND8PRO-BLACK', NULL, NULL, NULL, 399.00, 300, 50, '/uploads/skus/miband8pro-black.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"颜色\": \"黑色\"}', '黑色', 0.00, 0.03, 600, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (22, 7, 'MI-BAND8PRO-BLUE', NULL, NULL, NULL, 399.00, 300, 50, '/uploads/skus/miband8pro-blue.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"颜色\": \"蓝色\"}', '蓝色', 0.00, 0.03, 520, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (23, 7, 'MI-BAND8PRO-GREEN', NULL, NULL, NULL, 399.00, 300, 50, '/uploads/skus/miband8pro-green.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"颜色\": \"绿色\"}', '绿色', 0.00, 0.03, 400, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (24, 7, 'MI-BAND8PRO-RED', NULL, NULL, NULL, 459.00, 100, 20, '/uploads/skus/miband8pro-red.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"颜色\": \"红色\"}', '红色限定版', 0.00, 0.03, 0, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (25, 8, 'HW-TV-V75S-STD', NULL, NULL, NULL, 12999.00, 50, 10, '/uploads/skus/huawei-v75s.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"版本\": \"标准版\"}', '标准版', 0.50, 30.00, 156, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (26, 8, 'HW-TV-V75S-PRO', NULL, NULL, NULL, 14999.00, 50, 10, '/uploads/skus/huawei-v75s-pro.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"版本\": \"Pro版\"}', 'Pro版', 0.50, 30.50, 100, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (27, 9, 'PHILIPS-HUE-3BULB', NULL, NULL, NULL, 799.00, 100, 20, '/uploads/skus/philips-hue-3.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"套装\": \"3个灯泡套装\"}', '3个灯泡套装', 0.01, 0.50, 250, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (28, 9, 'PHILIPS-HUE-5BULB', NULL, NULL, NULL, 1299.00, 100, 20, '/uploads/skus/philips-hue-5.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"套装\": \"5个灯泡套装\"}', '5个灯泡套装', 0.01, 0.80, 173, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (29, 10, 'SONY-A7IV-BODY', NULL, NULL, NULL, 14999.00, 20, 5, '/uploads/skus/sony-a7iv-body.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"套装\": \"机身\"}', '机身', 0.01, 0.70, 100, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (30, 10, 'SONY-A7IV-KIT', NULL, NULL, NULL, 17999.00, 30, 5, '/uploads/skus/sony-a7iv-kit.png', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{\"套装\": \"标准镜头套装\"}', '标准镜头套装', 0.01, 1.20, 89, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_product_skus` VALUES (31, 14, 'SKU142406', NULL, NULL, NULL, 0.01, 100, 10, NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, '{}', NULL, NULL, NULL, 0, 0, '2025-03-25 20:36:22', '2025-03-25 20:36:22');
 
 -- ----------------------------
 -- Table structure for pms_products
@@ -920,11 +1009,14 @@ CREATE TABLE `pms_products`  (
   `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品名称',
   `product_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品编号',
   `category_id` bigint(0) NOT NULL COMMENT '分类ID',
+  `attribute_id` bigint(0) NOT NULL COMMENT '属性ID',
   `brand_id` bigint(0) NULL DEFAULT NULL COMMENT '品牌ID',
   `merchant_id` bigint(0) NULL DEFAULT NULL COMMENT '商家ID',
   `price` decimal(10, 2) NOT NULL COMMENT '商品价格',
   `original_price` decimal(10, 2) NULL DEFAULT NULL COMMENT '原价',
   `main_image` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '主图URL',
+  `album_pics` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '画册图片，连产品图片限制为5张，以逗号分割',
+  `detail_title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品详情标题',
   `keywords` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '关键词',
   `brief` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '简短描述',
   `sale` int(0) NULL DEFAULT 0 COMMENT '销量',
@@ -936,6 +1028,43 @@ CREATE TABLE `pms_products`  (
   `new_status` tinyint(0) NULL DEFAULT 0 COMMENT '新品状态：0-非新品，1-新品',
   `recommend_status` tinyint(0) NULL DEFAULT 0 COMMENT '推荐状态：0-不推荐，1-推荐',
   `verify_status` tinyint(0) NULL DEFAULT 0 COMMENT '审核状态：0-未审核，1-审核通过，2-审核不通过',
+  `promotion_type` tinyint(0) NULL DEFAULT 0 COMMENT '促销类型：0-无促销，1-特价促销，2-会员价格，3-阶梯价格，4-满减价格',
+  `promotion_price` decimal(10, 2) NULL DEFAULT NULL COMMENT '促销价格',
+  `promotion_start_time` datetime(0) NULL DEFAULT NULL COMMENT '促销开始时间',
+  `promotion_end_time` datetime(0) NULL DEFAULT NULL COMMENT '促销结束时间',
+  `promotion_limit` int(0) NULL DEFAULT NULL COMMENT '促销限购数量',
+  `service_guarantees` json NULL COMMENT '服务保障（JSON格式）',
+  `product_attributes` json NULL COMMENT '商品属性（JSON格式）',
+  `product_images` json NULL COMMENT '商品图片（JSON格式）',
+  `product_videos` json NULL COMMENT '商品视频（JSON格式）',
+  `product_details` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '商品详情',
+  `product_specs` json NULL COMMENT '商品规格（JSON格式）',
+  `product_subjects` json NULL COMMENT '商品专题（JSON格式）',
+  `product_tags` json NULL COMMENT '商品标签（JSON格式）',
+  `product_related` json NULL COMMENT '相关商品（JSON格式）',
+  `product_recommend` json NULL COMMENT '推荐商品（JSON格式）',
+  `product_comment` json NULL COMMENT '商品评价（JSON格式）',
+  `product_rating` decimal(2, 1) NULL DEFAULT 0.0 COMMENT '商品评分',
+  `product_rating_count` int(0) NULL DEFAULT 0 COMMENT '商品评分数量',
+  `product_comment_count` int(0) NULL DEFAULT 0 COMMENT '商品评价数量',
+  `product_view_count` int(0) NULL DEFAULT 0 COMMENT '商品浏览量',
+  `product_favorite_count` int(0) NULL DEFAULT 0 COMMENT '商品收藏量',
+  `product_share_count` int(0) NULL DEFAULT 0 COMMENT '商品分享量',
+  `product_sale_count` int(0) NULL DEFAULT 0 COMMENT '商品销量',
+  `product_return_count` int(0) NULL DEFAULT 0 COMMENT '商品退货量',
+  `product_refund_count` int(0) NULL DEFAULT 0 COMMENT '商品退款量',
+  `product_complaint_count` int(0) NULL DEFAULT 0 COMMENT '商品投诉量',
+  `product_audit_status` tinyint(0) NULL DEFAULT 0 COMMENT '商品审核状态：0-待审核，1-审核通过，2-审核不通过',
+  `product_audit_time` datetime(0) NULL DEFAULT NULL COMMENT '商品审核时间',
+  `product_audit_user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品审核人',
+  `product_audit_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品审核备注',
+  `product_status` tinyint(0) NULL DEFAULT 0 COMMENT '商品状态：0-下架，1-上架，2-删除',
+  `product_status_time` datetime(0) NULL DEFAULT NULL COMMENT '商品状态变更时间',
+  `product_status_user` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品状态变更人',
+  `product_status_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品状态变更备注',
+  `product_version` int(0) NULL DEFAULT 1 COMMENT '商品版本号',
+  `product_remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品备注',
+  `product_extra` json NULL COMMENT '商品扩展信息（JSON格式）',
   `is_deleted` tinyint(0) NULL DEFAULT 0 COMMENT '是否删除：0-否，1-是',
   `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
@@ -946,21 +1075,23 @@ CREATE TABLE `pms_products`  (
   INDEX `idx_merchant_id`(`merchant_id`) USING BTREE,
   CONSTRAINT `fk_product_brand` FOREIGN KEY (`brand_id`) REFERENCES `pms_brands` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `fk_product_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_products
 -- ----------------------------
-INSERT INTO `pms_products` VALUES (3, '小米13', 'MI13-2023', 4, 1, NULL, 3999.00, 4299.00, '/uploads/products/mi13.png', '小米,手机,5G,骁龙8', '小米年度旗舰手机，搭载骁龙8第二代处理器', 1258, 1000, '台', 0.20, 1, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 14:30:37');
-INSERT INTO `pms_products` VALUES (4, '华为Mate60 Pro', 'HW-MATE60P', 4, 2, NULL, 6999.00, 7299.00, '/uploads/products/mate60pro.png', '华为,手机,旗舰,麒麟9000', '华为年度旗舰手机，搭载麒麟9000S处理器', 2056, 500, '台', 0.23, 2, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_products` VALUES (5, 'iPhone 15 Pro', 'APPL-IP15P', 4, 3, NULL, 7999.00, 8299.00, '/uploads/products/iphone15pro.png', 'iPhone,苹果,A17,Pro', 'Apple新一代旗舰手机，搭载A17 Pro芯片', 3102, 800, '台', 0.22, 3, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_products` VALUES (6, '联想ThinkPad X1 Carbon', 'LN-X1C2023', 5, 6, NULL, 9999.00, 12999.00, '/uploads/products/thinkpadx1.png', '联想,ThinkPad,笔记本,轻薄', '联想商务旗舰笔记本，轻薄坚固', 458, 200, '台', 1.20, 4, 1, 1, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 15:20:00');
-INSERT INTO `pms_products` VALUES (7, '戴尔XPS 15', 'DELL-XPS15', 5, 5, NULL, 12999.00, 13999.00, '/uploads/products/dellxps15.png', '戴尔,XPS,笔记本,设计', '戴尔高性能创意设计笔记本', 325, 150, '台', 1.80, 5, 1, 0, 1, 1, 0, '2025-03-16 13:15:47', '2025-03-16 15:48:50');
-INSERT INTO `pms_products` VALUES (8, '索尼WH-1000XM5无线降噪耳机', 'SONY-WH1000XM5', 12, 7, NULL, 2699.00, 2999.00, '/uploads/products/wh1000xm5.png', '索尼,耳机,降噪,蓝牙', '索尼旗舰级无线降噪耳机，提供出色的降噪体验', 856, 300, '台', 0.25, 6, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (9, '小米手环8 Pro', 'MI-BAND8PRO', 12, 1, NULL, 399.00, 459.00, '/uploads/products/miband8pro.png', '小米,手环,健康,运动', '小米全新智能手环，支持运动健康监测', 1520, 1000, '个', 0.03, 7, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (10, '华为智慧屏V75 Super', 'HW-TV-V75S', 15, 2, NULL, 12999.00, 13999.00, '/uploads/products/huawei-v75s.png', '华为,电视,智慧屏,大屏', '华为75英寸旗舰智慧屏，搭载鸿蒙系统', 256, 100, '台', 30.00, 8, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (11, '飞利浦Hue智能灯泡套装', 'PHILIPS-HUE-KIT', 13, 10, NULL, 799.00, 899.00, '/uploads/products/philips-hue.png', '飞利浦,Hue,灯泡,智能家居', '飞利浦Hue智能照明系统，可通过手机APP控制', 423, 200, '套', 0.50, 9, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (12, '索尼Alpha 7 IV全画幅微单相机', 'SONY-A7IV', 14, 7, NULL, 14999.00, 15999.00, '/uploads/products/sony-a7iv.png', '索尼,相机,微单,全画幅', '索尼专业级全画幅微单相机，3300万像素', 189, 50, '台', 0.70, 10, 1, 1, 1, 1, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (3, '小米13', 'MI13-2023', 4, 0, 1, NULL, 3999.00, 4299.00, 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png?x-fds-process=image/resize,q_90,f_webp', NULL, NULL, '小米,手机,5G,骁龙8', '小米年度旗舰手机，搭载骁龙8第二代处理器', 1258, 1000, '台', 0.20, 1, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-25 16:41:25');
+INSERT INTO `pms_products` VALUES (4, '华为Mate60 Pro', 'HW-MATE60P', 4, 0, 2, NULL, 6999.00, 7299.00, 'http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20221104/huawei_mate50_01.jpg', NULL, NULL, '华为,手机,旗舰,麒麟9000', '华为年度旗舰手机，搭载麒麟9000S处理器', 2056, 500, '台', 0.23, 2, 1, 1, 0, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-25 16:40:12');
+INSERT INTO `pms_products` VALUES (5, 'iPhone 15 Pro', 'APPL-IP15P', 4, 0, 3, NULL, 7999.00, 8299.00, 'http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20221028/iphone14_001.jpg', NULL, NULL, 'iPhone,苹果,A17,Pro', 'Apple新一代旗舰手机，搭载A17 Pro芯片', 3102, 800, '台', 0.22, 3, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-25 16:42:21');
+INSERT INTO `pms_products` VALUES (6, '联想ThinkPad X1 Carbon', 'LN-X1C2023', 5, 0, 6, NULL, 9999.00, 12999.00, '/uploads/products/thinkpadx1.png', NULL, NULL, '联想,ThinkPad,笔记本,轻薄', '联想商务旗舰笔记本，轻薄坚固', 458, 200, '台', 1.20, 4, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-16 15:20:00');
+INSERT INTO `pms_products` VALUES (7, '戴尔XPS 15', 'DELL-XPS15', 5, 0, 5, NULL, 12999.00, 13999.00, '/uploads/products/dellxps15.png', NULL, NULL, '戴尔,XPS,笔记本,设计', '戴尔高性能创意设计笔记本', 325, 150, '台', 1.80, 5, 1, 0, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-16 15:48:50');
+INSERT INTO `pms_products` VALUES (8, '索尼WH-1000XM5无线降噪耳机', 'SONY-WH1000XM5', 12, 0, 7, NULL, 2699.00, 2999.00, '/uploads/products/wh1000xm5.png', NULL, NULL, '索尼,耳机,降噪,蓝牙', '索尼旗舰级无线降噪耳机，提供出色的降噪体验', 856, 300, '台', 0.25, 6, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (9, '小米手环8 Pro', 'MI-BAND8PRO', 12, 0, 1, NULL, 399.00, 459.00, '/uploads/products/miband8pro.png', NULL, NULL, '小米,手环,健康,运动', '小米全新智能手环，支持运动健康监测', 1520, 1000, '个', 0.03, 7, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (10, '华为智慧屏V75 Super', 'HW-TV-V75S', 15, 0, 2, NULL, 12999.00, 13999.00, '/uploads/products/huawei-v75s.png', NULL, NULL, '华为,电视,智慧屏,大屏', '华为75英寸旗舰智慧屏，搭载鸿蒙系统', 256, 100, '台', 30.00, 8, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (11, '飞利浦Hue智能灯泡套装', 'PHILIPS-HUE-KIT', 13, 0, 10, NULL, 799.00, 899.00, '/uploads/products/philips-hue.png', NULL, NULL, '飞利浦,Hue,灯泡,智能家居', '飞利浦Hue智能照明系统，可通过手机APP控制', 423, 200, '套', 0.50, 9, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (12, '索尼Alpha 7 IV全画幅微单相机', 'SONY-A7IV', 14, 0, 7, NULL, 14999.00, 15999.00, '/uploads/products/sony-a7iv.png', NULL, NULL, '索尼,相机,微单,全画幅', '索尼专业级全画幅微单相机，3300万像素', 189, 50, '台', 0.70, 10, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_products` VALUES (13, '小米15', '555', 5, 0, 1, 1, 999.00, 5444.00, 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png?x-fds-process=image/resize,q_90,f_webp', '', NULL, '', NULL, 0, 1000, '50', 50.00, 50, 0, 1, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-25 19:33:37', '2025-03-25 19:33:37');
+INSERT INTO `pms_products` VALUES (14, '未命名商品_1742906182359', 'P1742906182359', 1, 0, NULL, 1, 0.01, NULL, NULL, NULL, NULL, NULL, NULL, 0, 100, NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-25 20:36:22', '2025-03-25 20:36:22');
 
 -- ----------------------------
 -- Table structure for pms_ratings
@@ -1019,7 +1150,7 @@ CREATE TABLE `sms_coupon_categories`  (
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   CONSTRAINT `fk_category_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用分类关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用分类关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_history
@@ -1043,7 +1174,7 @@ CREATE TABLE `sms_coupon_history`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_history_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券领取历史表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券领取历史表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_products
@@ -1060,7 +1191,7 @@ CREATE TABLE `sms_coupon_products`  (
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupons
@@ -1091,7 +1222,7 @@ CREATE TABLE `sms_coupons`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion
@@ -1113,7 +1244,7 @@ CREATE TABLE `sms_flash_promotion`  (
   INDEX `idx_start_date`(`start_date`) USING BTREE,
   INDEX `idx_end_date`(`end_date`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion_products
@@ -1141,7 +1272,7 @@ CREATE TABLE `sms_flash_promotion_products`  (
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_flash` FOREIGN KEY (`flash_promotion_id`) REFERENCES `sms_flash_promotion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_product_session` FOREIGN KEY (`flash_session_id`) REFERENCES `sms_flash_promotion_sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion_sessions
@@ -1160,7 +1291,7 @@ CREATE TABLE `sms_flash_promotion_sessions`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_flash_promotion_id`(`flash_promotion_id`) USING BTREE,
   CONSTRAINT `fk_session_flash` FOREIGN KEY (`flash_promotion_id`) REFERENCES `sms_flash_promotion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀场次表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀场次表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_logs
@@ -1182,7 +1313,7 @@ CREATE TABLE `sms_promotion_logs`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_log_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_products
@@ -1202,7 +1333,7 @@ CREATE TABLE `sms_promotion_products`  (
   INDEX `idx_promotion_id`(`promotion_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotions
@@ -1229,7 +1360,7 @@ CREATE TABLE `sms_promotions`  (
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_merchants
@@ -1412,7 +1543,7 @@ CREATE TABLE `ums_user_roles`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_user_role_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_search_history
@@ -1465,11 +1596,11 @@ CREATE TABLE `ums_users`  (
   UNIQUE INDEX `uk_phone`(`phone`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_is_merchant`(`is_merchant`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_users
 -- ----------------------------
-INSERT INTO `ums_users` VALUES (12, '张三', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '123464984166', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-03-18 18:38:24', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-03-18 17:42:20', '2025-03-18 17:50:26');
+INSERT INTO `ums_users` VALUES (12, '张三', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '123464984166', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-03-24 18:21:52', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-03-18 17:42:20', '2025-03-18 17:50:26');
 
 SET FOREIGN_KEY_CHECKS = 1;

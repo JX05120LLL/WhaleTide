@@ -7,6 +7,9 @@
           :options="productCateOptions">
         </el-cascader>
       </el-form-item>
+      <el-form-item label="商品主图：" prop="pic">
+        <single-upload v-model="value.pic"></single-upload>
+      </el-form-item>
       <el-form-item label="商品名称：" prop="name">
         <el-input v-model="value.name"></el-input>
       </el-form-item>
@@ -65,10 +68,12 @@
 <script>
   import {fetchListWithChildren} from '@/api/productCate'
   import {fetchList as fetchBrandList} from '@/api/brand'
-  import {getProduct} from '@/api/product';
+  import {getProduct} from '@/api/product'
+  import SingleUpload from '@/components/Upload/singleUpload'
 
   export default {
     name: "ProductInfoDetail",
+    components: {SingleUpload},
     props: {
       value: Object,
       isEdit: {
@@ -88,6 +93,7 @@
             {required: true, message: '请输入商品名称', trigger: 'blur'},
             {min: 2, max: 140, message: '长度在 2 到 140 个字符', trigger: 'blur'}
           ],
+          pic: [{required: true, message: '请上传商品主图', trigger: 'blur'}],
           subTitle: [{required: true, message: '请输入商品副标题', trigger: 'blur'}],
           productCategoryId: [{required: true, message: '请选择商品分类', trigger: 'blur'}],
           brandId: [{required: true, message: '请选择商品品牌', trigger: 'blur'}],

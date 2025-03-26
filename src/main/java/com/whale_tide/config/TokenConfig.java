@@ -12,6 +12,6 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties(prefix = "token")
 @Data
 public class TokenConfig {
-    private Integer expireHours;
-    private String secret;
+    private Integer expireHours; // 过期时间
+    private String secret; // 密钥
 }

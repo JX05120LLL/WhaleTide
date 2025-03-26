@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -223,78 +224,190 @@ public class ProductServiceImpl implements IProductService {
     public int createProduct(ProductParam productParam) {
         int count = 0;
 
-        // 1. 创建并保存商品基本信息
+        // 创建并保存商品基本信息
         PmsProducts product = new PmsProducts();
-        ProductParam.ProductBasicParam basicParam = productParam.getProductParam();
-        if (basicParam == null) {
-            return 0;
-        }
-
-        // 复制基本信息
-        BeanUtils.copyProperties(basicParam, product);
-
-        // 验证分类ID是否有效，如果无效则使用默认值1
-        Long categoryId = basicParam.getCategoryId();
-        if (categoryId == null || categoryId == 0 || !isValidCategoryId(categoryId)) {
-            log.warn("商品分类ID无效，将使用默认分类ID：1");
-            product.setCategoryId(1L); // 使用ID为1的分类
+        
+        // 处理商品基本信息可能为空的情况
+        if (productParam.getProductParam() == null) {
+            log.info("创建商品时基本参数为空，直接从外层对象获取");
+            // 直接从外层对象复制属性
+            BeanUtils.copyProperties(productParam, product);
+            
+            // 处理前端可能使用productCategoryId而不是categoryId的情况
+            try {
+                // 使用反射获取productCategoryId字段值
+                java.lang.reflect.Field field = productParam.getClass().getDeclaredField("productCategoryId");
+                field.setAccessible(true);
+                Object value = field.get(productParam);
+                if (value != null && product.getCategoryId() == null) {
+                    log.info("从productCategoryId字段获取值: {}", value);
+                    if (value instanceof Number) {
+                        product.setCategoryId(((Number) value).longValue());
+                    }
+                }
+            } catch (Exception e) {
+                log.warn("处理productCategoryId字段时出错", e);
+            }
+            
+            // 处理前端可能使用pic而不是mainImage的情况
+            try {
+                java.lang.reflect.Field picField = productParam.getClass().getDeclaredField("pic");
+                picField.setAccessible(true);
+                Object picValue = picField.get(productParam);
+                if (picValue != null && picValue instanceof String && StringUtils.isNotBlank((String) picValue)) {
+                    log.info("从pic字段获取值: {}", picValue);
+                    product.setMainImage((String) picValue);
+                }
+            } catch (Exception e) {
+                log.warn("处理pic字段时出错", e);
+            }
         } else {
-            product.setCategoryId(categoryId);
+            // 正常从嵌套结构中获取参数
+            ProductParam.ProductBasicParam basicParam = productParam.getProductParam();
+            BeanUtils.copyProperties(basicParam, product);
+            
+            // 确保主图字段正确设置
+            if (StringUtils.isNotBlank(basicParam.getPic())) {
+                product.setMainImage(basicParam.getPic());
+            }
         }
 
-        // 设置一些默认值
-        if (StringUtils.isBlank(basicParam.getProductSn())) {
-            product.setProductSn(generateProductSn()); // 生成商品编号
+        // 确保重要字段已经设置了值
+        if (StringUtils.isBlank(product.getName())) {
+            product.setName("未命名商品_" + System.currentTimeMillis());
+            log.info("商品名称为空，设置默认值: {}", product.getName());
         }
+        
+        // 确保商品分类ID已设置
+        if (product.getCategoryId() == null) {
+            product.setCategoryId(1L); // 默认分类ID
+            log.info("商品分类ID为空，设置默认值: 1");
+        }
+        
+        // 确保价格已设置
+        if (product.getPrice() == null) {
+            product.setPrice(new BigDecimal("0.01"));
+            log.info("商品价格为空，设置默认值: 0.01");
+        }
+        
+        // 确保库存已设置
+        if (product.getStock() == null) {
+            product.setStock(100);
+            log.info("商品库存为空，设置默认值: 100");
+        }
+
+        // 设置必要的默认值 - 开始
+        // 设置商品基础默认值
+        product.setAttributeId(0); // 设置默认属性ID
         product.setVerifyStatus(0); // 默认未审核
         product.setSale(0); // 默认销量为0
-
-        // 设置商户ID - 优先从请求参数获取，如果没有则设置默认值
-        if (basicParam.getMerchantId() != null) {
-            // 如果请求中有商户ID，则使用请求中的商户ID
-            product.setMerchantId(basicParam.getMerchantId());
-        } else {
-            // 如果请求中没有商户ID，则设置为默认值1
-            // 注意: 实际项目中应该从当前登录用户获取，这里使用默认值仅用于开发阶段
-            product.setMerchantId(1L);
-            log.warn("商品创建时未提供商户ID，使用默认值：1");
+        product.setIsDeleted(0); // 默认未删除
+        
+        // 处理可能为空的字段
+        if (product.getPublishStatus() == null) {
+            product.setPublishStatus(0); // 默认下架状态
+        }
+        
+        if (product.getNewStatus() == null) {
+            product.setNewStatus(0); // 默认非新品
+        }
+        
+        if (product.getRecommendStatus() == null) {
+            product.setRecommendStatus(0); // 默认不推荐
         }
 
-        // 设置主图
-        product.setMainImage(basicParam.getPic());
-        product.setIsDeleted(0); // 默认未删除
+        // 设置商户ID (如果为空)
+        if (product.getMerchantId() == null) {
+            log.info("商户ID为空，设置默认值1");
+            product.setMerchantId(1L);
+        }
+
+        // 生成商品编号 (如果为空)
+        if (StringUtils.isBlank(product.getProductSn())) {
+            log.info("商品编号为空，自动生成");
+            product.setProductSn(generateProductSn());
+        }
+
+        // 设置时间
         LocalDateTime now = LocalDateTime.now();
         product.setCreateTime(now);
         product.setUpdateTime(now);
+        // 设置必要的默认值 - 结束
 
+        log.info("准备保存商品基本信息: {}", product);
+        
         // 保存商品基本信息
-        count = productsMapper.insert(product);
+        try {
+            count = productsMapper.insert(product);
+            log.info("商品基本信息保存成功，影响行数: {}", count);
+        } catch (Exception e) {
+            log.error("保存商品基本信息失败", e);
+            throw e;
+        }
+        
         if (count <= 0) {
+            log.error("保存商品基本信息失败，影响行数为0");
             return 0;
         }
 
         // 获取插入后的商品ID
         Long productId = product.getId();
+        log.info("商品基本信息保存成功，ID: {}", productId);
 
-        // 2. 处理商品SKU
-        if (productParam.getSkuStockList() != null && !productParam.getSkuStockList().isEmpty()) {
+        // 处理商品SKU - 如果为空则创建默认SKU
+        if (productParam.getSkuStockList() == null || productParam.getSkuStockList().isEmpty()) {
+            log.info("SKU列表为空，创建默认SKU");
+            // 创建默认SKU
+            PmsProductSkus defaultSku = new PmsProductSkus();
+            defaultSku.setProductId(productId);
+            defaultSku.setSkuCode(generateSkuCode(productId));
+            defaultSku.setPrice(product.getPrice());
+            defaultSku.setStock(product.getStock());
+            defaultSku.setLowStock(10);
+            defaultSku.setSale(0);
+            defaultSku.setLockStock(0);
+            defaultSku.setSpecs("{}"); // 空规格
+            defaultSku.setCreateTime(now);
+            defaultSku.setUpdateTime(now);
+            
+            try {
+                count += skusMapper.insert(defaultSku);
+                log.info("默认SKU创建成功");
+            } catch (Exception e) {
+                log.error("创建默认SKU失败", e);
+                throw e;
+            }
+        } else {
+            // 处理提供的SKU列表
+            log.info("处理提供的SKU列表，数量: {}", productParam.getSkuStockList().size());
             List<PmsProductSkus> skuList = handleSkuList(productParam.getSkuStockList(), productId);
             // 批量保存SKU
             for (PmsProductSkus sku : skuList) {
-                count += skusMapper.insert(sku);
+                try {
+                    count += skusMapper.insert(sku);
+                } catch (Exception e) {
+                    log.error("保存SKU失败: {}", sku, e);
+                    throw e;
+                }
             }
         }
 
-        // 3. 处理商品属性值
+        // 处理商品属性值 - 可选项，不影响商品创建
         if (productParam.getProductAttributeValueList() != null && !productParam.getProductAttributeValueList().isEmpty()) {
-            List<PmsProductAttributeValues> attributeValueList = handleAttributeList(productParam.getProductAttributeValueList(), productId);
-            // 批量保存属性值
-            for (PmsProductAttributeValues attributeValue : attributeValueList) {
-                count += productAttributeValuesMapper.insert(attributeValue);
+            log.info("处理商品属性值，数量: {}", productParam.getProductAttributeValueList().size());
+            try {
+                List<PmsProductAttributeValues> attributeValueList = handleAttributeList(productParam.getProductAttributeValueList(), productId);
+                // 批量保存属性值
+                for (PmsProductAttributeValues attributeValue : attributeValueList) {
+                    count += productAttributeValuesMapper.insert(attributeValue);
+                }
+            } catch (Exception e) {
+                log.error("保存商品属性值失败", e);
+                // 属性保存失败不影响商品创建，记录日志但不抛出异常
             }
         }
 
-
+        log.info("商品创建完成，总计影响行数: {}", count);
         return count;
     }
 
@@ -311,21 +424,102 @@ public class ProductServiceImpl implements IProductService {
      */
     private List<PmsProductSkus> handleSkuList(List<ProductParam.SkuStockParam> skuParamList, Long productId) {
         LocalDateTime now = LocalDateTime.now();
-        return skuParamList.stream().map(skuParam -> {
+        List<PmsProductSkus> result = new ArrayList<>();
+        
+        for (ProductParam.SkuStockParam skuParam : skuParamList) {
             PmsProductSkus sku = new PmsProductSkus();
+            
+            // 复制属性前检查skuParam是否为null
+            if (skuParam == null) {
+                log.warn("SKU参数为null，创建默认SKU");
+                // 创建默认SKU
+                sku.setProductId(productId);
+                sku.setSkuCode(generateSkuCode(productId));
+                sku.setPrice(new BigDecimal("0.01"));
+                sku.setStock(100);
+                sku.setLowStock(10);
+                sku.setSale(0);
+                sku.setLockStock(0);
+                sku.setSpecs("{}");
+                sku.setCreateTime(now);
+                sku.setUpdateTime(now);
+                result.add(sku);
+                continue;
+            }
+            
+            // 正常复制属性
             BeanUtils.copyProperties(skuParam, sku);
+            
+            // 设置商品ID
             sku.setProductId(productId);
-            sku.setSkuCode(skuParam.getSkuCode() != null && !skuParam.getSkuCode().isEmpty() ?
-                    skuParam.getSkuCode() : generateSkuCode(productId));
-            sku.setImage(skuParam.getPic()); // 映射图片字段
-            sku.setSpecs(skuParam.getSpecs()); // 映射规格数据
-            sku.setLowStock(10); // 默认预警库存
-            sku.setSale(0); // 默认销量
-            sku.setLockStock(0); // 默认锁定库存
+            
+            // 处理SKU编码
+            if (StringUtils.isBlank(sku.getSkuCode())) {
+                sku.setSkuCode(generateSkuCode(productId));
+            }
+            
+            // 图片字段映射
+            if (skuParam.getPic() != null && StringUtils.isNotBlank(skuParam.getPic())) {
+                sku.setImage(skuParam.getPic());
+            }
+            
+            // 规格数据处理
+            if (skuParam.getSpecs() != null) {
+                sku.setSpecs(skuParam.getSpecs());
+            } else {
+                sku.setSpecs("{}"); // 默认空规格
+            }
+            
+            // 设置预警库存
+            if (sku.getLowStock() == null) {
+                sku.setLowStock(10);
+            }
+            
+            // 设置销量
+            if (sku.getSale() == null) {
+                sku.setSale(0);
+            }
+            
+            // 设置锁定库存
+            if (sku.getLockStock() == null) {
+                sku.setLockStock(0);
+            }
+            
+            // 设置价格
+            if (sku.getPrice() == null) {
+                sku.setPrice(new BigDecimal("0.01"));
+            }
+            
+            // 设置库存
+            if (sku.getStock() == null) {
+                sku.setStock(100);
+            }
+            
+            // 设置时间
             sku.setCreateTime(now);
             sku.setUpdateTime(now);
-            return sku;
-        }).collect(Collectors.toList());
+            
+            result.add(sku);
+        }
+        
+        // 如果结果为空，创建默认SKU
+        if (result.isEmpty()) {
+            log.warn("SKU处理结果为空，创建默认SKU");
+            PmsProductSkus defaultSku = new PmsProductSkus();
+            defaultSku.setProductId(productId);
+            defaultSku.setSkuCode(generateSkuCode(productId));
+            defaultSku.setPrice(new BigDecimal("0.01"));
+            defaultSku.setStock(100);
+            defaultSku.setLowStock(10);
+            defaultSku.setSale(0);
+            defaultSku.setLockStock(0);
+            defaultSku.setSpecs("{}");
+            defaultSku.setCreateTime(now);
+            defaultSku.setUpdateTime(now);
+            result.add(defaultSku);
+        }
+        
+        return result;
     }
 
     /**
@@ -336,12 +530,38 @@ public class ProductServiceImpl implements IProductService {
         LocalDateTime now = LocalDateTime.now();
 
         for (ProductParam.ProductAttributeValueParam attributeParam : attributeParamList) {
-            PmsProductAttributeValues attributeValue = new PmsProductAttributeValues();
-            attributeValue.setProductId(productId);
-            attributeValue.setAttributeId(attributeParam.getProductAttributeId());
-            attributeValue.setValue(attributeParam.getValue());
-            attributeValue.setCreateTime(now);
-            result.add(attributeValue);
+            try {
+                // 检查参数是否为null
+                if (attributeParam == null) {
+                    log.warn("属性参数为null，跳过");
+                    continue;
+                }
+                
+                PmsProductAttributeValues attributeValue = new PmsProductAttributeValues();
+                attributeValue.setProductId(productId);
+                
+                // 设置属性ID，如果为null则使用默认值0
+                if (attributeParam.getProductAttributeId() == null) {
+                    log.warn("属性ID为null，使用默认值0");
+                    attributeValue.setAttributeId(0L);
+                } else {
+                    attributeValue.setAttributeId(attributeParam.getProductAttributeId());
+                }
+                
+                // 设置属性值，如果为null则使用空字符串
+                if (attributeParam.getValue() == null) {
+                    log.warn("属性值为null，使用空字符串");
+                    attributeValue.setValue("");
+                } else {
+                    attributeValue.setValue(attributeParam.getValue());
+                }
+                
+                attributeValue.setCreateTime(now);
+                result.add(attributeValue);
+            } catch (Exception e) {
+                log.error("处理商品属性时出错: {}", attributeParam, e);
+                // 继续处理下一个属性，不影响整体流程
+            }
         }
 
         return result;

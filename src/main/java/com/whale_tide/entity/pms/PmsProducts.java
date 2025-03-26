@@ -48,6 +48,11 @@ public class PmsProducts implements Serializable {
     private Long categoryId;
 
     /**
+     * 属性ID
+     */
+    private Integer attributeId;
+
+    /**
      * 品牌ID
      */
     private Long brandId;
@@ -144,3 +149,6 @@ public class PmsProducts implements Serializable {
 
 
 }
+
+
+

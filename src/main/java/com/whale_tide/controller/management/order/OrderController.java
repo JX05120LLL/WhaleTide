@@ -5,16 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonPage;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.management.order.*;
-import com.whale_tide.entity.oms.OmsOrderReturns;
-import com.whale_tide.service.management.IAdminService;
+import com.whale_tide.dto.management.product.ProductListResult;
 import com.whale_tide.service.management.IOrderService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 订单管理控制器
@@ -27,16 +23,16 @@ public class OrderController {
     @Autowired
     private IOrderService orderService;
 
-    @Autowired
-    private IAdminService adminService;
-
     @ApiOperation("获取订单列表")
     @GetMapping("/list")
     public CommonResult<CommonPage<OrderResult>> list(OrderQueryParam queryParam) {
         IPage<OrderResult> orderList = orderService.getOrderList(queryParam);
-        return CommonResult.success(CommonPage.restPage(orderList));
-    }
 
+        CommonPage<OrderResult> commonPage = CommonPage.restPage((Page<OrderResult>) orderList);
+
+        return CommonResult.success(commonPage);
+    }
+    
     @ApiOperation("关闭订单")
     @PostMapping("/update/close")
     public CommonResult<Integer> close(@RequestBody CloseOrderParam closeOrderParam) {
@@ -46,7 +42,7 @@ public class OrderController {
         }
         return CommonResult.failed("没有订单被关闭");
     }
-
+    
     // 删除订单
     @ApiOperation("删除订单")
     @PostMapping("/delete")
@@ -90,7 +86,6 @@ public class OrderController {
         }
         return CommonResult.failed("更新收货人信息失败");
     }
-
     // 更新订单运费信息
     @ApiOperation("更新订单运费信息")
     @PostMapping("/update/moneyInfo")
@@ -113,36 +108,4 @@ public class OrderController {
         return CommonResult.failed("更新订单备注失败");
     }
 
-    @ApiOperation("获取退货订单列表")
-    @GetMapping("/return/list")
-    public CommonResult<OrderRetuenListResult> returnList(
-            @RequestParam(value = "pageNum", defaultValue = "1") Long pageNum,
-            @RequestParam(value = "pageSize", defaultValue = "10") Long pageSize) {
-        Page<OmsOrderReturns> orderPage = orderService.getReturnOrderList(pageNum, pageSize);
-        List<OrderReturnResult> orderReturnList = new ArrayList<>();
-
-        for (OmsOrderReturns order : orderPage.getRecords()) {
-            OrderReturnResult orderReturn = new OrderReturnResult();
-
-            orderReturn.setId(order.getId());
-            orderReturn.setOrderId(order.getOrderId());
-            orderReturn.setCreateTime(order.getCreateTime());
-
-            Long memberUserID = order.getUserId();
-            String userName = adminService.getAdminById(memberUserID).getUsername();
-            orderReturn.setMemberUsername(userName);
-            orderReturn.setReturnAmount(order.getReturnAmount());
-            orderReturn.setStatus(order.getStatus());
-            orderReturn.setHandleTime(order.getHandlerTime());
-
-            orderReturnList.add(orderReturn);
-        }
-        OrderRetuenListResult result = new OrderRetuenListResult();
-        result.setList(orderReturnList);
-        result.setTotal(orderPage.getTotal());
-        result.setPageSize(orderPage.getSize());
-        result.setPageNum(orderPage.getCurrent());
-
-        return CommonResult.success(result);
-    }
-}
+} 

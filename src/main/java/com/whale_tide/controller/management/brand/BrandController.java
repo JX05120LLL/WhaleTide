@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * 品牌管理Controller
  */
 @Slf4j
-@RestController
+@RestController("managementBrandController")
 @Api(tags = "BrandController", description = "品牌管理")
 @RequestMapping("/brand")
 public class BrandController {
