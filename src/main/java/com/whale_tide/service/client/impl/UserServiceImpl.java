@@ -2,7 +2,6 @@ package com.whale_tide.service.client.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.dto.client.user.LoginResponse;
 import com.whale_tide.dto.client.user.RegisterRequest;
 import com.whale_tide.dto.client.user.UserInfoResponse;

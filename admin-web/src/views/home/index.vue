@@ -1,30 +1,30 @@
 <template>
   <div class="app-container">
+    <div class="whale-tide-header">
+      <div class="wave-animation">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+      </div>
+      <div class="title-container">
+        <div class="main-title">WhaleTide</div>
+        <div class="sub-title">智能商城管理系统</div>
+      </div>
+    </div>
+    <div class="logo-container">
+      <img src="@/assets/images/whale-tide-logo.svg" alt="鲸浪商城" class="logo-image">
+      <span class="logo-text">鲸浪商城</span>
+    </div>
     <div class="address-layout">
       <el-row :gutter="20">
         <el-col :span="6">
-          <!-- <div class="out-border">
-           <div class="layout-title">学习教程</div>
-           <div class="color-main address-content">
-              <a href="https://www.macrozheng.com" target="_blank">mall学习教程</a>
-            </div>
-          </div> -->
+       
         </el-col>
        <el-col :span="6">
-          <!-- <div class="out-border">
-            <div class="layout-title">视频教程</div>
-            <div class="color-main address-content">
-              <a href="https://www.macrozheng.com/mall/catalog/mall_video.html" target="_blank">mall视频教程（2023）</a>
-            </div>
-          </div> -->
+        
         </el-col>
         <el-col :span="6">
-         <!-- <div class="out-border">
-            <div class="layout-title">点Star支持项目</div>
-            <div class="color-main address-content">
-              <a href="https://github.com/macrozheng/mall" target="_blank">mall项目</a>
-            </div>
-          </div> -->
+     
         </el-col>
       </el-row>
     </div>
@@ -437,5 +437,103 @@
   .address-content{
     padding: 20px;
     font-size: 18px
+  }
+  .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .logo-image {
+    height: 40px;
+    margin-right: 10px;
+  }
+
+  .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #409EFF;
+  }
+
+  .whale-tide-header {
+    position: relative;
+    height: 180px;
+    background: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .title-container {
+    position: relative;
+    z-index: 2;
+    padding: 40px;
+    color: white;
+    text-align: center;
+  }
+
+  .main-title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 2px;
+    font-family: 'Arial', sans-serif;
+  }
+
+  .sub-title {
+    font-size: 24px;
+    opacity: 0.9;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .wave-animation {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  .wave {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transform: translate(-50%, 0);
+    animation: wave 8s infinite linear;
+  }
+
+  .wave:nth-child(1) {
+    animation-delay: 0s;
+    top: 60%;
+  }
+
+  .wave:nth-child(2) {
+    animation-delay: -2s;
+    top: 70%;
+    opacity: 0.5;
+  }
+
+  .wave:nth-child(3) {
+    animation-delay: -4s;
+    top: 80%;
+    opacity: 0.3;
+  }
+
+  @keyframes wave {
+    0% {
+      transform: translate(-50%, 0) rotateZ(0deg);
+    }
+    50% {
+      transform: translate(-50%, -2%) rotateZ(180deg);
+    }
+    100% {
+      transform: translate(-50%, 0) rotateZ(360deg);
+    }
   }
 </style>

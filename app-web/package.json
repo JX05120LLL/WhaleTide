@@ -1,18 +1,20 @@
 {
-  "name": "mall-admin-web",
+  "name": "mall-app-web",
   "version": "1.0.0",
-  "description": "mall后台管理前端",
+  "description": "mall商城前端",
   "author": "macro",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "simple": "node simple-server.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
     "echarts": "^4.2.0-rc.2",
     "element-ui": "^2.3.7",
+    "express": "^4.17.1",
     "js-cookie": "^2.2.0",
     "normalize.css": "^8.0.0",
     "nprogress": "^0.2.0",
@@ -48,7 +50,7 @@
     "postcss-loader": "^2.0.8",
     "postcss-url": "^7.2.1",
     "rimraf": "^2.6.0",
-    "sass-loader": "^7.0.1",
+    "sass-loader": "^6.0.7",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",
     "svg-sprite-loader": "^3.7.3",
