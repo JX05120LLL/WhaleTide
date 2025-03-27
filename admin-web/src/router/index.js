@@ -201,12 +201,6 @@ export const asyncRouterMap = [
         meta: {title: '退货申请处理', icon: 'order-return'}
       },
       {
-        path: 'returnReason',
-        name: 'returnReason',
-        component: () => import('@/views/oms/apply/reason'),
-        meta: {title: '退货原因设置', icon: 'order-return-reason'}
-      },
-      {
         path: 'returnApplyDetail',
         name: 'returnApplyDetail',
         component: () => import('@/views/oms/apply/applyDetail'),
