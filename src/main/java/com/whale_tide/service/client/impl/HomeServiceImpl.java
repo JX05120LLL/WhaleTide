@@ -3,12 +3,15 @@ package com.whale_tide.service.client.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.PageResponse;
+import com.whale_tide.dto.client.home.HomeCategoryResponse;
 import com.whale_tide.dto.client.home.HomeContentResponse;
 import com.whale_tide.dto.client.home.HomeProductRequest;
 import com.whale_tide.dto.client.product.ProductListItemResponse;
 import com.whale_tide.entity.pms.PmsBrands;
+import com.whale_tide.entity.pms.PmsProductCategories;
 import com.whale_tide.entity.pms.PmsProducts;
 import com.whale_tide.mapper.pms.PmsBrandsMapper;
+import com.whale_tide.mapper.pms.PmsProductCategoriesMapper;
 import com.whale_tide.mapper.pms.PmsProductsMapper;
 import com.whale_tide.service.client.IHomeService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +35,9 @@ public class HomeServiceImpl implements IHomeService {
     
     @Autowired
     private PmsBrandsMapper brandsMapper;
+    
+    @Autowired
+    private PmsProductCategoriesMapper categoryMapper;
 
     // 获取首页内容
     @Override
@@ -347,5 +353,46 @@ public class HomeServiceImpl implements IHomeService {
         response.setPrice(product.getPrice());
         response.setSale(product.getSale());
         return response;
+    }
+
+    /**
+     * 获取商品分类列表
+     * @param parentId 父分类ID
+     * @return 分类列表
+     */
+    @Override
+    public List<HomeCategoryResponse> getCategoryList(Long parentId) {
+        log.info("获取商品分类列表, parentId={}", parentId);
+        
+        // 查询指定父分类下的所有分类
+        LambdaQueryWrapper<PmsProductCategories> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(PmsProductCategories::getParentId, parentId)
+                   .eq(PmsProductCategories::getStatus, 1)      // 状态为启用的分类
+                   .orderByAsc(PmsProductCategories::getSort);  // 按排序字段升序排序
+        
+        List<PmsProductCategories> categoryList = categoryMapper.selectList(queryWrapper);
+        
+        // 如果没有找到分类，返回空列表
+        if (categoryList == null || categoryList.isEmpty()) {
+            log.warn("没有找到父分类ID为{}的商品分类", parentId);
+            return new ArrayList<>();
+        }
+        
+        // 转换为前端DTO
+        List<HomeCategoryResponse> result = categoryList.stream().map(item -> {
+            HomeCategoryResponse response = new HomeCategoryResponse();
+            response.setId(item.getId());
+            response.setName(item.getName());
+            response.setIcon(item.getIcon());
+            response.setLevel(item.getLevel());
+            
+            // 递归查询子分类
+            response.setChildren(getCategoryList(item.getId()));
+            
+            return response;
+        }).collect(Collectors.toList());
+        
+        log.info("商品分类列表获取成功, 数量:{}", result.size());
+        return result;
     }
 } 
