@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 29/03/2025 17:36:22
+ Date: 29/03/2025 17:54:59
 */
 
 SET NAMES utf8mb4;
@@ -440,7 +440,7 @@ CREATE TABLE `oms_cart_items`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   INDEX `idx_sku_id`(`sku_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '购物车表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '购物车表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of oms_cart_items
@@ -1469,6 +1469,27 @@ INSERT INTO `ums_user_addresses` VALUES (4, 12, '介江性', '19391629120', '陕
 INSERT INTO `ums_user_addresses` VALUES (6, 12, 'hcc', '1939162', '陕西省', '汉中市', '汉台区', '汉中市陕西理工大学北校区', NULL, 1, NULL, 0, '2025-03-27 17:48:41', '2025-03-27 17:48:41');
 
 -- ----------------------------
+-- Table structure for ums_user_brand_attentions
+-- ----------------------------
+DROP TABLE IF EXISTS `ums_user_brand_attentions`;
+CREATE TABLE `ums_user_brand_attentions`  (
+  `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '关注ID',
+  `user_id` bigint(0) NOT NULL COMMENT '用户ID',
+  `brand_id` bigint(0) NOT NULL COMMENT '品牌ID',
+  `brand_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '品牌名称',
+  `brand_logo` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '品牌Logo',
+  `note` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
+  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '关注时间',
+  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_user_brand`(`user_id`, `brand_id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id`) USING BTREE,
+  INDEX `idx_brand_id`(`brand_id`) USING BTREE,
+  CONSTRAINT `fk_brand_attention_brand` FOREIGN KEY (`brand_id`) REFERENCES `pms_brands` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_brand_attention_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户品牌关注表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for ums_user_coupons
 -- ----------------------------
 DROP TABLE IF EXISTS `ums_user_coupons`;
@@ -1572,7 +1593,7 @@ CREATE TABLE `ums_user_search_history`  (
   UNIQUE INDEX `uk_user_keyword`(`user_id`, `keyword`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_search_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_user_search_history
