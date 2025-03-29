@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 25/03/2025 20:42:04
+ Date: 29/03/2025 17:36:22
 */
 
 SET NAMES utf8mb4;
@@ -111,7 +111,7 @@ CREATE TABLE `ams_admins`  (
 -- ----------------------------
 -- Records of ams_admins
 -- ----------------------------
-INSERT INTO `ams_admins` VALUES (12, 'admin', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '超级管理员', '123456', NULL, NULL, 0, 1, '2025-03-25 20:08:06', NULL, '超级管理员，拥有所有权限', 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-17 09:51:25');
+INSERT INTO `ams_admins` VALUES (12, 'admin', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '超级管理员', '123456', NULL, NULL, 0, 1, '2025-03-27 18:11:47', NULL, '超级管理员，拥有所有权限', 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-17 09:51:25');
 INSERT INTO `ams_admins` VALUES (13, 'merchant', '123456', '商家', NULL, NULL, NULL, 0, 1, '2025-03-16 15:10:25', NULL, '拥有 商品 和订单 模块 权限', 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-16 14:36:29');
 INSERT INTO `ams_admins` VALUES (14, 'user', '123456', '普通用户', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
 INSERT INTO `ams_admins` VALUES (17, 'admin1', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', NULL, '', NULL, NULL, 0, 1, '2025-03-25 16:35:16', NULL, 'testNote', 0, NULL, NULL, 0, '2025-03-17 09:48:23', '2025-03-17 09:48:23');
@@ -188,7 +188,7 @@ CREATE TABLE `ams_permissions`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_permissions
@@ -350,7 +350,7 @@ CREATE TABLE `ams_role_resource_relations`  (
   INDEX `idx_resource_id`(`resource_id`) USING BTREE,
   CONSTRAINT `fk_resource_relation_resource` FOREIGN KEY (`resource_id`) REFERENCES `ams_resources` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_resource_relation_role` FOREIGN KEY (`role_id`) REFERENCES `ams_roles` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 132 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与资源关系表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 133 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色与资源关系表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_role_resource_relations
@@ -441,6 +441,12 @@ CREATE TABLE `oms_cart_items`  (
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   INDEX `idx_sku_id`(`sku_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '购物车表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of oms_cart_items
+-- ----------------------------
+INSERT INTO `oms_cart_items` VALUES (2, 12, 3, '小米13', 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png?x-fds-process=image/resize,q_90,f_webp', 18, '黑色', 2699.00, 5, 0, '2025-03-28 19:23:03', '2025-03-28 19:23:03');
+INSERT INTO `oms_cart_items` VALUES (3, 12, 3, '小米13', 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png?x-fds-process=image/resize,q_90,f_webp', 18, '黑色', 2699.00, 5, 0, '2025-03-28 19:23:04', '2025-03-28 19:23:04');
 
 -- ----------------------------
 -- Table structure for oms_order_deliveries
@@ -740,7 +746,7 @@ CREATE TABLE `pms_product_attributes`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   CONSTRAINT `fk_attribute_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 29 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品属性表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_product_attributes
@@ -1075,7 +1081,7 @@ CREATE TABLE `pms_products`  (
   INDEX `idx_merchant_id`(`merchant_id`) USING BTREE,
   CONSTRAINT `fk_product_brand` FOREIGN KEY (`brand_id`) REFERENCES `pms_brands` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `fk_product_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_products
@@ -1150,7 +1156,7 @@ CREATE TABLE `sms_coupon_categories`  (
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   INDEX `idx_category_id`(`category_id`) USING BTREE,
   CONSTRAINT `fk_category_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用分类关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用分类关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_history
@@ -1174,7 +1180,7 @@ CREATE TABLE `sms_coupon_history`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_history_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券领取历史表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券领取历史表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupon_products
@@ -1191,7 +1197,7 @@ CREATE TABLE `sms_coupon_products`  (
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_coupons
@@ -1213,7 +1219,7 @@ CREATE TABLE `sms_coupons`  (
   `receive_count` int(0) NULL DEFAULT 0 COMMENT '已领取数量',
   `used_count` int(0) NULL DEFAULT 0 COMMENT '已使用数量',
   `per_limit` int(0) NULL DEFAULT 1 COMMENT '每人限领张数',
-  `use_type` tinyint(0) NULL DEFAULT 0 COMMENT '使用类型：0-通用，1-会员专享，2-新人专享',
+  `use_status` tinyint(0) NULL DEFAULT 0 COMMENT '优惠券状态，0->未使用；1->已使用；2->已过期',
   `note` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   `publish_status` tinyint(0) NULL DEFAULT 0 COMMENT '发布状态：0-未发布，1-已发布',
   `is_deleted` tinyint(0) NULL DEFAULT 0 COMMENT '是否删除：0-否，1-是',
@@ -1222,7 +1228,7 @@ CREATE TABLE `sms_coupons`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion
@@ -1244,7 +1250,7 @@ CREATE TABLE `sms_flash_promotion`  (
   INDEX `idx_start_date`(`start_date`) USING BTREE,
   INDEX `idx_end_date`(`end_date`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion_products
@@ -1272,7 +1278,7 @@ CREATE TABLE `sms_flash_promotion_products`  (
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_flash` FOREIGN KEY (`flash_promotion_id`) REFERENCES `sms_flash_promotion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_product_session` FOREIGN KEY (`flash_session_id`) REFERENCES `sms_flash_promotion_sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion_sessions
@@ -1291,7 +1297,7 @@ CREATE TABLE `sms_flash_promotion_sessions`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_flash_promotion_id`(`flash_promotion_id`) USING BTREE,
   CONSTRAINT `fk_session_flash` FOREIGN KEY (`flash_promotion_id`) REFERENCES `sms_flash_promotion` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀场次表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '限时秒杀场次表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_logs
@@ -1313,7 +1319,7 @@ CREATE TABLE `sms_promotion_logs`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_log_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_products
@@ -1333,7 +1339,7 @@ CREATE TABLE `sms_promotion_products`  (
   INDEX `idx_promotion_id`(`promotion_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotions
@@ -1360,7 +1366,7 @@ CREATE TABLE `sms_promotions`  (
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_merchants
@@ -1454,7 +1460,13 @@ CREATE TABLE `ums_user_addresses`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_address_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户地址表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户地址表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ums_user_addresses
+-- ----------------------------
+INSERT INTO `ums_user_addresses` VALUES (4, 12, '介江性', '19391629120', '陕西省', '汉中市', '汉台区', '陕西理工大学北校区', NULL, 1, NULL, 0, '2025-03-27 17:45:55', '2025-03-27 17:45:55');
+INSERT INTO `ums_user_addresses` VALUES (6, 12, 'hcc', '1939162', '陕西省', '汉中市', '汉台区', '汉中市陕西理工大学北校区', NULL, 1, NULL, 0, '2025-03-27 17:48:41', '2025-03-27 17:48:41');
 
 -- ----------------------------
 -- Table structure for ums_user_coupons
@@ -1543,7 +1555,7 @@ CREATE TABLE `ums_user_roles`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_user_role_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_user_search_history
@@ -1561,6 +1573,13 @@ CREATE TABLE `ums_user_search_history`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_search_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ums_user_search_history
+-- ----------------------------
+INSERT INTO `ums_user_search_history` VALUES (4, 12, '鞋子', 1, '2025-03-29 17:30:52', '2025-03-29 17:30:52');
+INSERT INTO `ums_user_search_history` VALUES (5, 12, '风衣', 1, '2025-03-29 17:31:04', '2025-03-29 17:31:04');
+INSERT INTO `ums_user_search_history` VALUES (6, 12, '冲锋衣', 1, '2025-03-29 17:31:14', '2025-03-29 17:31:14');
 
 -- ----------------------------
 -- Table structure for ums_users
@@ -1601,6 +1620,6 @@ CREATE TABLE `ums_users`  (
 -- ----------------------------
 -- Records of ums_users
 -- ----------------------------
-INSERT INTO `ums_users` VALUES (12, '张三', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '123464984166', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-03-24 18:21:52', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-03-18 17:42:20', '2025-03-18 17:50:26');
+INSERT INTO `ums_users` VALUES (12, '张三', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '123464984166', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-03-29 16:49:55', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-03-18 17:42:20', '2025-03-18 17:50:26');
 
 SET FOREIGN_KEY_CHECKS = 1;
