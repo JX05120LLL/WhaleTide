@@ -1,14 +1,14 @@
 package com.whale_tide.controller.client;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.common.api.PageResponse;
 import com.whale_tide.common.exception.base.ProductException;
-import com.whale_tide.dto.client.product.CategoryTreeResponse;
-import com.whale_tide.dto.client.product.ProductDetailResponse;
-import com.whale_tide.dto.client.product.ProductListItemResponse;
-import com.whale_tide.dto.client.product.ProductSearchRequest;
+import com.whale_tide.dto.client.product.*;
+import com.whale_tide.dto.management.product.ProductCommentParam;
 import com.whale_tide.service.client.IProductService;
+import com.whale_tide.service.management.IProductCommentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Slf4j
 @Api(tags = "商品相关接口")
 @RestController("clientProductController")
@@ -28,6 +30,8 @@ public class ProductController {
     @Autowired
     private IProductService productService;
 
+    @Autowired
+    private IProductCommentService productCommentService;
     /**
      * 商品关键词搜索
      */
@@ -76,4 +80,22 @@ public class ProductController {
             return CommonResult.failed("获取商品详情失败: " + e.getMessage());
         }
     }
+    @ApiOperation("获取商品评论列表")
+    @GetMapping("/comment/list/{productId}")
+    public CommonResult<PageResponse<ProductCommentResponse>> getProductCommentList(
+            @ApiParam(value = "商品ID", required = true) @PathVariable Long productId,
+            @ApiParam(value = "页码", required = true) Integer pageNum,
+            @ApiParam(value = "每页数量", required = true) Integer pageSize) {
+        try {
+            ProductCommentParam queryParam = new ProductCommentParam();
+            queryParam.setProductId(productId);
+            queryParam.setPageNum(pageNum);
+            queryParam.setPageSize(pageSize);
+            PageResponse<ProductCommentResponse> productCommentList = productCommentService.getProductCommentList(queryParam);
+            return CommonResult.success(productCommentList);
+        } catch (Exception e) {
+            log.error("获取商品评论列表异常: {}", e.getMessage(), e);
+            return CommonResult.failed("获取商品评论列表失败: " + e.getMessage());
+        }
+            }
 }
