@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class CookieUtil {
 
-
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/"); // 设置 Cookie 的路径

@@ -103,9 +103,9 @@ public class SmsCoupons implements Serializable {
     private Integer perLimit;
 
     /**
-     * 使用类型：0-通用，1-会员专享，2-新人专享
+     * 优惠券状态，0->未使用；1->已使用；2->已过期
      */
-    private Integer useType;
+    private Integer useStatus;
 
     /**
      * 备注
