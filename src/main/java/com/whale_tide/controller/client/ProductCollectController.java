@@ -25,7 +25,7 @@ import java.util.List;
 @Api(tags = "用户产品收藏")
 @RestController("clientProductCollectController")
 @RequestMapping("/member/productCollect")
-public class productCollectController {
+public class ProductCollectController {
 
     @Autowired
     private IProductCollectService productCollectService;
