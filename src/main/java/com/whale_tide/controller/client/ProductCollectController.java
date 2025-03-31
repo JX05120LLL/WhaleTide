@@ -3,9 +3,9 @@ package com.whale_tide.controller.client;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonResult;
-import com.whale_tide.dto.client.member.ProductCollectionPageResponse;
-import com.whale_tide.dto.client.member.ProductCollectionRequest;
-import com.whale_tide.dto.client.member.ProductCollectionResponse;
+import com.whale_tide.dto.client.productCollect.ProductCollectionPageResponse;
+import com.whale_tide.dto.client.productCollect.ProductCollectionRequest;
+import com.whale_tide.dto.client.productCollect.ProductCollectionResponse;
 import com.whale_tide.entity.ums.UmsUserFavorites;
 import com.whale_tide.service.client.IProductCollectService;
 import com.whale_tide.service.client.IUserService;

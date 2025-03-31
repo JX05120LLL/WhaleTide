@@ -3,7 +3,7 @@ package com.whale_tide.controller.client;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonResult;
-import com.whale_tide.dto.client.member.*;
+import com.whale_tide.dto.client.brandAttention.*;
 import com.whale_tide.entity.ums.UmsUserBrandAttentions;
 import com.whale_tide.service.client.IBrandAttentionService;
 import com.whale_tide.service.client.IUserService;

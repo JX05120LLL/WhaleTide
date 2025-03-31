@@ -1,4 +1,4 @@
-package com.whale_tide.dto.client.member;
+package com.whale_tide.dto.client.brandAttention;
 
 import lombok.Data;
 
