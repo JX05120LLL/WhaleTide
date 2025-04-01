@@ -7,6 +7,7 @@ import com.whale_tide.common.exception.base.CouponException;
  */
 public class CouponAlreadyUsedException extends CouponException {
     
+    
     // 子错误码：5
     private static final int SUB_CODE = 5;
     

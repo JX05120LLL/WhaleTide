@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service("clientBrandService")
@@ -94,32 +95,50 @@ public class BrandServiceImpl implements IBrandService {
         queryWrapper.last("LIMIT " + (pageNum - 1) * pageSize + ", " + pageSize);
         // 查询数据
         List<PmsProducts> productList = pmsProductsMapper.selectList(queryWrapper);
-        // 获取品牌ID
-        List<Long> brandIdList = productList.stream().map(PmsProducts::getBrandId).collect(Collectors.toList());
-        // 品牌名称
-        List<String> brandNameList = pmsBrandsMapper.selectBatchIds(brandIdList).stream().map(PmsBrands::getName).collect(Collectors.toList());
-        // 品牌logo
-        List<String> brandLogoList = pmsBrandsMapper.selectBatchIds(brandIdList).stream().map(PmsBrands::getLogo).collect(Collectors.toList());
-        // 品牌商品数量
-        List<Integer> productCountList = productList.stream().map(PmsProducts::getSale).collect(Collectors.toList());
+        
+        // 获取品牌ID (添加去重逻辑避免重复ID)
+        List<Long> brandIdList = productList.stream()
+            .map(PmsProducts::getBrandId)
+            .distinct() // 确保ID列表中没有重复
+            .collect(Collectors.toList());
+            
+        if (brandIdList.isEmpty()) {
+            // 如果没有找到品牌ID，返回空结果
+            return PageResponse.of(new ArrayList<>(), pageNum, pageSize, 0, 0);
+        }
+        
+        // 查询品牌信息
+        List<PmsBrands> brandList = pmsBrandsMapper.selectBatchIds(brandIdList);
+        
+        // 构建ID到品牌的映射，以便后续快速查找
+        Map<Long, PmsBrands> brandMap = brandList.stream()
+            .collect(Collectors.toMap(PmsBrands::getId, brand -> brand));
+            
+        // 构建ID到销量的映射
+        Map<Long, Integer> productCountMap = productList.stream()
+            .collect(Collectors.groupingBy(
+                PmsProducts::getBrandId,
+                Collectors.summingInt(product -> product.getSale() != null ? product.getSale() : 0)
+            ));
 
         //封装结果
-
         List<BrandListItemResponse> responseList = new ArrayList<>();
-        for (int i = 0; i < brandIdList.size(); i++) {
-            BrandListItemResponse response = new BrandListItemResponse();
-            response.setId(brandIdList.get(i)); // 品牌ID
-            response.setName(brandNameList.get(i)); // 品牌名称
-            response.setLogo(brandLogoList.get(i)); // 品牌logo
-            response.setProductCount(productCountList.get(i)); // 品牌商品数量
-            responseList.add(response);
+        for (Long brandId : brandIdList) {
+            PmsBrands brand = brandMap.get(brandId);
+            if (brand != null) {
+                BrandListItemResponse response = new BrandListItemResponse();
+                response.setId(brandId); // 品牌ID
+                response.setName(brand.getName()); // 品牌名称
+                response.setLogo(brand.getLogo()); // 品牌logo
+                response.setProductCount(productCountMap.getOrDefault(brandId, 0)); // 品牌商品数量
+                responseList.add(response);
+            }
         }
 
         // 分页处理
-        int total = brandIdList.size();
+        int total = responseList.size();
         int totalPage = (int) Math.ceil((double) total / pageSize);
         return PageResponse.of(responseList, pageNum, pageSize, total, totalPage);
-
     }
 
 

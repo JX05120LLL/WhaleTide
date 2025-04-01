@@ -36,6 +36,11 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private AliyunSmsUtil aliyunSmsUtil;
 
     @Override
     public LoginResponse login(String username, String password) {
@@ -58,10 +63,11 @@ public class UserServiceImpl implements IUserService {
         user.setLastLoginTime(LocalDateTime.now());
         umsUsersMapper.updateById(user);
 
-
+        // 生成JWT Token
+        String token = jwtUtil.generateToken(username);
         LoginResponse loginResponse = new LoginResponse();
-
-        loginResponse.setTokenHead("Bearer");
+        loginResponse.setToken(token);
+        loginResponse.setTokenHead("Bearer ");
 
         log.info("用户登录成功: {}", username);
         return loginResponse;
@@ -95,11 +101,8 @@ public class UserServiceImpl implements IUserService {
     @Override
     public String sendVerificationCode(String phone) {
         // 检查手机号格式
-        if (phone == null || phone.trim().isEmpty()) {
-            throw new RuntimeException("手机号不能为空");
-        }
-        if (!phone.matches("^1[3-9]\\d{9}$")) {
-            throw new RuntimeException("手机号格式错误");
+        if (!checkPhone(phone)) {
+            throw new RuntimeException("手机号格式不正确");
         }
 
         // 检查发送频率
@@ -108,30 +111,38 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("发送太频繁，请1分钟后再试");
         }
 
-        // 生成6位随机验证码
-        String code = String.format("%06d", new Random().nextInt(1000000));
-
-        // 发送短信
         try {
-            AliyunSmsUtil aliyunSmsUtil = new AliyunSmsUtil();
-            aliyunSmsUtil.sendToPhone(phone, "test");
+            // 生成6位随机数字验证码
+            String code = generateVerificationCode(6);
+            
+            log.info("为手机号 {} 生成验证码: {}", phone, code);
+            
             // 将验证码保存到Redis，设置5分钟过期
             redisTemplate.opsForValue().set("SMS:CODE:" + phone, code, 5, TimeUnit.MINUTES);
             // 设置发送频率限制
             redisTemplate.opsForValue().set(rateLimitKey, "1", 1, TimeUnit.MINUTES);
+            
+            // 调用阿里云短信服务发送验证码
+            boolean sendResult = aliyunSmsUtil.sendVerificationCode(phone, code);
+            if (!sendResult) {
+                throw new RuntimeException("短信发送失败");
+            }
+            
+            // 返回成功消息，不返回验证码
             return "验证码已发送";
         } catch (Exception e) {
-            log.error("发送验证码失败: phone={}, error={}", phone, e.getMessage());
-            throw new RuntimeException("发送验证码失败:" + e.getMessage());
+            log.error("发送验证码异常: ", e);
+            throw new RuntimeException("发送验证码失败: " + e.getMessage());
         }
     }
 
     @Override
     public void register(RegisterRequest registerRequest) {
         String phone = registerRequest.getMobile();
-
         String code = registerRequest.getCode();
         String password = registerRequest.getPassword();
+
+        log.info("处理注册请求: 手机号={}, 验证码={}, 密码长度={}", phone, code, password.length());
 
         // 密码长度至少6位
         if (registerRequest.getPassword().length() < 6) {
@@ -145,6 +156,14 @@ public class UserServiceImpl implements IUserService {
         if (existingUser != null) {
             throw new RuntimeException("手机号已注册");
         }
+        
+        // 检查用户名是否已存在
+        queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UmsUsers::getUsername, phone);
+        existingUser = umsUsersMapper.selectOne(queryWrapper);
+        if (existingUser != null) {
+            throw new RuntimeException("该手机号已被用作用户名");
+        }
 
         // 验证码校验
         String cachedCode = redisTemplate.opsForValue().get("SMS:CODE:" + phone);
@@ -152,20 +171,50 @@ public class UserServiceImpl implements IUserService {
             throw new RuntimeException("验证码错误");
         }
 
-        // 创建新用户
-        UmsUsers user = new UmsUsers();
-        user.setPhone(phone);
-        user.setPassword(passwordEncoder.encode(password));
-        user.setCreateTime(LocalDateTime.now());
-        user.setUpdateTime(LocalDateTime.now());
+        try {
+            // 创建新用户
+            UmsUsers user = new UmsUsers();
+            user.setPhone(phone);
+            user.setUsername(phone); // 使用手机号作为用户名
+            user.setPassword(passwordEncoder.encode(password));
+            user.setStatus(1); // 设置为启用状态
+            user.setCreateTime(LocalDateTime.now());
+            user.setUpdateTime(LocalDateTime.now());
 
-        // 保存用户
-        umsUsersMapper.insert(user);
+            // 保存用户
+            int result = umsUsersMapper.insert(user);
+            if (result > 0) {
+                log.info("用户注册成功: {}", phone);
+            } else {
+                log.error("用户注册失败: 数据库插入错误");
+                throw new RuntimeException("注册失败");
+            }
+        } catch (Exception e) {
+            log.error("注册过程发生错误", e);
+            throw new RuntimeException("注册失败: " + e.getMessage());
+        }
+    }
 
-        // 删除验证码
-        redisTemplate.delete("SMS:CODE:" + phone);
-
-        log.info("用户注册成功: {}", phone);
+    /**
+     * 检查手机号格式是否正确
+     */
+    private boolean checkPhone(String phone) {
+        if (phone == null || phone.trim().isEmpty()) {
+            return false;
+        }
+        return phone.matches("^1[3-9]\\d{9}$");
+    }
+    
+    /**
+     * 生成指定长度的随机数字验证码
+     */
+    private String generateVerificationCode(int length) {
+        StringBuilder code = new StringBuilder();
+        Random random = new Random();
+        for (int i = 0; i < length; i++) {
+            code.append(random.nextInt(10));
+        }
+        return code.toString();
     }
 }
 

@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -62,6 +63,15 @@ public class HomeController {
     public CommonResult<List<HomeCategoryResponse>> getCategoryList(
             @ApiParam(value = "父分类ID", defaultValue = "0") 
             @RequestParam(value = "parentId", defaultValue = "0") Long parentId) {
+        List<HomeCategoryResponse> categoryList = homeService.getCategoryList(parentId);
+        return CommonResult.success(categoryList);
+    }
+    
+    @ApiOperation("获取商品分类列表")
+    @GetMapping("/productCateList/{parentId}")
+    public CommonResult<List<HomeCategoryResponse>> getProductCateList(
+            @ApiParam(value = "父分类ID", defaultValue = "0") 
+            @PathVariable(value = "parentId") Long parentId) {
         List<HomeCategoryResponse> categoryList = homeService.getCategoryList(parentId);
         return CommonResult.success(categoryList);
     }

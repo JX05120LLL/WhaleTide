@@ -13,4 +13,5 @@ import com.whale_tide.entity.ums.UmsUserBrandAttentions;
  */
 public interface UmsUserBrandAttentionsMapper extends BaseMapper<UmsUserBrandAttentions> {
 
+
 } 

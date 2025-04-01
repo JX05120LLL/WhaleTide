@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.whale_tide.common.exception.cart.CartItemNotFoundException;
 import com.whale_tide.common.exception.product.ProductNotFoundException;
 import com.whale_tide.common.exception.user.UsernameNotExistException;
+import com.whale_tide.common.exception.auth.TokenInvalidException;
 import com.whale_tide.dto.client.cart.*;
 import com.whale_tide.entity.oms.OmsCartItems;
 import com.whale_tide.entity.pms.PmsProductSkus;
@@ -251,25 +252,41 @@ public class CartServiceImpl implements ICartService {
      * @return 当前用户ID
      */
     private Long getCurrentUserId() {
-        // 从请求中获取当前用户ID
         try {
-            // 获取当前请求
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             if (attributes != null) {
                 HttpServletRequest request = attributes.getRequest();
+                
                 // 从请求头中获取token
-                String token = request.getHeader("Authorization");
-                if (token != null) {
-                    // 使用JwtUtil解析token获取用户名
-                    String username = jwtUtil.getUsernameFromToken(token);
+                String authHeader = request.getHeader("Authorization");
+                if (authHeader != null) {
+                    // 移除Bearer前缀
+                    String token = authHeader;
+                    if (authHeader.startsWith("Bearer ")) {
+                        token = authHeader.substring(7).trim();
+                    }
+                    
+                    // 空token检查
+                    if (token == null || token.isEmpty()) {
+                        log.warn("Authorization header存在但token为空");
+                        throw new RuntimeException("用户未登录");
+                    }
 
-                    // 根据用户名查询用户信息
-                    LambdaQueryWrapper<UmsUsers> queryWrapper = new LambdaQueryWrapper<>();
-                    queryWrapper.eq(UmsUsers::getUsername, username);
-                    UmsUsers user = umsUsersMapper.selectOne(queryWrapper);
+                    try {
+                        // 使用JwtUtil解析token获取用户名
+                        String username = jwtUtil.getUsernameFromToken(token);
 
-                    if (user != null) {
-                        return user.getId();
+                        // 根据用户名查询用户信息
+                        LambdaQueryWrapper<UmsUsers> queryWrapper = new LambdaQueryWrapper<>();
+                        queryWrapper.eq(UmsUsers::getUsername, username);
+                        UmsUsers user = umsUsersMapper.selectOne(queryWrapper);
+
+                        if (user != null) {
+                            return user.getId();
+                        }
+                    } catch (TokenInvalidException e) {
+                        log.warn("Token无效: {}", e.getMessage());
+                        throw new RuntimeException("用户未登录或登录已过期");
                     }
                 }
             }

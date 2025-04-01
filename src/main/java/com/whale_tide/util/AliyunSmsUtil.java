@@ -65,4 +65,46 @@ public class AliyunSmsUtil {
             e.printStackTrace();
         }
     }
+
+    // 发送验证码
+    public boolean sendVerificationCode(String phone, String code) {
+        DefaultProfile profile = DefaultProfile.getProfile(
+                "cn-qingdao",
+                accessKeyId, //AccessIdKey
+                accessKeySecret); //AccessKey Secret
+        IAcsClient client = new DefaultAcsClient(profile);
+
+        CommonRequest request = new CommonRequest();
+        request.setSysMethod(MethodType.POST);
+        //下面这3个不要改动
+        request.setSysDomain("dysmsapi.aliyuncs.com");
+        request.setSysVersion("2017-05-25");
+        request.setSysAction("SendSms");
+        //接收短信的手机号码
+        request.putQueryParameter("PhoneNumbers", phone);
+        //短信签名名称
+        request.putQueryParameter("SignName", SIGN_NAME);
+        //短信模板ID
+        request.putQueryParameter("TemplateCode", TEMPLATE_CODE);
+        //短信模板变量对应的实际值 ${code} 中的值
+        Map<String,String> param = new HashMap<>(2);
+        param.put("code", code);
+        request.putQueryParameter("TemplateParam", JSONObject.toJSONString(param));
+
+        try {
+            CommonResponse response = client.getCommonResponse(request);
+            log.info("短信发送响应: {}", response.getData());
+            JSONObject responseJson = JSONObject.parseObject(response.getData());
+            return "OK".equals(responseJson.getString("Code"));
+        } catch (ServerException e) {
+            log.error("短信发送服务端异常: ", e);
+            return false;
+        } catch (ClientException e) {
+            log.error("短信发送客户端异常: ", e);
+            return false;
+        } catch (Exception e) {
+            log.error("短信发送未知异常: ", e);
+            return false;
+        }
+    }
 }

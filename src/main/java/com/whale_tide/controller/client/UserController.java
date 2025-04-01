@@ -1,6 +1,7 @@
 package com.whale_tide.controller.client;
 
 import com.whale_tide.common.api.CommonResult;
+import com.whale_tide.common.exception.auth.TokenInvalidException;
 import com.whale_tide.dto.client.user.LoginRequest;
 import com.whale_tide.dto.client.user.LoginResponse;
 import com.whale_tide.dto.client.user.RegisterRequest;
@@ -39,20 +40,18 @@ public class UserController {
      * @return 登录结果
      */
     @PostMapping("/login")
-    public CommonResult<LoginResponse> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+    public CommonResult<LoginResponse> login(LoginRequest loginRequest, HttpServletResponse response) {
         log.info("收到登录请求: username={}", loginRequest.getUsername());
         
         LoginResponse loginResponse = userService.login(loginRequest.getUsername(), loginRequest.getPassword());
-        String token = jwtUtil.generateToken(loginRequest.getUsername());// 生成token
-        loginResponse.setToken(token);
-        loginResponse.setTokenHead("Bearer");
-
-        // 保存token到cookie中
-        CookieUtil.addCookie(response, "token", token, 24 * 60 * 60); // 设置 Cookie 有效期为 1 天
-
+        
         if (loginResponse == null) {
             return CommonResult.failed("用户名或密码错误");
         }
+        
+        // 保存token到cookie中
+        CookieUtil.addCookie(response, "token", loginResponse.getToken(), 24 * 60 * 60); // 设置 Cookie 有效期为 1 天
+        
         return CommonResult.success(loginResponse);
     }
 
@@ -63,7 +62,11 @@ public class UserController {
     @GetMapping("/info")
     public CommonResult<UserInfoResponse> getUserInfo(HttpServletRequest request) {
         //header中获取token
-        String token = request.getHeader("Authorization").replaceAll("Bearer:", "");
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new TokenInvalidException("无效的授权头");
+        }
+        String token = authHeader.substring(7);
         String username = jwtUtil.getUsernameFromToken(token); // 从Token中解析用户名
 
         UserInfoResponse userInfoResponse = userService.getUserInfo(username);
@@ -94,8 +97,14 @@ public class UserController {
     @PostMapping("/register")
     public CommonResult<String> register(@RequestBody RegisterRequest registerRequest) {
         log.info("收到注册请求: mobile={}", registerRequest.getMobile());
-
-        userService.register(registerRequest);
-        return CommonResult.success("注册成功");
+        
+        try {
+            userService.register(registerRequest);
+            log.info("用户注册成功: {}", registerRequest.getMobile());
+            return CommonResult.success("注册成功");
+        } catch (Exception e) {
+            log.error("用户注册失败: {}", e.getMessage());
+            return CommonResult.failed(e.getMessage());
+        }
     }
 } 
