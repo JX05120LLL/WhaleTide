@@ -1,23 +1,18 @@
 package com.whale_tide.controller.client;
 
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.whale_tide.common.api.CommonResult;
 import com.whale_tide.common.api.PageResponse;
 import com.whale_tide.common.exception.base.ProductException;
 import com.whale_tide.dto.client.product.*;
-import com.whale_tide.dto.management.product.ProductCommentParam;
 import com.whale_tide.service.client.IProductService;
-import com.whale_tide.service.management.IProductCommentService;
+import com.whale_tide.service.client.IProductCommentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,6 +27,7 @@ public class ProductController {
 
     @Autowired
     private IProductCommentService productCommentService;
+
     /**
      * 商品关键词搜索
      */
@@ -84,8 +80,8 @@ public class ProductController {
     @GetMapping("/comment/list/{productId}")
     public CommonResult<PageResponse<ProductCommentResponse>> getProductCommentList(
             @ApiParam(value = "商品ID", required = true) @PathVariable Long productId,
-            @ApiParam(value = "页码", required = true) Integer pageNum,
-            @ApiParam(value = "每页数量", required = true) Integer pageSize) {
+            @ApiParam(value = "页码", required = true) @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+            @ApiParam(value = "每页记录数", required = true) @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         try {
             ProductCommentParam queryParam = new ProductCommentParam();
             queryParam.setProductId(productId);
@@ -97,5 +93,31 @@ public class ProductController {
             log.error("获取商品评论列表异常: {}", e.getMessage(), e);
             return CommonResult.failed("获取商品评论列表失败: " + e.getMessage());
         }
-            }
+    }
+  @ApiOperation("添加商品评论")
+  @PostMapping("/comment/add")
+  public CommonResult<Void> addProductComment(
+          @ApiParam(value = "商品ID", required = true) @RequestParam(value = "productId") Long productId,
+          @ApiParam(value = "订单ID", required = true) @RequestParam(value = "orderId") Long orderId,
+          @ApiParam(value = "评分", required = true) @RequestParam(value = "star") Integer star,
+          @ApiParam(value = "评论内容", required = true) @RequestParam(value = "content") String content,
+          @ApiParam(value = "评论图片", required = false) @RequestParam(value = "pics", required = false) List<String> pics) {
+            try {
+                ProductCommentAddRequest request = new ProductCommentAddRequest();
+                request.setProductId(productId);
+                request.setOrderId(orderId);
+                request.setStar(star);
+                request.setContent(content);
+                request.setPics(pics);
+                productCommentService.addProductComment(request);
+                return CommonResult.success(null);
+            } catch (Exception e) {
+                log.error("添加商品评论异常: {}", e.getMessage(), e);
+                return CommonResult.failed("添加商品评论失败: " + e.getMessage());
+      }
+  }
 }
+
+
+
+// Below is partial code of D:/maven-work/WhaleTide/src/main/java/com/whale_tide/dto/client/product/ProductCommentResponse.java:

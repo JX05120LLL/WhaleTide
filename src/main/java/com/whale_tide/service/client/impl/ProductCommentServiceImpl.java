@@ -1,24 +1,20 @@
-package com.whale_tide.service.management.impl;
+package com.whale_tide.service.client.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.PageResponse;
 import com.whale_tide.dto.client.product.ProductCommentAddRequest;
 import com.whale_tide.dto.client.product.ProductCommentResponse;
-import com.whale_tide.dto.management.product.ProductCommentParam;
-import com.whale_tide.entity.oms.OmsOrders;
+import com.whale_tide.dto.client.product.ProductCommentParam;
 import com.whale_tide.entity.pms.PmsProductComments;
-import com.whale_tide.entity.pms.PmsProducts;
 import com.whale_tide.mapper.pms.PmsProductCommentsMapper;
-import com.whale_tide.service.management.IProductCommentService;
+import com.whale_tide.service.client.IProductCommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 @Slf4j
