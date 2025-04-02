@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 29/03/2025 17:54:59
+ Date: 02/04/2025 21:06:36
 */
 
 SET NAMES utf8mb4;
@@ -111,7 +111,7 @@ CREATE TABLE `ams_admins`  (
 -- ----------------------------
 -- Records of ams_admins
 -- ----------------------------
-INSERT INTO `ams_admins` VALUES (12, 'admin', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '超级管理员', '123456', NULL, NULL, 0, 1, '2025-03-27 18:11:47', NULL, '超级管理员，拥有所有权限', 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-17 09:51:25');
+INSERT INTO `ams_admins` VALUES (12, 'admin', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '超级管理员', '123456', NULL, NULL, 0, 1, '2025-03-30 09:01:38', NULL, '超级管理员，拥有所有权限', 1, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-17 09:51:25');
 INSERT INTO `ams_admins` VALUES (13, 'merchant', '123456', '商家', NULL, NULL, NULL, 0, 1, '2025-03-16 15:10:25', NULL, '拥有 商品 和订单 模块 权限', 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-16 14:36:29');
 INSERT INTO `ams_admins` VALUES (14, 'user', '123456', '普通用户', NULL, NULL, NULL, 0, 1, NULL, NULL, NULL, 0, NULL, NULL, 0, '2025-03-15 18:28:59', '2025-03-15 18:28:59');
 INSERT INTO `ams_admins` VALUES (17, 'admin1', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', NULL, '', NULL, NULL, 0, 1, '2025-03-25 16:35:16', NULL, 'testNote', 0, NULL, NULL, 0, '2025-03-17 09:48:23', '2025-03-17 09:48:23');
@@ -188,7 +188,7 @@ CREATE TABLE `ams_permissions`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_permissions
@@ -445,8 +445,14 @@ CREATE TABLE `oms_cart_items`  (
 -- ----------------------------
 -- Records of oms_cart_items
 -- ----------------------------
-INSERT INTO `oms_cart_items` VALUES (2, 12, 3, '小米13', 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png?x-fds-process=image/resize,q_90,f_webp', 18, '黑色', 2699.00, 5, 0, '2025-03-28 19:23:03', '2025-03-28 19:23:03');
-INSERT INTO `oms_cart_items` VALUES (3, 12, 3, '小米13', 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png?x-fds-process=image/resize,q_90,f_webp', 18, '黑色', 2699.00, 5, 0, '2025-03-28 19:23:04', '2025-03-28 19:23:04');
+INSERT INTO `oms_cart_items` VALUES (1, 12, 15, '三星Galaxy S24 Ultra', 'https://images.samsung.com/is/image/samsung/assets/tw/smartphones/galaxy-s24-ultra/images/galaxy-s24-ultra-highlights-kv.jpg?imbypass=true', 18, '黑色', 9999.00, 1, 1, '2025-04-05 15:30:00', '2025-04-05 15:30:00');
+INSERT INTO `oms_cart_items` VALUES (2, 12, 21, '小米智能空气净化器Pro 3', 'https://c1.mifile.cn/f/i/16/chain/airpro//mj-gallery-01.jpg', 27, '3个灯泡套装', 1299.00, 2, 1, '2025-04-05 16:15:00', '2025-04-05 16:15:00');
+INSERT INTO `oms_cart_items` VALUES (3, 12, 7, '小米手环8 Pro', '/uploads/skus/miband8pro-black.png', 21, '黑色', 399.00, 1, 1, '2025-04-06 09:20:00', '2025-04-06 09:20:00');
+INSERT INTO `oms_cart_items` VALUES (4, 13, 16, 'Apple MacBook Pro 16', 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/mbp16-witb-spaceblack-202410?wid=1216&hei=784&fmt=p-jpg&qlt=95&.v=1728330927913', 29, '机身', 14999.00, 1, 1, '2025-04-05 10:45:00', '2025-04-05 10:45:00');
+INSERT INTO `oms_cart_items` VALUES (5, 13, 20, '戴森吸尘器V15 Detect', 'https://m.media-amazon.com/images/I/619XJLzSXJL._AC_SX679_.jpg', 26, 'Pro版', 4999.00, 1, 1, '2025-04-05 11:30:00', '2025-04-05 11:30:00');
+INSERT INTO `oms_cart_items` VALUES (6, 14, 17, 'LG C3 OLED电视 65英寸', 'https://www.lg.com/cn/images/tvs/md07572084/gallery/1100-1.jpg', 25, '标准版', 13999.00, 1, 1, '2025-04-06 14:20:00', '2025-04-06 14:20:00');
+INSERT INTO `oms_cart_items` VALUES (7, 14, 23, '华为Watch GT 4智能手表', 'https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/pdp/wearables/watch-gt4-new/images/sec1/huawei-watch-gt4-2x.jpg', 22, '蓝色', 1299.00, 1, 1, '2025-04-06 14:25:00', '2025-04-06 14:25:00');
+INSERT INTO `oms_cart_items` VALUES (8, 14, 19, '佳能EOS R5微单相机', 'https://www.canon.com.cn/Upload/product/74XRU3SGAU/1589531788.jpg', 30, '标准镜头套装', 17999.00, 1, 0, '2025-04-06 15:10:00', '2025-04-06 15:10:00');
 
 -- ----------------------------
 -- Table structure for oms_order_deliveries
@@ -621,7 +627,13 @@ CREATE TABLE `oms_orders`  (
   INDEX `idx_merchant_id`(`merchant_id`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_create_time`(`create_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单主表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of oms_orders
+-- ----------------------------
+INSERT INTO `oms_orders` VALUES (1, '20250329123456', 12, 1, 0, 0, 3, 2699.00, 2699.00, 0.00, 0.00, 0.00, 0.00, 0.00, 2, '2025-03-29 14:30:00', NULL, NULL, NULL, NULL, 7, 0, '2025-03-30 20:27:55', '2025-03-30 20:27:55');
+INSERT INTO `oms_orders` VALUES (2, '20250329987654', 12, 2, 0, 0, 3, 6999.00, 6899.00, 0.00, 0.00, 0.00, 0.00, 0.00, 1, '2025-03-29 15:00:00', NULL, NULL, NULL, NULL, 7, 0, '2025-03-30 20:27:55', '2025-03-30 20:27:55');
 
 -- ----------------------------
 -- Table structure for oms_payments
@@ -657,7 +669,7 @@ DROP TABLE IF EXISTS `pms_brands`;
 CREATE TABLE `pms_brands`  (
   `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '品牌ID',
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '品牌名称',
-  `logo` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '品牌Logo',
+  `logo` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '品牌Logo',
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '品牌描述',
   `first_letter` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '品牌首字母',
   `sort` int(0) NULL DEFAULT 0 COMMENT '排序',
@@ -667,24 +679,19 @@ CREATE TABLE `pms_brands`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_name`(`name`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '品牌表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '品牌表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_brands
 -- ----------------------------
-INSERT INTO `pms_brands` VALUES (1, '小米', '/uploads/brands/xiaomi.png', '小米科技有限责任公司成立于2010年4月，是一家专注于高端智能手机、智能硬件和IoT生态链建设的创新型科技企业。', 'X', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-25 16:43:15');
-INSERT INTO `pms_brands` VALUES (2, '华为', '/uploads/brands/huawei.png', '华为技术有限公司成立于1987年，是全球领先的ICT（信息与通信）基础设施和智能终端提供商。', 'H', 2, 1, 1, '2025-03-16 13:15:47', '2025-03-25 16:37:51');
-INSERT INTO `pms_brands` VALUES (3, '苹果', '/uploads/brands/apple.png', '苹果公司是美国的一家高科技公司，2007年由苹果电脑公司更名而来，是世界领先的科技公司之一。', 'A', 3, 1, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_brands` VALUES (4, '三星', '/uploads/brands/samsung.png', '三星集团是韩国最大的跨国企业集团，三星电子是三星集团的旗舰子公司。', 'S', 4, 0, 1, '2025-03-16 13:15:47', '2025-03-25 16:37:49');
-INSERT INTO `pms_brands` VALUES (5, '戴尔', '/uploads/brands/dell.png', '戴尔科技集团是一家总部位于美国德克萨斯州朗德罗克的美国跨国科技公司。', 'D', 5, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_brands` VALUES (6, '联想', '/uploads/brands/lenovo.png', '联想集团是一家跨国科技公司，总部位于中国北京和美国北卡罗来纳州。', 'L', 6, 0, 1, '2025-03-16 13:15:47', '2025-03-16 13:15:47');
-INSERT INTO `pms_brands` VALUES (7, '索尼', '/uploads/brands/sony.png', '索尼是一家总部位于日本的跨国公司，提供消费电子、游戏、娱乐和金融服务。', 'S', 7, 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
-INSERT INTO `pms_brands` VALUES (8, 'LG', '/uploads/brands/lg.png', 'LG电子是LG集团的一部分，专注于家电和移动通信设备的制造。', 'L', 8, 0, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
-INSERT INTO `pms_brands` VALUES (9, '松下', '/uploads/brands/panasonic.png', '松下是一家日本的跨国电子制造商，专注于电子设备、家电和工业设备。', 'S', 9, 0, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
-INSERT INTO `pms_brands` VALUES (10, '飞利浦', '/uploads/brands/philips.png', '飞利浦是一家荷兰的健康科技公司，专注于健康科技和家用电器。', 'F', 10, 1, 1, '2025-03-16 13:19:44', '2025-03-16 13:19:44');
-INSERT INTO `pms_brands` VALUES (11, '索尼', '/uploads/brands/sony.png', '索尼是一家总部位于日本的跨国公司，提供消费电子、游戏、娱乐和金融服务。', 'S', 7, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_brands` VALUES (13, '松下', '/uploads/brands/panasonic.png', '松下是一家日本的跨国电子制造商，专注于电子设备、家电和工业设备。', 'S', 9, 0, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_brands` VALUES (14, '飞利浦', '/uploads/brands/philips.png', '飞利浦是一家荷兰的健康科技公司，专注于健康科技和家用电器。', 'F', 10, 1, 1, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
+INSERT INTO `pms_brands` VALUES (1, '小米', 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Xiaomi_logo_%282021-%29.svg/768px-Xiaomi_logo_%282021-%29.svg.png', '小米科技有限责任公司成立于2010年4月，是一家以智能手机、智能硬件和IoT平台为核心的消费电子及智能制造公司', 'X', 1, 1, 1, '2025-04-02 18:45:06', '2025-04-02 20:45:05');
+INSERT INTO `pms_brands` VALUES (2, '华为', 'https://www.huawei.com/-/media/corporate/images/home/logo/huawei_logo.png', '华为技术有限公司成立于1987年，是全球领先的ICT（信息与通信）基础设施和智能终端提供商', 'H', 2, 1, 1, '2025-04-02 18:45:06', '2025-04-02 18:45:06');
+INSERT INTO `pms_brands` VALUES (3, '苹果', 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS50ch4zAcUjDa_DI1MCYITICMa8HoZEkugwQ&s', 'Apple Inc.（苹果公司）成立于1976年，是一家美国跨国技术公司，设计、开发和销售消费电子产品、计算机软件和在线服务', 'A', 3, 1, 1, '2025-04-02 18:45:06', '2025-04-02 20:43:34');
+INSERT INTO `pms_brands` VALUES (4, '三星', 'https://images.samsung.com/is/image/samsung/assets/global/about-us/brand/logo/360_197_1.png', '三星电子有限公司创建于1969年，是韩国最大的电子工业企业', 'S', 4, 0, 1, '2025-04-02 18:45:06', '2025-04-02 18:45:06');
+INSERT INTO `pms_brands` VALUES (5, '戴尔', 'https://i.dell.com/sites/csimages/Banner_Imagery/all/dell-logo-500x500-10th.png', '戴尔科技集团（Dell Technologies）是全球领先的IT基础设施和技术解决方案提供商', 'D', 5, 0, 1, '2025-04-02 18:45:06', '2025-04-02 18:45:06');
+INSERT INTO `pms_brands` VALUES (6, '联想', 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Branding_lenovo-logo_lenovologoposred_low_res.png/1200px-Branding_lenovo-logo_lenovologoposred_low_res.png', '联想集团是一家全球化的科技公司，致力于智能化转型', 'L', 6, 0, 1, '2025-04-02 18:45:06', '2025-04-02 20:46:08');
+INSERT INTO `pms_brands` VALUES (7, '索尼', 'https://upload.wikimedia.org/wikipedia/commons/c/ca/Sony_logo.svg', '索尼公司是全球领先的电子产品制造商之一，提供音频、视频、游戏、通信和信息技术产品', 'S', 7, 1, 1, '2025-04-02 18:45:06', '2025-04-02 20:44:21');
+INSERT INTO `pms_brands` VALUES (8, '微软', 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RE1Mu3b?ver=5c31', '微软公司是世界个人计算机软件开发的先导，创建于1975年', 'W', 8, 1, 1, '2025-04-02 18:45:06', '2025-04-02 18:45:06');
 
 -- ----------------------------
 -- Table structure for pms_product_attribute_categories
@@ -791,30 +798,31 @@ CREATE TABLE `pms_product_categories`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_parent_id`(`parent_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 20 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_product_categories
 -- ----------------------------
-INSERT INTO `pms_product_categories` VALUES (1, 0, '默认分类', 1, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-03-15 20:57:12', '2025-03-15 20:57:12');
-INSERT INTO `pms_product_categories` VALUES (2, 0, '电子产品', 1, '/uploads/categories/electronics.png', 1, '各类电子产品', '电子,数码,智能', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-18 16:00:55');
-INSERT INTO `pms_product_categories` VALUES (3, 0, '家用电器', 1, '/uploads/categories/appliances.png', 2, '家用电器产品', '电器,家电,厨房电器', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-18 16:00:57');
-INSERT INTO `pms_product_categories` VALUES (4, 0, '服装鞋包', 1, '/uploads/categories/clothing.png', 3, '服装鞋包产品', '服装,鞋子,包包', 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 16:01:00');
-INSERT INTO `pms_product_categories` VALUES (5, 1, '智能手机', 2, '/uploads/categories/smartphone.png', 1, '智能手机产品', '手机,智能手机,5G', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-18 16:01:01');
-INSERT INTO `pms_product_categories` VALUES (6, 1, '笔记本电脑', 2, '/uploads/categories/laptop.png', 2, '笔记本电脑产品', '笔记本,电脑,便携', 1, 1, 1, '2025-03-16 13:15:47', '2025-03-18 16:01:04');
-INSERT INTO `pms_product_categories` VALUES (7, 1, '平板电脑', 2, '/uploads/categories/tablet.png', 3, '平板电脑产品', '平板,iPad,触屏', 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 16:01:06');
-INSERT INTO `pms_product_categories` VALUES (8, 2, '冰箱', 2, '/uploads/categories/refrigerator.png', 1, '冰箱产品', '冰箱,冷藏,保鲜', 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 16:01:08');
-INSERT INTO `pms_product_categories` VALUES (9, 2, '洗衣机', 2, '/uploads/categories/washing_machine.png', 2, '洗衣机产品', '洗衣机,洗护,滚筒', 1, 1, 0, '2025-03-16 13:15:47', '2025-03-18 16:01:10');
-INSERT INTO `pms_product_categories` VALUES (10, 1, '智能穿戴', 2, '/uploads/categories/wearable.png', 4, '智能穿戴设备', '智能手表,手环,耳机', 1, 1, 1, '2025-03-16 13:19:44', '2025-03-18 16:01:11');
-INSERT INTO `pms_product_categories` VALUES (11, 1, '智能家居', 2, '/uploads/categories/smarthome.png', 5, '智能家居产品', '智能音箱,智能灯泡,智能插座', 1, 1, 1, '2025-03-16 13:19:44', '2025-03-18 16:01:13');
-INSERT INTO `pms_product_categories` VALUES (12, 1, '相机', 2, '/uploads/categories/camera.png', 6, '相机产品', '相机,单反,微单', 1, 1, 0, '2025-03-16 13:19:44', '2025-03-18 16:01:15');
-INSERT INTO `pms_product_categories` VALUES (13, 2, '电视', 2, '/uploads/categories/tv.png', 3, '电视产品', '电视,智能电视,OLED', 1, 1, 1, '2025-03-16 13:19:44', '2025-03-18 16:01:16');
-INSERT INTO `pms_product_categories` VALUES (14, 2, '空调', 2, '/uploads/categories/aircon.png', 4, '空调产品', '空调,变频,冷暖', 1, 1, 0, '2025-03-16 13:19:44', '2025-03-18 16:01:17');
-INSERT INTO `pms_product_categories` VALUES (15, 1, '智能穿戴', 2, '/uploads/categories/wearable.png', 4, '智能穿戴设备', '智能手表,手环,耳机', 1, 1, 1, '2025-03-16 13:24:09', '2025-03-18 16:01:18');
-INSERT INTO `pms_product_categories` VALUES (16, 1, '智能家居', 2, '/uploads/categories/smarthome.png', 5, '智能家居产品', '智能音箱,智能灯泡,智能插座', 1, 1, 1, '2025-03-16 13:24:09', '2025-03-18 16:01:19');
-INSERT INTO `pms_product_categories` VALUES (17, 1, '相机', 2, '/uploads/categories/camera.png', 6, '相机产品', '相机,单反,微单', 1, 1, 0, '2025-03-16 13:24:09', '2025-03-18 16:01:20');
-INSERT INTO `pms_product_categories` VALUES (18, 2, '电视', 2, '/uploads/categories/tv.png', 3, '电视产品', '电视,智能电视,OLED', 1, 1, 1, '2025-03-16 13:24:09', '2025-03-18 16:01:21');
-INSERT INTO `pms_product_categories` VALUES (19, 2, '空调', 2, '/uploads/categories/aircon.png', 4, '空调产品', '空调,变频,冷暖', 1, 1, 0, '2025-03-16 13:24:09', '2025-03-18 16:01:24');
+INSERT INTO `pms_product_categories` VALUES (1, 0, '手机数码', 1, 'phone', 1, '手机、平板电脑、智能设备等数码产品', '手机,数码,智能设备', 1, 1, 1, '2025-03-01 10:00:00', '2025-03-01 10:00:00');
+INSERT INTO `pms_product_categories` VALUES (2, 0, '家用电器', 1, 'appliance', 2, '电视、冰箱、洗衣机等家用电器', '家电,电器,智能家居', 1, 1, 1, '2025-03-01 10:01:00', '2025-03-01 10:01:00');
+INSERT INTO `pms_product_categories` VALUES (3, 0, '电脑办公', 1, 'computer', 3, '笔记本、台式机、办公设备等产品', '电脑,办公,外设', 1, 1, 1, '2025-03-01 10:02:00', '2025-03-01 10:02:00');
+INSERT INTO `pms_product_categories` VALUES (4, 0, '智能家居', 1, 'smart-home', 4, '智能音箱、智能灯具等智能家居产品', '智能家居,物联网,智能设备', 1, 1, 1, '2025-03-01 10:03:00', '2025-03-01 10:03:00');
+INSERT INTO `pms_product_categories` VALUES (5, 1, '手机', 2, 'mobile', 1, '各品牌智能手机', '手机,智能手机,5G', 1, 1, 1, '2025-03-01 10:05:00', '2025-03-01 10:05:00');
+INSERT INTO `pms_product_categories` VALUES (6, 1, '笔记本', 2, 'laptop', 2, '各品牌笔记本电脑', '笔记本,轻薄本,游戏本', 1, 1, 1, '2025-03-01 10:06:00', '2025-03-01 10:06:00');
+INSERT INTO `pms_product_categories` VALUES (7, 1, '平板电脑', 2, 'tablet', 3, '各品牌平板电脑', '平板,iPad,安卓平板', 1, 1, 1, '2025-03-01 10:07:00', '2025-03-01 10:07:00');
+INSERT INTO `pms_product_categories` VALUES (8, 1, '智能穿戴', 2, 'wearable', 4, '智能手表、手环等穿戴设备', '智能手表,手环,穿戴设备', 1, 1, 1, '2025-03-01 10:08:00', '2025-03-01 10:08:00');
+INSERT INTO `pms_product_categories` VALUES (9, 2, '电视', 2, 'tv', 1, '智能电视、激光电视等', '电视,智能电视,OLED', 1, 1, 1, '2025-03-01 10:10:00', '2025-03-01 10:10:00');
+INSERT INTO `pms_product_categories` VALUES (10, 2, '空调', 2, 'air-conditioner', 2, '壁挂式、柜式空调等', '空调,变频,智能空调', 1, 1, 1, '2025-03-01 10:11:00', '2025-03-01 10:11:00');
+INSERT INTO `pms_product_categories` VALUES (11, 2, '冰箱', 2, 'refrigerator', 3, '多门冰箱、对开门冰箱等', '冰箱,对开门,智能冰箱', 1, 1, 1, '2025-03-01 10:12:00', '2025-03-01 10:12:00');
+INSERT INTO `pms_product_categories` VALUES (12, 2, '洗衣机', 2, 'washing-machine', 4, '滚筒洗衣机、波轮洗衣机等', '洗衣机,滚筒,烘干', 1, 1, 1, '2025-03-01 10:13:00', '2025-03-01 10:13:00');
+INSERT INTO `pms_product_categories` VALUES (13, 3, '台式电脑', 2, 'desktop', 1, '台式机、一体机等', '台式机,一体机,组装机', 1, 1, 1, '2025-03-01 10:15:00', '2025-03-01 10:15:00');
+INSERT INTO `pms_product_categories` VALUES (14, 3, '显示器', 2, 'monitor', 2, '各种尺寸显示器', '显示器,4K,曲面', 1, 1, 1, '2025-03-01 10:16:00', '2025-03-01 10:16:00');
+INSERT INTO `pms_product_categories` VALUES (15, 3, '打印机', 2, 'printer', 3, '喷墨打印机、激光打印机等', '打印机,激光,一体机', 1, 1, 1, '2025-03-01 10:17:00', '2025-03-01 10:17:00');
+INSERT INTO `pms_product_categories` VALUES (16, 3, '外设配件', 2, 'accessories', 4, '键盘、鼠标、耳机等外设配件', '键盘,鼠标,耳机,外设', 1, 1, 1, '2025-03-01 10:18:00', '2025-03-01 10:18:00');
+INSERT INTO `pms_product_categories` VALUES (17, 4, '智能音箱', 2, 'smart-speaker', 1, '各品牌智能音箱', '智能音箱,语音助手,AI', 1, 1, 1, '2025-03-01 10:20:00', '2025-03-01 10:20:00');
+INSERT INTO `pms_product_categories` VALUES (18, 4, '智能灯具', 2, 'smart-light', 2, '智能灯泡、智能灯带等', '智能灯,灯带,情景照明', 1, 1, 1, '2025-03-01 10:21:00', '2025-03-01 10:21:00');
+INSERT INTO `pms_product_categories` VALUES (19, 4, '智能门锁', 2, 'smart-lock', 3, '指纹锁、人脸识别门锁等', '智能锁,指纹锁,人脸识别', 1, 1, 1, '2025-03-01 10:22:00', '2025-03-01 10:22:00');
+INSERT INTO `pms_product_categories` VALUES (20, 4, '智能摄像头', 2, 'smart-camera', 4, '家用监控摄像头等', '摄像头,监控,安防', 1, 1, 1, '2025-03-01 10:23:00', '2025-03-01 10:23:00');
 
 -- ----------------------------
 -- Table structure for pms_product_comments
@@ -846,7 +854,7 @@ CREATE TABLE `pms_product_comments`  (
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_comment_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_comment_sku` FOREIGN KEY (`sku_id`) REFERENCES `pms_product_skus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_details
@@ -880,7 +888,7 @@ CREATE TABLE `pms_product_images`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_image_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品图片表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品图片表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for pms_product_promotions
@@ -1081,23 +1089,21 @@ CREATE TABLE `pms_products`  (
   INDEX `idx_merchant_id`(`merchant_id`) USING BTREE,
   CONSTRAINT `fk_product_brand` FOREIGN KEY (`brand_id`) REFERENCES `pms_brands` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `fk_product_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_products
 -- ----------------------------
-INSERT INTO `pms_products` VALUES (3, '小米13', 'MI13-2023', 4, 0, 1, NULL, 3999.00, 4299.00, 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png?x-fds-process=image/resize,q_90,f_webp', NULL, NULL, '小米,手机,5G,骁龙8', '小米年度旗舰手机，搭载骁龙8第二代处理器', 1258, 1000, '台', 0.20, 1, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-25 16:41:25');
-INSERT INTO `pms_products` VALUES (4, '华为Mate60 Pro', 'HW-MATE60P', 4, 0, 2, NULL, 6999.00, 7299.00, 'http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20221104/huawei_mate50_01.jpg', NULL, NULL, '华为,手机,旗舰,麒麟9000', '华为年度旗舰手机，搭载麒麟9000S处理器', 2056, 500, '台', 0.23, 2, 1, 1, 0, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-25 16:40:12');
-INSERT INTO `pms_products` VALUES (5, 'iPhone 15 Pro', 'APPL-IP15P', 4, 0, 3, NULL, 7999.00, 8299.00, 'http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20221028/iphone14_001.jpg', NULL, NULL, 'iPhone,苹果,A17,Pro', 'Apple新一代旗舰手机，搭载A17 Pro芯片', 3102, 800, '台', 0.22, 3, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-25 16:42:21');
-INSERT INTO `pms_products` VALUES (6, '联想ThinkPad X1 Carbon', 'LN-X1C2023', 5, 0, 6, NULL, 9999.00, 12999.00, '/uploads/products/thinkpadx1.png', NULL, NULL, '联想,ThinkPad,笔记本,轻薄', '联想商务旗舰笔记本，轻薄坚固', 458, 200, '台', 1.20, 4, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-16 15:20:00');
-INSERT INTO `pms_products` VALUES (7, '戴尔XPS 15', 'DELL-XPS15', 5, 0, 5, NULL, 12999.00, 13999.00, '/uploads/products/dellxps15.png', NULL, NULL, '戴尔,XPS,笔记本,设计', '戴尔高性能创意设计笔记本', 325, 150, '台', 1.80, 5, 1, 0, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:15:47', '2025-03-16 15:48:50');
-INSERT INTO `pms_products` VALUES (8, '索尼WH-1000XM5无线降噪耳机', 'SONY-WH1000XM5', 12, 0, 7, NULL, 2699.00, 2999.00, '/uploads/products/wh1000xm5.png', NULL, NULL, '索尼,耳机,降噪,蓝牙', '索尼旗舰级无线降噪耳机，提供出色的降噪体验', 856, 300, '台', 0.25, 6, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (9, '小米手环8 Pro', 'MI-BAND8PRO', 12, 0, 1, NULL, 399.00, 459.00, '/uploads/products/miband8pro.png', NULL, NULL, '小米,手环,健康,运动', '小米全新智能手环，支持运动健康监测', 1520, 1000, '个', 0.03, 7, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (10, '华为智慧屏V75 Super', 'HW-TV-V75S', 15, 0, 2, NULL, 12999.00, 13999.00, '/uploads/products/huawei-v75s.png', NULL, NULL, '华为,电视,智慧屏,大屏', '华为75英寸旗舰智慧屏，搭载鸿蒙系统', 256, 100, '台', 30.00, 8, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (11, '飞利浦Hue智能灯泡套装', 'PHILIPS-HUE-KIT', 13, 0, 10, NULL, 799.00, 899.00, '/uploads/products/philips-hue.png', NULL, NULL, '飞利浦,Hue,灯泡,智能家居', '飞利浦Hue智能照明系统，可通过手机APP控制', 423, 200, '套', 0.50, 9, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (12, '索尼Alpha 7 IV全画幅微单相机', 'SONY-A7IV', 14, 0, 7, NULL, 14999.00, 15999.00, '/uploads/products/sony-a7iv.png', NULL, NULL, '索尼,相机,微单,全画幅', '索尼专业级全画幅微单相机，3300万像素', 189, 50, '台', 0.70, 10, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-16 13:24:09', '2025-03-16 13:24:09');
-INSERT INTO `pms_products` VALUES (13, '小米15', '555', 5, 0, 1, 1, 999.00, 5444.00, 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png?x-fds-process=image/resize,q_90,f_webp', '', NULL, '', NULL, 0, 1000, '50', 50.00, 50, 0, 1, 1, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-25 19:33:37', '2025-03-25 19:33:37');
-INSERT INTO `pms_products` VALUES (14, '未命名商品_1742906182359', 'P1742906182359', 1, 0, NULL, 1, 0.01, NULL, NULL, NULL, NULL, NULL, NULL, 0, 100, NULL, NULL, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, NULL, NULL, NULL, 0, NULL, NULL, NULL, 1, NULL, NULL, 0, '2025-03-25 20:36:22', '2025-03-25 20:36:22');
+INSERT INTO `pms_products` VALUES (15, '三星Galaxy S24 Ultra', 'SAMS-S24ULTRA', 5, 0, 4, NULL, 9999.00, 10499.00, 'https://images.samsung.com/is/image/samsung/assets/tw/smartphones/galaxy-s24-ultra/images/galaxy-s24-ultra-highlights-kv.jpg?imbypass=true', NULL, '三星Galaxy S24 Ultra 旗舰手机', '三星,Galaxy,S24,Ultra,AI,高端', '三星年度旗舰手机，搭载骁龙8 Gen 3处理器和强大的AI功能', 843, 500, '台', 0.24, 4, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.8, 320, 290, 15000, 750, 320, 840, 10, 5, 2, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:11:26');
+INSERT INTO `pms_products` VALUES (16, 'Apple MacBook Pro 16', 'APPL-MBP16-M2', 6, 0, 3, NULL, 19999.00, 21999.00, 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/mbp16-witb-spaceblack-202410?wid=1216&hei=784&fmt=p-jpg&qlt=95&.v=1728330927913', NULL, 'Apple MacBook Pro 16 M2 Pro', 'Apple,MacBook,Pro,M2,专业,笔记本', 'Apple最强大的专业笔记本，搭载M2 Pro芯片和16英寸Liquid视网膜XDR显示屏', 625, 300, '台', 2.20, 5, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.9, 280, 230, 12000, 800, 250, 620, 5, 3, 0, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:12:37');
+INSERT INTO `pms_products` VALUES (17, 'LG C3 OLED电视 65英寸', 'LG-OLED65C3', 13, 0, 8, NULL, 13999.00, 15999.00, 'https://www.lg.com/cn/images/tvs/md07572084/gallery/1100-1.jpg', NULL, 'LG C3系列 4K OLED电视', 'LG,OLED,C3,电视,4K,智能', 'LG 2023年C3系列OLED电视，4K分辨率，支持杜比视界和全面的游戏功能', 320, 100, '台', 25.00, 6, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.7, 150, 120, 8000, 300, 120, 315, 8, 5, 1, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:13:52');
+INSERT INTO `pms_products` VALUES (18, '松下冰箱NR-W56S1', 'PANA-NRW56S1', 8, 0, 9, NULL, 8999.00, 9999.00, 'https://consumer.panasonic.cn/static/upload/image/20221127/1669524295425533.png', NULL, '松下六门冰箱', '松下,冰箱,多门,变频,节能', '松下六门对开冰箱，563L大容量，nanoe™X纳米水离子抑菌，变频节能', 230, 80, '台', 95.00, 7, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.6, 90, 75, 5000, 120, 50, 228, 3, 2, 0, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:26:57');
+INSERT INTO `pms_products` VALUES (19, '佳能EOS R5微单相机', 'CANON-EOSR5', 12, 0, 11, NULL, 25999.00, 27999.00, 'https://www.canon.com.cn/Upload/product/74XRU3SGAU/1589531788.jpg', NULL, '佳能EOS R5全画幅微单相机', '佳能,Canon,EOS,R5,微单,全画幅,相机', '佳能专业级全画幅微单相机，4500万像素，8K视频拍摄，高速连拍，专业摄影师首选', 145, 50, '台', 0.85, 8, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.9, 65, 50, 4000, 180, 95, 142, 2, 1, 0, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:27:48');
+INSERT INTO `pms_products` VALUES (20, '戴森吸尘器V15 Detect', 'DYSON-V15DETECT', 3, 0, 12, NULL, 4999.00, 5499.00, 'https://m.media-amazon.com/images/I/619XJLzSXJL._AC_SX679_.jpg', NULL, '戴森V15 Detect无线吸尘器', '戴森,Dyson,吸尘器,无线,智能', '戴森最新旗舰吸尘器，搭载激光颗粒探测技术，智能感应灰尘调节吸力，60分钟超长续航', 580, 200, '台', 3.10, 9, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.7, 210, 180, 9500, 350, 160, 575, 12, 8, 3, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:29:03');
+INSERT INTO `pms_products` VALUES (21, '小米智能空气净化器Pro 3', 'MI-AIRPRO3', 16, 0, 1, NULL, 1499.00, 1699.00, 'https://c1.mifile.cn/f/i/16/chain/airpro//mj-gallery-01.jpg', NULL, '小米空气净化器Pro 3', '小米,空气净化器,智能,OLED,净化', '小米高端空气净化器，OLED屏幕显示，CADR值高达800立方米/小时，适用面积高达92平方米', 1250, 500, '台', 9.80, 10, 1, 1, 1, 1, 1, 1299.00, '2025-04-01 00:00:00', '2025-04-15 23:59:59', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.5, 420, 380, 18000, 560, 280, 1240, 20, 15, 5, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:30:45');
+INSERT INTO `pms_products` VALUES (22, 'Apple iPad Pro 12.9', 'APPL-IPADPRO-12', 7, 0, 3, NULL, 8999.00, 9499.00, 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/ipad-pro-model-select-gallery-1-202405?wid=5120&hei=2880&fmt=webp&qlt=70&.v=cXN0QTVTNDBtbGIzcy91THBPRThnNE5sSFgwakNWNmlhZ2d5NGpHdllWY09WV3R2ZHdZMXRzTjZIcWdMTlg4eUJQYkhSV3V1dC9oa0s5K3lqMGtUaFMvR01EVDlzK0hIS1J2bTdpY0pVeTF1Yy9kL1dQa3EzdWh4Nzk1ZnZTYWY&traceId=1', NULL, 'Apple iPad Pro 12.9英寸 M2芯片', 'Apple,iPad,Pro,平板,M2,专业', 'Apple新一代iPad Pro，搭载M2芯片，12.9英寸超视网膜XDR显示屏，专业创作者的理想选择', 720, 300, '台', 0.68, 11, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.8, 250, 220, 13500, 630, 310, 715, 8, 5, 1, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:31:26');
+INSERT INTO `pms_products` VALUES (23, '华为Watch GT 4智能手表', 'HW-WATCHGT4', 10, 0, 2, NULL, 1499.00, 1699.00, 'https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/pdp/wearables/watch-gt4-new/images/sec1/huawei-watch-gt4-2x.jpg', NULL, '华为Watch GT 4智能手表', '华为,智能手表,健康,运动,监测', '华为最新一代智能手表，支持心率、血氧、睡眠监测，提供100多种运动模式，14天超长续航', 980, 400, '个', 0.05, 12, 1, 1, 1, 1, 1, 1299.00, '2025-04-01 00:00:00', '2025-04-15 23:59:59', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.6, 320, 290, 16500, 480, 250, 970, 15, 12, 3, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:31:50');
+INSERT INTO `pms_products` VALUES (24, '小米扫地机器人X20', 'MI-ROBOT-X20', 16, 0, 1, NULL, 2999.00, 3299.00, 'https://i02.appmifile.com/mi-com-product/fly-birds/xiaomi-robot-vacuum-x20/pc/d5c5dafb772de049aca294626748a712.jpg?f=webp', NULL, '小米扫地机器人X20', '小米,扫地机器人,智能,清洁,拖地', '小米高端扫地机器人，6000Pa超强吸力，AI避障，智能规划清扫路线，支持扫拖一体和自动回充', 850, 300, '台', 3.50, 13, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.5, 280, 250, 12500, 380, 190, 840, 12, 10, 4, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:32:15');
 
 -- ----------------------------
 -- Table structure for pms_ratings
@@ -1197,7 +1203,13 @@ CREATE TABLE `sms_coupon_products`  (
   INDEX `idx_coupon_id`(`coupon_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_coupon` FOREIGN KEY (`coupon_id`) REFERENCES `sms_coupons` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券适用商品关联表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sms_coupon_products
+-- ----------------------------
+INSERT INTO `sms_coupon_products` VALUES (1, 2, 3, '小米13', NULL, '2025-03-30 20:27:55');
+INSERT INTO `sms_coupon_products` VALUES (2, 2, 4, '华为Mate60 Pro', NULL, '2025-03-30 20:27:55');
 
 -- ----------------------------
 -- Table structure for sms_coupons
@@ -1228,7 +1240,13 @@ CREATE TABLE `sms_coupons`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '优惠券表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of sms_coupons
+-- ----------------------------
+INSERT INTO `sms_coupons` VALUES (1, '春季大促通用券', 0, 'SPRING2024', 0, 50.00, NULL, 200.00, '2025-03-01 00:00:00', '2025-04-30 23:59:59', 1000, 980, 0, 0, 2, 0, NULL, 1, 0, '2025-03-30 20:27:54', '2025-03-30 20:27:54');
+INSERT INTO `sms_coupons` VALUES (2, '手机品类专享券', 2, 'PHONE100', 0, 100.00, NULL, 1000.00, '2025-03-15 00:00:00', '2025-03-31 23:59:59', 500, 500, 0, 0, 1, 0, NULL, 1, 0, '2025-03-30 20:27:54', '2025-03-30 20:27:54');
 
 -- ----------------------------
 -- Table structure for sms_flash_promotion
@@ -1319,7 +1337,7 @@ CREATE TABLE `sms_promotion_logs`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_log_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_products
@@ -1339,7 +1357,7 @@ CREATE TABLE `sms_promotion_products`  (
   INDEX `idx_promotion_id`(`promotion_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotions
@@ -1366,7 +1384,7 @@ CREATE TABLE `sms_promotions`  (
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_merchants
@@ -1593,7 +1611,7 @@ CREATE TABLE `ums_user_search_history`  (
   UNIQUE INDEX `uk_user_keyword`(`user_id`, `keyword`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_search_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_user_search_history
@@ -1636,11 +1654,12 @@ CREATE TABLE `ums_users`  (
   UNIQUE INDEX `uk_phone`(`phone`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE,
   INDEX `idx_is_merchant`(`is_merchant`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_users
 -- ----------------------------
-INSERT INTO `ums_users` VALUES (12, '张三', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '123464984166', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-03-29 16:49:55', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-03-18 17:42:20', '2025-03-18 17:50:26');
+INSERT INTO `ums_users` VALUES (12, '张三', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '123464984166', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-04-02 20:07:31', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-03-18 17:42:20', '2025-03-18 17:50:26');
+INSERT INTO `ums_users` VALUES (14, '19391629120', '$2a$10$xfqv4f9C60kNPzVFc9zi1uccCwnbXTFjlsUUxPzjtLL/8qRbzau62', '19391629120', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-04-01 20:03:55', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-04-01 20:03:44', '2025-04-01 20:03:44');
 
 SET FOREIGN_KEY_CHECKS = 1;

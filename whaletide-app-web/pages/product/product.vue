@@ -241,6 +241,7 @@
 	import {
 		formatDate
 	} from '@/utils/date';
+	import { getFullImageUrl } from '@/utils/requestUtil.js';
 	const defaultServiceList = [{
 		id: 1,
 		name: "无忧退货"
@@ -278,23 +279,45 @@
 		},
 		data() {
 			return {
+				id: 0,
 				specClass: 'none',
 				attrClass: 'none',
-				specSelected: [],
+				couponState: 0, //优惠券面板显示状态 0隐藏 1显示 2动画中
+				specSelected: [], //已选择的规格
+				specChildList: [], //规格子列表
+				specList: [], //规格列表
+				attrList: [], //属性列表
+				promotionTipList: [], //商品促销信息
+				serviceList: [], //服务列表
+				imgList: [], //商品图片列表
+				couponList: [], //优惠券列表
+				DefaultImg: '/static/temp/product.jpg', // 使用相对路径图片
+				// 初始化为空对象防止属性访问报错
+				product: {
+					id: 0,
+					name: '',
+					subTitle: '',
+					price: 0,
+					originalPrice: 0,
+					sale: 0,
+					stock: 0,
+					pic: '',
+					albumPics: '',
+					serviceIds: ''
+				},
+				brand: {
+					id: 0,
+					name: '',
+					logo: '',
+					firstLetter: ''
+				},
+				skuStockList: [],
+				desc: '',
 				favorite: false,
 				shareList: [],
-				imgList: [],
-				desc: '',
-				specList: [],
-				specChildList: [],
-				product: {},
-				brand: {},
-				serviceList: [],
-				skuStockList: [],
-				attrList: [],
-				promotionTipList: [],
-				couponState: 0,
-				couponList: []
+				options: {},
+				maxNum: 99,
+				number: 1
 			};
 		},
 		async onLoad(options) {
@@ -327,9 +350,43 @@
 		methods: {
 			async loadData(id) {
 				fetchProductDetail(id).then(response => {
-					this.product = response.data.product;
-					this.skuStockList = response.data.skuStockList;
-					this.brand = response.data.brand;
+					if (!response || !response.data) {
+						uni.showToast({
+							title: '获取商品详情失败',
+							icon: 'none'
+						});
+						return;
+					}
+					
+					// 处理图片URL
+					if (response.data.product) {
+						const product = response.data.product;
+						if (product.pic) {
+							product.pic = getFullImageUrl(product.pic);
+						}
+						if (product.mainImage) {
+							product.mainImage = getFullImageUrl(product.mainImage);
+						}
+						// 其他图片处理逻辑在initImgList方法中
+						this.product = product;
+					} else {
+						this.product = this.product;
+					}
+					
+					// 处理品牌LOGO
+					if (response.data.brand) {
+						const brand = response.data.brand;
+						if (brand.logo) {
+							brand.logo = getFullImageUrl(brand.logo);
+						}
+						this.brand = brand;
+					} else {
+						this.brand = this.brand;
+					}
+					
+					this.skuStockList = response.data.skuStockList || [];
+					
+					// 初始化各种数据
 					this.initImgList();
 					this.initServiceList();
 					this.initSpecList(response.data);
@@ -338,6 +395,12 @@
 					this.initProductDesc();
 					this.handleReadHistory();
 					this.initProductCollection();
+				}).catch(error => {
+					console.error('获取商品详情失败:', error);
+					uni.showToast({
+						title: '获取商品详情失败，请稍后重试',
+						icon: 'none'
+					});
 				});
 			},
 			//规格弹窗开关
@@ -463,18 +526,41 @@
 			stopPrevent() {},
 			//设置头图信息
 			initImgList() {
+				// 确保product和albumPics存在
+				if (!this.product || !this.product.albumPics) {
+					this.imgList = [{ src: this.product.pic || this.DefaultImg }];
+					return;
+				}
+				
 				let tempPics = this.product.albumPics.split(',');
-				tempPics.unshift(this.product.pic);
+				// 确保主图存在，否则使用默认图片
+				tempPics.unshift(this.product.pic || this.DefaultImg);
+				
+				this.imgList = []; // 清空之前的图片列表
 				for (let item of tempPics) {
 					if (item != null && item != '') {
+						// 处理图片URL
+						const fullUrl = getFullImageUrl(item);
 						this.imgList.push({
-							src: item
+							src: fullUrl
 						});
 					}
+				}
+				
+				// 确保至少有一张图片
+				if (this.imgList.length === 0) {
+					this.imgList = [{ src: this.DefaultImg }];
 				}
 			},
 			//设置服务信息
 			initServiceList() {
+				// 确保product和serviceIds存在
+				if (!this.product || !this.product.serviceIds) {
+					this.serviceList = [];
+					return;
+				}
+				
+				this.serviceList = [];
 				for (let item of defaultServiceList) {
 					if (this.product.serviceIds.indexOf(item.id) != -1) {
 						this.serviceList.push(item.name);

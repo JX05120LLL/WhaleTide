@@ -118,3 +118,12 @@ export function request (options = {}) {
 }
 
 export default request
+
+// 处理图片URL的函数，将相对路径转为完整URL
+export function getFullImageUrl(url) {
+	if (!url) return '';
+	if (url.startsWith('http') || url.startsWith('https')) {
+		return url;
+	}
+	return API_BASE_URL + url;
+}

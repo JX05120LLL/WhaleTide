@@ -19,6 +19,7 @@
 	import {
 		fetchBrandRecommendList
 	} from '@/api/brand.js';
+	import { getFullImageUrl } from '@/utils/requestUtil.js';
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	export default {
 		components: {
@@ -28,10 +29,11 @@
 			return {
 				loadingType: 'more', //加载更多状态
 				brandList: [],
-				searchParam: {
+				queryParams: {
 					pageNum: 1,
-					pageSize: 6
-				}
+					pageSize: 10
+				},
+				loading: false
 			};
 		},
 
@@ -44,41 +46,49 @@
 		},
 		//加载更多
 		onReachBottom() {
-			this.searchParam.pageNum++;
+			if (this.loadingType == 'nomore' || this.loading) {
+				return;
+			}
+			this.queryParams.pageNum++;
+			this.loadingType = 'loading';
 			this.loadData();
 		},
 		methods: {
 			//加载商品 ，带下拉刷新和上滑加载
 			async loadData(type = 'add', loading) {
-				//没有更多直接返回
-				if (type === 'add') {
-					if (this.loadingType === 'nomore') {
-						return;
-					}
-					this.loadingType = 'loading';
-				} else {
-					this.loadingType = 'more'
-				}
-
-				if (type === 'refresh') {
-					this.searchParam.pageNum=1;
-					this.brandList = [];
-				}
-				fetchBrandRecommendList(this.searchParam).then(response => {
-					let prandList = response.data;
-					if (response.data.length === 0) {
-						//没有更多了
-						this.loadingType = 'nomore';
-						this.searchParam.pageNum--;
-					} else {
-						if (response.data.length < this.searchParam.pageSize) {
-							this.loadingType = 'nomore';
-							this.searchParam.pageNum--;
-						} else {
-							this.loadingType = 'more';
+				this.loading = true;
+				try {
+					const response = await fetchBrandRecommendList(this.queryParams);
+					console.log("品牌列表原始数据:", response);
+					
+					// 处理图片路径
+					const brands = response.data && response.data.list ? response.data.list : [];
+					brands.forEach(item => {
+						// 确保logo是完整URL
+						if (item.logo) {
+							item.logo = getFullImageUrl(item.logo);
 						}
-						this.brandList = this.brandList.concat(prandList);
+						console.log("处理后的品牌图片:", item.logo);
+					});
+					
+					// 添加到列表
+					if (this.queryParams.pageNum === 1) {
+						this.brandList = brands;
+					} else {
+						this.brandList = [...this.brandList, ...brands];
 					}
+					
+					this.loadingType = brands.length < this.queryParams.pageSize ? 'nomore' : 'more';
+					console.log("处理后的品牌列表:", this.brandList);
+				} catch (error) {
+					console.error("加载品牌列表失败:", error);
+					uni.showToast({
+						title: '加载品牌列表失败',
+						icon: 'none'
+					});
+					this.loadingType = 'more';
+				} finally {
+					this.loading = false;
 					if (type === 'refresh') {
 						if (loading == 1) {
 							uni.hideLoading()
@@ -86,7 +96,7 @@
 							uni.stopPullDownRefresh();
 						}
 					}
-				});
+				}
 			},
 			//详情
 			navToDetailPage(item) {

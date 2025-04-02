@@ -173,6 +173,7 @@
 	import {
 		formatDate
 	} from '@/utils/date';
+	import { getFullImageUrl } from '@/utils/requestUtil.js';
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	export default {
 		components: {
@@ -326,6 +327,27 @@
 					return null;
 				};
 				
+				// 处理图片URL的函数
+				const processImages = (items) => {
+					if (!items || !Array.isArray(items)) return [];
+					
+					return items.map(item => {
+						if (item) {
+							// 处理图片路径
+							if (item.pic) {
+								item.pic = getFullImageUrl(item.pic);
+							}
+							if (item.logo) {
+								item.logo = getFullImageUrl(item.logo);
+							}
+							if (item.mainImage) {
+								item.mainImage = getFullImageUrl(item.mainImage);
+							}
+						}
+						return item;
+					});
+				};
+				
 				fetchContent().then(response => {
 					console.log("首页内容完整响应:", response);
 					
@@ -347,29 +369,32 @@
 						// 广告列表
 						const advList = extractField(responseData, fieldMappings.advertiseList) || [];
 						console.log("广告列表:", advList);
-						this.advertiseList = advList.length > 0 ? advList : defaultData.advertiseList;
+						this.advertiseList = advList.length > 0 ? processImages(advList) : defaultData.advertiseList;
 						this.swiperLength = this.advertiseList.length;
 						this.titleNViewBackground = this.titleNViewBackgroundList[0];
 						
 						// 品牌列表
 						const brdList = extractField(responseData, fieldMappings.brandList) || [];
 						console.log("品牌列表:", brdList);
-						this.brandList = brdList.length > 0 ? brdList : defaultData.brandList;
+						this.brandList = brdList.length > 0 ? processImages(brdList) : defaultData.brandList;
 						
 						// 秒杀专区
 						const flashPromo = extractField(responseData, fieldMappings.homeFlashPromotion);
 						console.log("秒杀专区:", flashPromo);
 						this.homeFlashPromotion = flashPromo ? flashPromo : defaultData.homeFlashPromotion;
+						if (this.homeFlashPromotion && this.homeFlashPromotion.productList) {
+							this.homeFlashPromotion.productList = processImages(this.homeFlashPromotion.productList);
+						}
 						
 						// 新品列表
 						const newList = extractField(responseData, fieldMappings.newProductList) || [];
 						console.log("新品列表:", newList);
-						this.newProductList = newList.length > 0 ? newList : defaultData.newProductList;
+						this.newProductList = newList.length > 0 ? processImages(newList) : defaultData.newProductList;
 						
 						// 热门列表
 						const hotList = extractField(responseData, fieldMappings.hotProductList) || [];
 						console.log("热门列表:", hotList);
-						this.hotProductList = hotList.length > 0 ? hotList : defaultData.hotProductList;
+						this.hotProductList = hotList.length > 0 ? processImages(hotList) : defaultData.hotProductList;
 						
 						// 加载推荐列表
 						fetchRecommendProductList(this.recommendParams).then(recommendResponse => {
@@ -388,7 +413,8 @@
 							
 							// 更新推荐列表
 							if (recData && (Array.isArray(recData) ? recData.length > 0 : true)) {
-								this.recommendProductList = Array.isArray(recData) ? recData : [recData];
+								const products = Array.isArray(recData) ? recData : [recData];
+								this.recommendProductList = processImages(products);
 							} else {
 								console.log("使用默认推荐数据");
 							}

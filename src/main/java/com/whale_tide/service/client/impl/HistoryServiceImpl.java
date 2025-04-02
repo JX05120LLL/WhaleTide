@@ -95,7 +95,8 @@ public class HistoryServiceImpl implements IHistoryService {
             log.warn("搜索关键词为空，无法创建搜索历史");
             return;
         }
-        
+
+
         // 检查是否已经有相同关键词的记录
         LambdaQueryWrapper<UmsUserSearchHistory> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UmsUserSearchHistory::getUserId, userId);
