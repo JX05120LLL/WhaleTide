@@ -87,6 +87,11 @@ public class MemberServiceImpl implements IMemberService {
                     // 更新用户信息
                     umsUsersMapper.updateById(user);
                 }
+                else {
+                    // 旧密码错误
+                    throw new IllegalArgumentException("旧密码错误");
+            }
+
             }
         }
     }
