@@ -5,6 +5,10 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
+/**
+ * 产品评论响应
+ */
+
 @Data
 @ApiModel(description = "产品评论响应")
 public class ProductCommentResponse {

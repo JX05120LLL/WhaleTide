@@ -4,7 +4,9 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import java.util.List;
-
+/**
+ * 添加商品评论请求
+ */
 @Data
 @ApiModel(description = "添加商品评论请求")
 public class ProductCommentAddRequest {

@@ -8,6 +8,7 @@ import com.whale_tide.dto.client.product.*;
 import com.whale_tide.service.client.IProductService;
 import com.whale_tide.service.client.IProductCommentService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -76,6 +77,11 @@ public class ProductController {
             return CommonResult.failed("获取商品详情失败: " + e.getMessage());
         }
     }
+    /**
+     * 获取商品评论列表
+     */
+
+    @ApiImplicitParam(name = "Authorization", value = "身份认证Token", required = true, paramType = "header")
     @ApiOperation("获取商品评论列表")
     @GetMapping("/comment/list/{productId}")
     public CommonResult<PageResponse<ProductCommentResponse>> getProductCommentList(
@@ -94,30 +100,36 @@ public class ProductController {
             return CommonResult.failed("获取商品评论列表失败: " + e.getMessage());
         }
     }
-  @ApiOperation("添加商品评论")
-  @PostMapping("/comment/add")
-  public CommonResult<Void> addProductComment(
-          @ApiParam(value = "商品ID", required = true) @RequestParam(value = "productId") Long productId,
-          @ApiParam(value = "订单ID", required = true) @RequestParam(value = "orderId") Long orderId,
-          @ApiParam(value = "评分", required = true) @RequestParam(value = "star") Integer star,
-          @ApiParam(value = "评论内容", required = true) @RequestParam(value = "content") String content,
-          @ApiParam(value = "评论图片", required = false) @RequestParam(value = "pics", required = false) List<String> pics) {
-            try {
-                ProductCommentAddRequest request = new ProductCommentAddRequest();
-                request.setProductId(productId);
-                request.setOrderId(orderId);
-                request.setStar(star);
-                request.setContent(content);
-                request.setPics(pics);
-                productCommentService.addProductComment(request);
-                return CommonResult.success(null);
-            } catch (Exception e) {
-                log.error("添加商品评论异常: {}", e.getMessage(), e);
-                return CommonResult.failed("添加商品评论失败: " + e.getMessage());
-      }
-  }
+    /**
+     * 添加商品评论
+     */
+
+    @ApiImplicitParam(name = "Authorization", value = "身份认证Token", required = true, paramType = "header")
+    @ApiOperation("添加商品评论")
+    @PostMapping("/comment/add")
+    public CommonResult<Void> addProductComment(
+            @ApiParam(value = "商品ID", required = true) @RequestParam(value = "productId") Long productId,
+            @ApiParam(value = "订单ID", required = true) @RequestParam(value = "orderId") Long orderId,
+            @ApiParam(value = "评分", required = true) @RequestParam(value = "star") Integer star,
+            @ApiParam(value = "评论内容", required = true) @RequestParam(value = "content") String content,
+            @ApiParam(value = "评论图片", required = false) @RequestParam(value = "pics", required = false) List<String> pics) {
+        try {
+            ProductCommentAddRequest request = new ProductCommentAddRequest();
+            request.setProductId(productId);
+            request.setOrderId(orderId);
+            request.setStar(star);
+            request.setContent(content);
+            request.setPics(pics);
+            productCommentService.addProductComment(request);
+            return CommonResult.success(null);
+        } catch (Exception e) {
+            log.error("添加商品评论异常: {}", e.getMessage(), e);
+            return CommonResult.failed("添加商品评论失败: " + e.getMessage());
+        }
+    }
 }
 
 
 
-// Below is partial code of D:/maven-work/WhaleTide/src/main/java/com/whale_tide/dto/client/product/ProductCommentResponse.java:
+
+

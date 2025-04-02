@@ -10,20 +10,28 @@ import com.whale_tide.mapper.ums.UmsUsersMapper;
 import com.whale_tide.service.client.IMemberService;
 import com.whale_tide.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
-
+/**
+ * 个人中心服务实现类
+ */
 @Service
 public class MemberServiceImpl implements IMemberService {
     @Autowired
     private UmsUsersMapper umsUsersMapper;
     @Autowired
     private JwtUtil jwtUtil;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+   /**
+     * 个人中心-修改个人信息
+     * @param request
+     */
     @Override
     public void memberInfoUpdate(MemberInfoUpdateRequest request) {
         // 从请求中获取当前用户ID
@@ -54,12 +62,12 @@ public class MemberServiceImpl implements IMemberService {
         }
     }
 
-
+    /**
+     * 个人中心-修改密码
+     * @param request
+     */
     @Override
     public void PasswordUpdate(PasswordUpdateRequest request) {
-        //解析请求参数
-        String oldPassword = request.getOldPassword();
-        String newPassword = request.getNewPassword();
         // 从请求中获取当前用户ID
         // 获取当前请求
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -70,19 +78,23 @@ public class MemberServiceImpl implements IMemberService {
             if (token != null) {
                 // 使用JwtUtil解析token获取用户名
                 String username = jwtUtil.getUsernameFromToken(token);
-                //查询用户
+                // 查询用户
                 UmsUsers user = umsUsersMapper.selectOne(Wrappers.<UmsUsers>lambdaQuery().eq(UmsUsers::getUsername, username));
-                //验证旧密码是否正确
-                if (user.getPassword().equals(oldPassword)) {
-                    //更新密码
-                    user.setPassword(newPassword);
-                    //更新用户信息
+                // 验证旧密码
+                if (passwordEncoder.matches(request.getOldPassword(), user.getPassword())) {
+                    // 更新密码
+                    user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+                    // 更新用户信息
                     umsUsersMapper.updateById(user);
                 }
             }
         }
     }
-
+    /**
+     * 个人中心-上传头像
+     * @param request
+     * @return
+     */
     @Override
     public String avatarUpload(AvatarUploadResponse request) {
         // 从请求中获取当前用户ID
@@ -107,7 +119,10 @@ public class MemberServiceImpl implements IMemberService {
         }
         return null;
     }
-
+    /**
+     * 个人中心-获取积分详情
+     * @return
+     */
     @Override
     public IntegrationDetailResponse getIntegrationDetail() {
         // 从请求中获取当前用户ID

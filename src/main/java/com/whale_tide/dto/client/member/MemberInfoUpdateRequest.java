@@ -5,7 +5,9 @@ import lombok.Data;
 
 import java.time.LocalDate;
 import java.util.Date;
-
+/**
+ * 修改用户信息请求对象
+ */
 @Data
 @ApiModel(description = " 用户信息更新请求对象  ")
 public class MemberInfoUpdateRequest {
