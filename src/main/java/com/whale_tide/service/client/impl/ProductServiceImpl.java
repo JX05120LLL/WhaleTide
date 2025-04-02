@@ -244,7 +244,7 @@ public class ProductServiceImpl implements IProductService {
         String brandName = brand != null ? brand.getName() : "";
         
         // 查询商品属性
-        int attributeId = product.getAttributeId(); // 属性ID
+        long attributeId = product.getAttributeId(); // 属性ID
         List<ProductDetailResponse.ProductAttribute> attributes = new ArrayList<>();
         
         if (attributeId > 0) {

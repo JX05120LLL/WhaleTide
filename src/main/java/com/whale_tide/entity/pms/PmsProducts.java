@@ -50,7 +50,7 @@ public class PmsProducts implements Serializable {
     /**
      * 属性ID
      */
-    private Integer attributeId;
+    private Long attributeId;
 
     /**
      * 品牌ID
@@ -76,6 +76,16 @@ public class PmsProducts implements Serializable {
      * 主图URL
      */
     private String mainImage;
+
+    /**
+     * 画册图片，连产品图片限制为5张，以逗号分割
+     */
+    private String albumPics;
+
+    /**
+     * 商品详情标题
+     */
+    private String detailTitle;
 
     /**
      * 关键词
@@ -133,6 +143,191 @@ public class PmsProducts implements Serializable {
     private Integer verifyStatus;
 
     /**
+     * 促销类型：0-无促销，1-特价促销，2-会员价格，3-阶梯价格，4-满减价格
+     */
+    private Integer promotionType;
+
+    /**
+     * 促销价格
+     */
+    private BigDecimal promotionPrice;
+
+    /**
+     * 促销开始时间
+     */
+    private LocalDateTime promotionStartTime;
+
+    /**
+     * 促销结束时间
+     */
+    private LocalDateTime promotionEndTime;
+
+    /**
+     * 促销限购数量
+     */
+    private Integer promotionLimit;
+
+    /**
+     * 服务保障（JSON格式）
+     */
+    private String serviceGuarantees;
+
+    /**
+     * 商品属性（JSON格式）
+     */
+    private String productAttributes;
+
+    /**
+     * 商品图片（JSON格式）
+     */
+    private String productImages;
+
+    /**
+     * 商品视频（JSON格式）
+     */
+    private String productVideos;
+
+    /**
+     * 商品详情
+     */
+    private String productDetails;
+
+    /**
+     * 商品规格（JSON格式）
+     */
+    private String productSpecs;
+
+    /**
+     * 商品专题（JSON格式）
+     */
+    private String productSubjects;
+
+    /**
+     * 商品标签（JSON格式）
+     */
+    private String productTags;
+
+    /**
+     * 相关商品（JSON格式）
+     */
+    private String productRelated;
+
+    /**
+     * 推荐商品（JSON格式）
+     */
+    private String productRecommend;
+
+    /**
+     * 商品评价（JSON格式）
+     */
+    private String productComment;
+
+    /**
+     * 商品评分
+     */
+    private Integer productRating;
+
+    /**
+     * 商品评分数量
+     */
+    private Integer productRatingCount;
+
+    /**
+     * 商品评价数量
+     */
+    private Integer productCommentCount;
+
+    /**
+     * 商品浏览量
+     */
+    private Integer productViewCount;
+
+    /**
+     * 商品收藏量
+     */
+    private Integer productFavoriteCount;
+
+    /**
+     * 商品分享量
+     */
+    private Integer productShareCount;
+
+    /**
+     * 商品销量
+     */
+    private Integer productSaleCount;
+
+    /**
+     * 商品退货量
+     */
+    private Integer productReturnCount;
+
+    /**
+     * 商品退款量
+     */
+    private Integer productRefundCount;
+
+    /**
+     * 商品投诉量
+     */
+    private Integer productComplaintCount;
+
+    /**
+     * 商品审核状态：0-待审核，1-审核通过，2-审核不通过
+     */
+    private Integer productAuditStatus;
+
+    /**
+     * 商品审核时间
+     */
+    private LocalDateTime productAuditTime;
+
+    /**
+     * 商品审核人
+     */
+    private String productAuditUser;
+
+    /**
+     * 商品审核备注
+     */
+    private String productAuditRemark;
+
+    /**
+     * 商品状态：0-下架，1-上架，2-删除
+     */
+    private Integer productStatus;
+
+    /**
+     * 商品状态变更时间
+     */
+    private LocalDateTime productStatusTime;
+
+    /**
+     * 商品状态变更人
+     */
+    private String productStatusUser;
+
+    /**
+     * 商品状态变更备注
+     */
+    private String productStatusRemark;
+
+    /**
+     * 商品版本号
+     */
+    private Integer productVersion;
+
+    /**
+     * 商品备注
+     */
+    private String productRemark;
+
+    /**
+     * 商品扩展信息（JSON格式）
+     */
+    private String productExtra;
+
+    /**
      * 是否删除：0-否，1-是
      */
     private Integer isDeleted;
@@ -146,8 +341,6 @@ public class PmsProducts implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
-
-
 }
 
 

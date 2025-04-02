@@ -10,6 +10,7 @@ import java.util.List;
 @Data
 @ApiModel(description = "添加商品评论请求")
 public class ProductCommentAddRequest {
+
     private Long productId;
 
     private Long orderId;

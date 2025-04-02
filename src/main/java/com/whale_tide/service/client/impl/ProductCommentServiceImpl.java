@@ -13,6 +13,7 @@ import com.whale_tide.dto.client.product.ProductCommentParam;
 import com.whale_tide.entity.pms.PmsProductComments;
 import com.whale_tide.entity.pms.PmsProductSkus;
 import com.whale_tide.entity.pms.PmsProducts;
+import com.whale_tide.entity.ums.UmsUsers;
 import com.whale_tide.mapper.pms.PmsProductCommentsMapper;
 import com.whale_tide.mapper.pms.PmsProductSkusMapper;
 import com.whale_tide.mapper.pms.PmsProductsMapper;
@@ -23,7 +24,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,8 +86,10 @@ public class ProductCommentServiceImpl implements IProductCommentService {
         return PageResponse.of(resultList, pageNum, pageSize, total, totalPage);
 
     }
+
     /**
      * 添加商品评论
+     *
      * @param request 评论请求
      */
     @Override
@@ -105,31 +111,74 @@ public class ProductCommentServiceImpl implements IProductCommentService {
         if (pics != null && pics.size() > 5) {
             throw new IllegalArgumentException("图片数量不能超过5张");
         }
+
         // 查询商品
         PmsProducts product = pmsProductsMapper.selectById(productId);
         if (product == null) {
             throw new ProductNotFoundException("商品不存在");
         }
-        // 保存评论
+
+        // 创建评论对象
         PmsProductComments productComment = new PmsProductComments();
         productComment.setProductId(productId);
-        productComment.setUserId(1L);
-        productComment.setOrderId(1L);
-        productComment.setOrderItemId(1L);
-        productComment.setTitle(product.getName());
+        productComment.setUserId(getCurrentUserId());
         productComment.setContent(content);
         productComment.setRating(star);
-        productComment.setImages(pics != null ? String.join(",", pics) : null);
-        productComment.setIsAnonymous(0);
-        productComment.setIsShow(1);
+        productComment.setIsAnonymous(0); // 默认不匿名
+        productComment.setIsShow(1); // 默认显示
         productComment.setCreateTime(LocalDateTime.now());
+
+        // 插入评论
         productCommentsMapper.insert(productComment);
 
+        // 更新商品评论统计信息
+        product.setProductCommentCount(product.getProductCommentCount() + 1);
+
+        product.setProductRating(star);
+
+        product.setProductRatingCount(product.getProductRatingCount() + 1);
+        // 更新商品
+        LambdaQueryWrapper<PmsProducts> updateWrapper = new LambdaQueryWrapper<>();
+        updateWrapper.eq(PmsProducts::getId, productId);
+        pmsProductsMapper.update(product, updateWrapper);
 
 
-
-
+        log.info("添加商品评论成功");
     }
-}
 
-// Below is partial code of D:/maven-work/WhaleTide/src/main/java/com/whale_tide/entity/pms/PmsProductSkus.java:
+
+    private Long getCurrentUserId() {
+        // 从请求中获取当前用户ID
+        try {
+            // 获取当前请求
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            if (attributes != null) {
+                HttpServletRequest request = attributes.getRequest();
+                // 从请求头中获取token
+                String token = request.getHeader("Authorization");
+                if (token != null) {
+                    // 使用JwtUtil解析token获取用户名
+                    String username = jwtUtil.getUsernameFromToken(token);
+
+                    // 根据用户名查询用户信息
+                    LambdaQueryWrapper<UmsUsers> queryWrapper = new LambdaQueryWrapper<>();
+                    queryWrapper.eq(UmsUsers::getUsername, username);
+                    UmsUsers user = umsUsersMapper.selectOne(queryWrapper);
+
+                    if (user != null) {
+                        return user.getId();
+                    }
+                }
+            }
+
+            // 如果获取失败，抛出异常或返回默认值
+            log.warn("无法获取当前用户ID，请检查用户是否已登录");
+            throw new RuntimeException("用户未登录");
+        } catch (Exception e) {
+            log.error("获取当前用户ID失败", e);
+            throw new RuntimeException("获取用户信息失败", e);
+        }
+    }
+
+
+}

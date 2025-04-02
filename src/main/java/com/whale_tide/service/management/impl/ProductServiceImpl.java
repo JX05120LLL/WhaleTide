@@ -298,7 +298,7 @@ public class ProductServiceImpl implements IProductService {
 
         // 设置必要的默认值 - 开始
         // 设置商品基础默认值
-        product.setAttributeId(0); // 设置默认属性ID
+        product.setAttributeId(0L); // 设置默认属性ID
         product.setVerifyStatus(0); // 默认未审核
         product.setSale(0); // 默认销量为0
         product.setIsDeleted(0); // 默认未删除

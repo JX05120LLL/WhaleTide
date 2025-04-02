@@ -27,6 +27,9 @@ public class ProductController {
     private IProductService productService;
 
     @Autowired
+    private IProductCommentService commentService;
+
+    @Autowired
     private IProductCommentService productCommentService;
 
     /**
@@ -107,19 +110,8 @@ public class ProductController {
     @ApiImplicitParam(name = "Authorization", value = "身份认证Token", required = true, paramType = "header")
     @ApiOperation("添加商品评论")
     @PostMapping("/comment/add")
-    public CommonResult<Void> addProductComment(
-            @ApiParam(value = "商品ID", required = true) @RequestParam(value = "productId") Long productId,
-            @ApiParam(value = "订单ID", required = true) @RequestParam(value = "orderId") Long orderId,
-            @ApiParam(value = "评分", required = true) @RequestParam(value = "star") Integer star,
-            @ApiParam(value = "评论内容", required = true) @RequestParam(value = "content") String content,
-            @ApiParam(value = "评论图片", required = false) @RequestParam(value = "pics", required = false) List<String> pics) {
+    public CommonResult<Void> addProductComment(ProductCommentAddRequest request) {
         try {
-            ProductCommentAddRequest request = new ProductCommentAddRequest();
-            request.setProductId(productId);
-            request.setOrderId(orderId);
-            request.setStar(star);
-            request.setContent(content);
-            request.setPics(pics);
             productCommentService.addProductComment(request);
             return CommonResult.success(null);
         } catch (Exception e) {
