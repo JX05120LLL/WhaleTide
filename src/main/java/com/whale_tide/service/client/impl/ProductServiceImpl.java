@@ -276,7 +276,7 @@ public class ProductServiceImpl implements IProductService {
         response.setStock(product.getStock());
         response.setCategoryName(categoryName);
         response.setBrand(new ProductDetailResponse.BrandInfo(brandId, brandName));
-        response.setAttributes(attributes);
+        response.setProductAttributeList(attributes);
         response.setDescription(product.getBrief());
         
         // 返回详情
