@@ -11,7 +11,7 @@
  Target Server Version : 80039
  File Encoding         : 65001
 
- Date: 02/04/2025 21:06:36
+ Date: 04/04/2025 20:18:05
 */
 
 SET NAMES utf8mb4;
@@ -188,7 +188,7 @@ CREATE TABLE `ams_permissions`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `uk_code`(`code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ams_permissions
@@ -440,19 +440,19 @@ CREATE TABLE `oms_cart_items`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   INDEX `idx_sku_id`(`sku_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '购物车表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '购物车表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of oms_cart_items
 -- ----------------------------
 INSERT INTO `oms_cart_items` VALUES (1, 12, 15, '三星Galaxy S24 Ultra', 'https://images.samsung.com/is/image/samsung/assets/tw/smartphones/galaxy-s24-ultra/images/galaxy-s24-ultra-highlights-kv.jpg?imbypass=true', 18, '黑色', 9999.00, 1, 1, '2025-04-05 15:30:00', '2025-04-05 15:30:00');
-INSERT INTO `oms_cart_items` VALUES (2, 12, 21, '小米智能空气净化器Pro 3', 'https://c1.mifile.cn/f/i/16/chain/airpro//mj-gallery-01.jpg', 27, '3个灯泡套装', 1299.00, 2, 1, '2025-04-05 16:15:00', '2025-04-05 16:15:00');
-INSERT INTO `oms_cart_items` VALUES (3, 12, 7, '小米手环8 Pro', '/uploads/skus/miband8pro-black.png', 21, '黑色', 399.00, 1, 1, '2025-04-06 09:20:00', '2025-04-06 09:20:00');
+INSERT INTO `oms_cart_items` VALUES (2, 12, 21, '小米智能空气净化器Pro 3', 'https://c1.mifile.cn/f/i/16/chain/airpro//mj-gallery-01.jpg', 27, '3个灯泡套装', 1299.00, 2, 1, '2025-04-05 16:15:00', '2025-04-04 19:18:57');
 INSERT INTO `oms_cart_items` VALUES (4, 13, 16, 'Apple MacBook Pro 16', 'https://store.storeimages.cdn-apple.com/8756/as-images.apple.com/is/mbp16-witb-spaceblack-202410?wid=1216&hei=784&fmt=p-jpg&qlt=95&.v=1728330927913', 29, '机身', 14999.00, 1, 1, '2025-04-05 10:45:00', '2025-04-05 10:45:00');
 INSERT INTO `oms_cart_items` VALUES (5, 13, 20, '戴森吸尘器V15 Detect', 'https://m.media-amazon.com/images/I/619XJLzSXJL._AC_SX679_.jpg', 26, 'Pro版', 4999.00, 1, 1, '2025-04-05 11:30:00', '2025-04-05 11:30:00');
 INSERT INTO `oms_cart_items` VALUES (6, 14, 17, 'LG C3 OLED电视 65英寸', 'https://www.lg.com/cn/images/tvs/md07572084/gallery/1100-1.jpg', 25, '标准版', 13999.00, 1, 1, '2025-04-06 14:20:00', '2025-04-06 14:20:00');
 INSERT INTO `oms_cart_items` VALUES (7, 14, 23, '华为Watch GT 4智能手表', 'https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/pdp/wearables/watch-gt4-new/images/sec1/huawei-watch-gt4-2x.jpg', 22, '蓝色', 1299.00, 1, 1, '2025-04-06 14:25:00', '2025-04-06 14:25:00');
 INSERT INTO `oms_cart_items` VALUES (8, 14, 19, '佳能EOS R5微单相机', 'https://www.canon.com.cn/Upload/product/74XRU3SGAU/1589531788.jpg', 30, '标准镜头套装', 17999.00, 1, 0, '2025-04-06 15:10:00', '2025-04-06 15:10:00');
+INSERT INTO `oms_cart_items` VALUES (9, 12, 15, '三星Galaxy S24 Ultra', 'https://images.samsung.com/is/image/samsung/assets/tw/smartphones/galaxy-s24-ultra/images/galaxy-s24-ultra-highlights-kv.jpg?imbypass=true', 0, '默认规格', 9999.00, 1, 0, '2025-04-04 19:13:39', '2025-04-04 19:13:39');
 
 -- ----------------------------
 -- Table structure for oms_order_deliveries
@@ -500,7 +500,7 @@ CREATE TABLE `oms_order_items`  (
   `product_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品编号',
   `product_category_id` bigint(0) NULL DEFAULT NULL COMMENT '商品分类ID',
   `sku_id` bigint(0) NOT NULL COMMENT 'SKU ID',
-  `sku_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'SKU编码',
+  `sku_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'SKU编码',
   `sku_specs` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '规格属性(文本表示)',
   `quantity` int(0) NOT NULL COMMENT '购买数量',
   `price` decimal(10, 2) NOT NULL COMMENT '商品单价',
@@ -580,8 +580,8 @@ CREATE TABLE `oms_order_status_history`  (
   `id` bigint(0) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `order_id` bigint(0) NOT NULL COMMENT '订单ID',
   `order_sn` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '订单编号',
-  `previous_status` tinyint(0) NOT NULL COMMENT '前置状态',
-  `current_status` tinyint(0) NOT NULL COMMENT '当前状态',
+  `previous_status` tinyint(0) NULL DEFAULT NULL COMMENT '前置状态',
+  `current_status` tinyint(0) NULL DEFAULT NULL COMMENT '当前状态',
   `operator_id` bigint(0) NULL DEFAULT NULL COMMENT '操作人ID',
   `operator_type` tinyint(0) NULL DEFAULT 0 COMMENT '操作人类型：0-系统，1-用户，2-商家，3-管理员',
   `operator_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '操作人名称',
@@ -798,7 +798,7 @@ CREATE TABLE `pms_product_categories`  (
   `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_parent_id`(`parent_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品分类表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_product_categories
@@ -833,8 +833,8 @@ CREATE TABLE `pms_product_comments`  (
   `product_id` bigint(0) NOT NULL COMMENT '商品ID',
   `sku_id` bigint(0) NULL DEFAULT NULL COMMENT 'SKU ID',
   `user_id` bigint(0) NOT NULL COMMENT '用户ID',
-  `order_id` bigint(0) NOT NULL COMMENT '订单ID',
-  `order_item_id` bigint(0) NOT NULL COMMENT '订单项ID',
+  `order_id` bigint(0) NULL DEFAULT NULL COMMENT '订单ID',
+  `order_item_id` bigint(0) NULL DEFAULT NULL COMMENT '订单项ID',
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '评价内容',
   `images` json NULL COMMENT '评价图片（JSON格式）',
   `videos` json NULL COMMENT '评价视频（JSON格式）',
@@ -854,7 +854,16 @@ CREATE TABLE `pms_product_comments`  (
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_comment_product` FOREIGN KEY (`product_id`) REFERENCES `pms_products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_comment_sku` FOREIGN KEY (`sku_id`) REFERENCES `pms_product_skus` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品评价表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of pms_product_comments
+-- ----------------------------
+INSERT INTO `pms_product_comments` VALUES (2, 15, NULL, 12, NULL, NULL, '太好了，物超所值', NULL, NULL, 5.0, 0, 1, 0, NULL, NULL, NULL, '2025-04-02 23:34:27', '2025-04-02 23:34:26');
+INSERT INTO `pms_product_comments` VALUES (3, 16, NULL, 12, NULL, NULL, '太好了，物超所值', NULL, NULL, 5.0, 0, 1, 0, NULL, NULL, NULL, '2025-04-02 23:37:49', '2025-04-02 23:37:48');
+INSERT INTO `pms_product_comments` VALUES (4, 16, NULL, 12, NULL, NULL, '太好了，物超所值', NULL, NULL, 5.0, 0, 1, 0, NULL, NULL, NULL, '2025-04-02 23:43:22', '2025-04-02 23:43:22');
+INSERT INTO `pms_product_comments` VALUES (5, 19, NULL, 12, NULL, NULL, '太好了，物超所值', NULL, NULL, 5.0, 0, 1, 0, NULL, NULL, NULL, '2025-04-02 23:50:19', '2025-04-02 23:50:18');
+INSERT INTO `pms_product_comments` VALUES (6, 20, NULL, 12, NULL, NULL, '太好了，物超所值', NULL, NULL, 5.0, 0, 1, 0, NULL, NULL, NULL, '2025-04-02 23:54:31', '2025-04-02 23:54:31');
 
 -- ----------------------------
 -- Table structure for pms_product_details
@@ -1089,7 +1098,7 @@ CREATE TABLE `pms_products`  (
   INDEX `idx_merchant_id`(`merchant_id`) USING BTREE,
   CONSTRAINT `fk_product_brand` FOREIGN KEY (`brand_id`) REFERENCES `pms_brands` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `fk_product_category` FOREIGN KEY (`category_id`) REFERENCES `pms_product_categories` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 25 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 26 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pms_products
@@ -1099,7 +1108,7 @@ INSERT INTO `pms_products` VALUES (16, 'Apple MacBook Pro 16', 'APPL-MBP16-M2', 
 INSERT INTO `pms_products` VALUES (17, 'LG C3 OLED电视 65英寸', 'LG-OLED65C3', 13, 0, 8, NULL, 13999.00, 15999.00, 'https://www.lg.com/cn/images/tvs/md07572084/gallery/1100-1.jpg', NULL, 'LG C3系列 4K OLED电视', 'LG,OLED,C3,电视,4K,智能', 'LG 2023年C3系列OLED电视，4K分辨率，支持杜比视界和全面的游戏功能', 320, 100, '台', 25.00, 6, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.7, 150, 120, 8000, 300, 120, 315, 8, 5, 1, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:13:52');
 INSERT INTO `pms_products` VALUES (18, '松下冰箱NR-W56S1', 'PANA-NRW56S1', 8, 0, 9, NULL, 8999.00, 9999.00, 'https://consumer.panasonic.cn/static/upload/image/20221127/1669524295425533.png', NULL, '松下六门冰箱', '松下,冰箱,多门,变频,节能', '松下六门对开冰箱，563L大容量，nanoe™X纳米水离子抑菌，变频节能', 230, 80, '台', 95.00, 7, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.6, 90, 75, 5000, 120, 50, 228, 3, 2, 0, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:26:57');
 INSERT INTO `pms_products` VALUES (19, '佳能EOS R5微单相机', 'CANON-EOSR5', 12, 0, 11, NULL, 25999.00, 27999.00, 'https://www.canon.com.cn/Upload/product/74XRU3SGAU/1589531788.jpg', NULL, '佳能EOS R5全画幅微单相机', '佳能,Canon,EOS,R5,微单,全画幅,相机', '佳能专业级全画幅微单相机，4500万像素，8K视频拍摄，高速连拍，专业摄影师首选', 145, 50, '台', 0.85, 8, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.9, 65, 50, 4000, 180, 95, 142, 2, 1, 0, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:27:48');
-INSERT INTO `pms_products` VALUES (20, '戴森吸尘器V15 Detect', 'DYSON-V15DETECT', 3, 0, 12, NULL, 4999.00, 5499.00, 'https://m.media-amazon.com/images/I/619XJLzSXJL._AC_SX679_.jpg', NULL, '戴森V15 Detect无线吸尘器', '戴森,Dyson,吸尘器,无线,智能', '戴森最新旗舰吸尘器，搭载激光颗粒探测技术，智能感应灰尘调节吸力，60分钟超长续航', 580, 200, '台', 3.10, 9, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.7, 210, 180, 9500, 350, 160, 575, 12, 8, 3, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:29:03');
+INSERT INTO `pms_products` VALUES (20, '戴森吸尘器V15 Detect', 'DYSON-V15DETECT', 3, 0, 12, NULL, 4999.00, 5499.00, 'https://m.media-amazon.com/images/I/619XJLzSXJL._AC_SX679_.jpg', NULL, '戴森V15 Detect无线吸尘器', '戴森,Dyson,吸尘器,无线,智能', '戴森最新旗舰吸尘器，搭载激光颗粒探测技术，智能感应灰尘调节吸力，60分钟超长续航', 580, 200, '台', 3.10, 9, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 5.0, 211, 181, 9500, 350, 160, 575, 12, 8, 3, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:29:03');
 INSERT INTO `pms_products` VALUES (21, '小米智能空气净化器Pro 3', 'MI-AIRPRO3', 16, 0, 1, NULL, 1499.00, 1699.00, 'https://c1.mifile.cn/f/i/16/chain/airpro//mj-gallery-01.jpg', NULL, '小米空气净化器Pro 3', '小米,空气净化器,智能,OLED,净化', '小米高端空气净化器，OLED屏幕显示，CADR值高达800立方米/小时，适用面积高达92平方米', 1250, 500, '台', 9.80, 10, 1, 1, 1, 1, 1, 1299.00, '2025-04-01 00:00:00', '2025-04-15 23:59:59', 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.5, 420, 380, 18000, 560, 280, 1240, 20, 15, 5, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:30:45');
 INSERT INTO `pms_products` VALUES (22, 'Apple iPad Pro 12.9', 'APPL-IPADPRO-12', 7, 0, 3, NULL, 8999.00, 9499.00, 'https://store.storeimages.cdn-apple.com/1/as-images.apple.com/is/ipad-pro-model-select-gallery-1-202405?wid=5120&hei=2880&fmt=webp&qlt=70&.v=cXN0QTVTNDBtbGIzcy91THBPRThnNE5sSFgwakNWNmlhZ2d5NGpHdllWY09WV3R2ZHdZMXRzTjZIcWdMTlg4eUJQYkhSV3V1dC9oa0s5K3lqMGtUaFMvR01EVDlzK0hIS1J2bTdpY0pVeTF1Yy9kL1dQa3EzdWh4Nzk1ZnZTYWY&traceId=1', NULL, 'Apple iPad Pro 12.9英寸 M2芯片', 'Apple,iPad,Pro,平板,M2,专业', 'Apple新一代iPad Pro，搭载M2芯片，12.9英寸超视网膜XDR显示屏，专业创作者的理想选择', 720, 300, '台', 0.68, 11, 1, 1, 1, 1, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.8, 250, 220, 13500, 630, 310, 715, 8, 5, 1, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:31:26');
 INSERT INTO `pms_products` VALUES (23, '华为Watch GT 4智能手表', 'HW-WATCHGT4', 10, 0, 2, NULL, 1499.00, 1699.00, 'https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/pdp/wearables/watch-gt4-new/images/sec1/huawei-watch-gt4-2x.jpg', NULL, '华为Watch GT 4智能手表', '华为,智能手表,健康,运动,监测', '华为最新一代智能手表，支持心率、血氧、睡眠监测，提供100多种运动模式，14天超长续航', 980, 400, '个', 0.05, 12, 1, 1, 1, 1, 1, 1299.00, '2025-04-01 00:00:00', '2025-04-15 23:59:59', 3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 4.6, 320, 290, 16500, 480, 250, 970, 15, 12, 3, 1, '2025-04-01 10:00:00', 'admin', '审核通过', 1, '2025-04-01 10:00:00', 'admin', NULL, 1, NULL, NULL, 0, '2025-04-01 10:00:00', '2025-04-02 20:31:50');
@@ -1337,7 +1346,7 @@ CREATE TABLE `sms_promotion_logs`  (
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   INDEX `idx_order_id`(`order_id`) USING BTREE,
   CONSTRAINT `fk_log_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动参与记录表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotion_products
@@ -1357,7 +1366,7 @@ CREATE TABLE `sms_promotion_products`  (
   INDEX `idx_promotion_id`(`promotion_id`) USING BTREE,
   INDEX `idx_product_id`(`product_id`) USING BTREE,
   CONSTRAINT `fk_product_promotion` FOREIGN KEY (`promotion_id`) REFERENCES `sms_promotions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动商品关联表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sms_promotions
@@ -1384,7 +1393,7 @@ CREATE TABLE `sms_promotions`  (
   INDEX `idx_start_time`(`start_time`) USING BTREE,
   INDEX `idx_end_time`(`end_time`) USING BTREE,
   INDEX `idx_status`(`status`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '促销活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ums_merchants
@@ -1483,8 +1492,8 @@ CREATE TABLE `ums_user_addresses`  (
 -- ----------------------------
 -- Records of ums_user_addresses
 -- ----------------------------
-INSERT INTO `ums_user_addresses` VALUES (4, 12, '介江性', '19391629120', '陕西省', '汉中市', '汉台区', '陕西理工大学北校区', NULL, 1, NULL, 0, '2025-03-27 17:45:55', '2025-03-27 17:45:55');
-INSERT INTO `ums_user_addresses` VALUES (6, 12, 'hcc', '1939162', '陕西省', '汉中市', '汉台区', '汉中市陕西理工大学北校区', NULL, 1, NULL, 0, '2025-03-27 17:48:41', '2025-03-27 17:48:41');
+INSERT INTO `ums_user_addresses` VALUES (6, 12, 'hcc', '19391629122', '陕西省', '汉中市', '汉台区', '汉中市陕西理工大学北校区', NULL, 0, NULL, 0, '2025-03-27 17:48:41', '2025-03-27 17:48:41');
+INSERT INTO `ums_user_addresses` VALUES (7, 12, '张三', '13038534790', '陕西省', '汉中市', NULL, '陕西理工大学北校区', NULL, 1, NULL, 0, '2025-04-04 15:09:42', '2025-04-04 15:09:42');
 
 -- ----------------------------
 -- Table structure for ums_user_brand_attentions
@@ -1611,7 +1620,7 @@ CREATE TABLE `ums_user_search_history`  (
   UNIQUE INDEX `uk_user_keyword`(`user_id`, `keyword`) USING BTREE,
   INDEX `idx_user_id`(`user_id`) USING BTREE,
   CONSTRAINT `fk_search_user` FOREIGN KEY (`user_id`) REFERENCES `ums_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户搜索历史表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ums_user_search_history
@@ -1619,6 +1628,7 @@ CREATE TABLE `ums_user_search_history`  (
 INSERT INTO `ums_user_search_history` VALUES (4, 12, '鞋子', 1, '2025-03-29 17:30:52', '2025-03-29 17:30:52');
 INSERT INTO `ums_user_search_history` VALUES (5, 12, '风衣', 1, '2025-03-29 17:31:04', '2025-03-29 17:31:04');
 INSERT INTO `ums_user_search_history` VALUES (6, 12, '冲锋衣', 1, '2025-03-29 17:31:14', '2025-03-29 17:31:14');
+INSERT INTO `ums_user_search_history` VALUES (7, 12, '三星Galaxy S24 Ultra', 32, '2025-04-04 19:13:38', '2025-04-04 18:38:36');
 
 -- ----------------------------
 -- Table structure for ums_users
@@ -1659,7 +1669,7 @@ CREATE TABLE `ums_users`  (
 -- ----------------------------
 -- Records of ums_users
 -- ----------------------------
-INSERT INTO `ums_users` VALUES (12, '张三', '$2a$10$reSZltiq/qBlHZf3kzEyAeVuJo5iaI0GDjryct15VftfQwieYCTKK', '123464984166', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-04-02 20:07:31', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-03-18 17:42:20', '2025-03-18 17:50:26');
+INSERT INTO `ums_users` VALUES (12, '张三', '$2a$10$4VVdd.KINiOILGhvDd2A4eEs7J/HDPguI5YJ2h0iQXGKO6GwC0Ljy', '31315616', NULL, '菜月昴', NULL, 1, '2025-04-04', NULL, 1, NULL, 0, '2025-04-04 18:16:50', NULL, 0, 0, 0, 0, '汉中', NULL, 0, '2025-03-18 17:42:20', '2025-03-18 17:50:26');
 INSERT INTO `ums_users` VALUES (14, '19391629120', '$2a$10$xfqv4f9C60kNPzVFc9zi1uccCwnbXTFjlsUUxPzjtLL/8qRbzau62', '19391629120', NULL, NULL, NULL, 0, NULL, NULL, 1, NULL, 0, '2025-04-01 20:03:55', NULL, 0, 0, 0, 0, NULL, NULL, 0, '2025-04-01 20:03:44', '2025-04-01 20:03:44');
 
 SET FOREIGN_KEY_CHECKS = 1;
