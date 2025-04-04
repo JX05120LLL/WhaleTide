@@ -14,7 +14,7 @@ public interface IProductCollectService {
     Page<UmsUserFavorites> getProductFavorites(Long userId, Long pageNum, Long pageSize);
 
     //获取商品收藏详情
-    UmsUserFavorites getProductFavoriteDetail(Long userId, Long productId);
+    UmsUserFavorites getProductFavoriteDetail(Long productId, Long userId);
 
     //清空用户商品收藏
     int clearProductFavorites(Long userId);

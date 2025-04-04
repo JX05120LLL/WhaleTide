@@ -58,29 +58,74 @@ public class CartServiceImpl implements ICartService {
         if (userId == null) {
             throw new UsernameNotExistException("用户不存在");
         }
-        // 根据产品ID和SKU ID查询产品信息
+        // 根据产品ID查询产品信息
         PmsProducts pmsProducts = pmsProductsMapper.selectById(request.getProductId());
         if (pmsProducts == null) throw new ProductNotFoundException("产品不存在");
-        PmsProductSkus pmsProductSkus = pmsProductSkusMapper.selectById(request.getProductSkuId());
-        if (pmsProductSkus == null) throw new ProductNotFoundException("SKU不存在");
+        
+        // 处理SKU逻辑
+        PmsProductSkus pmsProductSkus = null;
+        
+        // 如果SKU ID为null或0，表示使用默认SKU
+        if (request.getProductSkuId() == null || request.getProductSkuId() == 0) {
+            log.info("未指定SKU ID，尝试查找商品的默认SKU");
+            // 尝试获取该商品的第一个SKU作为默认
+            LambdaQueryWrapper<PmsProductSkus> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(PmsProductSkus::getProductId, request.getProductId())
+                        .orderByAsc(PmsProductSkus::getId)
+                        .last("LIMIT 1");
+            pmsProductSkus = pmsProductSkusMapper.selectOne(queryWrapper);
+            
+            // 如果没有找到任何SKU，创建一个临时默认SKU对象
+            if (pmsProductSkus == null) {
+                log.info("未找到商品的任何SKU，使用商品默认信息");
+                pmsProductSkus = new PmsProductSkus();
+                pmsProductSkus.setId(0L); // 使用0作为临时ID
+                pmsProductSkus.setProductId(pmsProducts.getId());
+                pmsProductSkus.setPrice(pmsProducts.getPrice());
+                pmsProductSkus.setStock(pmsProducts.getStock());
+                pmsProductSkus.setSpecsText("默认规格");
+            }
+        } else {
+            // 正常查询指定的SKU
+            pmsProductSkus = pmsProductSkusMapper.selectById(request.getProductSkuId());
+            if (pmsProductSkus == null) {
+                log.warn("指定的SKU不存在 (ID: {}), 尝试使用默认SKU", request.getProductSkuId());
+                // 尝试获取该商品的第一个SKU
+                LambdaQueryWrapper<PmsProductSkus> queryWrapper = new LambdaQueryWrapper<>();
+                queryWrapper.eq(PmsProductSkus::getProductId, request.getProductId())
+                            .orderByAsc(PmsProductSkus::getId)
+                            .last("LIMIT 1");
+                pmsProductSkus = pmsProductSkusMapper.selectOne(queryWrapper);
+                
+                // 如果仍然没有找到SKU，创建默认SKU
+                if (pmsProductSkus == null) {
+                    log.info("未找到商品的任何SKU，使用商品默认信息");
+                    pmsProductSkus = new PmsProductSkus();
+                    pmsProductSkus.setId(0L);
+                    pmsProductSkus.setProductId(pmsProducts.getId());
+                    pmsProductSkus.setPrice(pmsProducts.getPrice());
+                    pmsProductSkus.setStock(pmsProducts.getStock());
+                    pmsProductSkus.setSpecsText("默认规格");
+                }
+            }
+        }
 
         // 封装购物车
         OmsCartItems cartItem = new OmsCartItems();
         cartItem.setUserId(userId);
         cartItem.setProductId(request.getProductId());
-        cartItem.setSkuId(request.getProductSkuId());
+        cartItem.setSkuId(pmsProductSkus.getId());
         cartItem.setQuantity(request.getQuantity());
         cartItem.setPrice(pmsProductSkus.getPrice());
         cartItem.setProductName(pmsProducts.getName());
         cartItem.setProductImage(pmsProducts.getMainImage());
-        cartItem.setSkuSpecs(pmsProductSkus.getSpecsText());//
+        cartItem.setSkuSpecs(pmsProductSkus.getSpecsText());
         cartItem.setChecked(0);
         cartItem.setCreateTime(LocalDateTime.now());
         cartItem.setUpdateTime(LocalDateTime.now());
 
         // 插入数据库进行保存,返回影响行数
         return omsCartItemsMapper.insert(cartItem);
-
     }
 
 
@@ -135,37 +180,41 @@ public class CartServiceImpl implements ICartService {
     // 更新购物车项的数量
     @Override
     public void cartUpdateQuantity(CartUpdateQuantityRequest request) {
-        //解析请求参数
-        Long id = request.getId();
-        Integer quantity = request.getQuantity();
+        try {
+            // 参数校验
+            if (request == null || request.getId() == null || request.getQuantity() == null) {
+                log.warn("更新购物车数量参数不完整: {}", request);
+                throw new IllegalArgumentException("购物车ID和数量不能为空");
+            }
+            
+            // 数量不能小于1
+            if (request.getQuantity() < 1) {
+                log.warn("购物车数量不能小于1: {}", request.getQuantity());
+                throw new IllegalArgumentException("商品数量不能小于1");
+            }
+            
+            //解析请求参数
+            Long id = request.getId();
+            Integer quantity = request.getQuantity();
 
-        // 根据id查询购物车项
-        OmsCartItems cartItem = omsCartItemsMapper.selectById(id);
-        if (cartItem == null) throw new CartItemNotFoundException("购物车项不存在");
+            // 根据id查询购物车项
+            OmsCartItems cartItem = omsCartItemsMapper.selectById(id);
+            if (cartItem == null) {
+                log.warn("购物车项不存在: {}", id);
+                throw new CartItemNotFoundException("购物车项不存在");
+            }
 
-        // 根据商品id查询商品信息和SKU信息
-        PmsProducts pmsProducts = pmsProductsMapper.selectById(cartItem.getProductId());
-        if (pmsProducts == null) throw new ProductNotFoundException("产品不存在");
-        LambdaQueryWrapper<PmsProductSkus> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(PmsProductSkus::getProductId, cartItem.getProductId());
-        PmsProductSkus pmsProductSkus = pmsProductSkusMapper.selectOne(queryWrapper);
+            // 更新购物车项的数量和更新时间
+            cartItem.setQuantity(quantity);
+            cartItem.setUpdateTime(LocalDateTime.now());
 
-        // 更新购物车项的数量,封装结果
-        cartItem.setUserId(getCurrentUserId());
-        cartItem.setProductId(pmsProducts.getId());
-        cartItem.setSkuId(pmsProductSkus.getId());
-        cartItem.setProductName(pmsProducts.getName());
-        cartItem.setProductImage(pmsProducts.getMainImage());
-        cartItem.setPrice(pmsProducts.getPrice());
-        cartItem.setSkuSpecs(pmsProductSkus.getSpecsText());
-        cartItem.setQuantity(quantity);
-        cartItem.setChecked(0);
-        cartItem.setCreateTime(LocalDateTime.now());
-        cartItem.setUpdateTime(LocalDateTime.now());
-
-        // 更新数据库
-        omsCartItemsMapper.updateById(cartItem);
-        log.info("购物车项数量更新成功");
+            // 更新数据库
+            omsCartItemsMapper.updateById(cartItem);
+            log.info("购物车项数量更新成功, ID: {}, 新数量: {}", id, quantity);
+        } catch (Exception e) {
+            log.error("更新购物车数量失败: {}", e.getMessage(), e);
+            throw e; // 重新抛出异常，让上层处理
+        }
     }
 
     // 更新购物车项的选中状态

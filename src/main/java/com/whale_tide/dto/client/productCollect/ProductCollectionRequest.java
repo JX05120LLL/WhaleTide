@@ -12,4 +12,15 @@ public class ProductCollectionRequest {
     private String productPic;
     private BigDecimal productPrice;
     private String productSubTitle;
+    
+    // 增加价格的setter方法，支持字符串转BigDecimal
+    public void setProductPrice(String productPrice) {
+        try {
+            if (productPrice != null && !productPrice.isEmpty()) {
+                this.productPrice = new BigDecimal(productPrice);
+            }
+        } catch (NumberFormatException e) {
+            this.productPrice = BigDecimal.ZERO;
+        }
+    }
 }

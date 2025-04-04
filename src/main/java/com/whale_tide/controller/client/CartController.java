@@ -36,9 +36,13 @@ public class CartController {
 
     @ApiOperation("修改购物车中商品数量")
     @PostMapping("/update/quantity")
-    public CommonResult<CartUpdateQuantityRequest> cartUpdateQuantity(@RequestBody CartUpdateQuantityRequest request){
-        cartService.cartUpdateQuantity(request);
-        return CommonResult.success(request);
+    public CommonResult<Void> cartUpdateQuantity(@RequestBody CartUpdateQuantityRequest request){
+        try {
+            cartService.cartUpdateQuantity(request);
+            return CommonResult.success(null);
+        } catch (Exception e) {
+            return CommonResult.failed("更新购物车数量失败: " + e.getMessage());
+        }
     }
 
     @ApiOperation("修改购物车中商品选中状态")

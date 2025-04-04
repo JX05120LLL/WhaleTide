@@ -29,6 +29,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,7 +75,41 @@ public class ProductCommentServiceImpl implements IProductCommentService {
         //转换成ProductCommentResponse
         List<ProductCommentResponse> resultList = orderPageResult.getRecords().stream().map(order -> {
             ProductCommentResponse response = new ProductCommentResponse();
-            BeanUtils.copyProperties(order, response);
+            // 手动映射字段，解决字段不匹配问题
+            response.setId(order.getId());
+            response.setProductId(order.getProductId());
+            response.setContent(order.getContent());
+            response.setStar(order.getRating()); // 将rating映射到star
+            
+            // 设置用户昵称和头像，可以根据userId查询用户信息
+            try {
+                LambdaQueryWrapper<UmsUsers> userWrapper = new LambdaQueryWrapper<>();
+                userWrapper.eq(UmsUsers::getId, order.getUserId());
+                UmsUsers user = umsUsersMapper.selectOne(userWrapper);
+                if (user != null) {
+                    response.setMemberNickName(user.getNickname());
+                    response.setMemberIcon(user.getAvatar());
+                } else {
+                    response.setMemberNickName("匿名用户");
+                }
+            } catch (Exception e) {
+                log.error("查询用户信息失败", e);
+                response.setMemberNickName("匿名用户");
+            }
+            
+            // 处理图片列表
+            if (order.getImages() != null && !order.getImages().isEmpty()) {
+                List<String> pics = Arrays.asList(order.getImages().split(","));
+                response.setPics(pics);
+            } else {
+                response.setPics(new ArrayList<>());
+            }
+            
+            // 设置创建时间
+            if (order.getCreateTime() != null) {
+                response.setCreateTime(java.sql.Timestamp.valueOf(order.getCreateTime()));
+            }
+            
             return response;
         }).collect(Collectors.toList());
         //计算总页数
@@ -81,7 +117,6 @@ public class ProductCommentServiceImpl implements IProductCommentService {
         int totalPage = (int) (total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
         //封装分页结果
         return PageResponse.of(resultList, pageNum, pageSize, total, totalPage);
-
     }
 
     /**

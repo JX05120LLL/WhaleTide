@@ -23,7 +23,7 @@
 				<text class="name">商品信息</text>
 			</view>
 			<!-- 商品列表 -->
-			<view class="g-item" v-for="item in cartPromotionItemList" :key="item.id">
+			<view class="g-item" v-for="item in cartItems" :key="item.id">
 				<image :src="item.productPic"></image>
 				<view class="right">
 					<text class="title clamp">{{item.productName}}</text>
@@ -62,24 +62,24 @@
 		<view class="yt-list">
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">商品合计</text>
-				<text class="cell-tip">￥{{calcAmount.totalAmount}}</text>
+				<text class="cell-tip">￥{{calcAmount.totalAmount || '0.00'}}</text>
 			</view>
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">运费</text>
-				<text class="cell-tip">￥{{calcAmount.freightAmount}}</text>
+				<text class="cell-tip">￥{{calcAmount.freightAmount || '0.00'}}</text>
 			</view>
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">活动优惠</text>
-				<text class="cell-tip red">-￥{{calcAmount.promotionAmount}}</text>
+				<text class="cell-tip red">-￥{{calcAmount.promotionAmount || '0.00'}}</text>
 			</view>
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">优惠券</text>
-				<text class="cell-tip red" v-if="currCoupon!=null">-￥{{currCoupon.amount}}</text>
-				<text class="cell-tip red" v-else>-￥0</text>
+				<text class="cell-tip red" v-if="currCoupon!=null">-￥{{currCoupon.amount || '0.00'}}</text>
+				<text class="cell-tip red" v-else>-￥0.00</text>
 			</view>
 			<view class="yt-list-cell b-b">
 				<text class="cell-tit clamp">积分抵扣</text>
-				<text class="cell-tip red">-￥{{calcIntegrationAmount(useIntegration)}}</text>
+				<text class="cell-tip red">-￥{{calcIntegrationAmount(useIntegration) || '0.00'}}</text>
 			</view>
 			<view class="yt-list-cell desc-cell">
 				<text class="cell-tit clamp">备注</text>
@@ -92,7 +92,7 @@
 			<view class="price-content">
 				<text>实付款</text>
 				<text class="price-tip">￥</text>
-				<text class="price">{{calcAmount.payAmount}}</text>
+				<text class="price">{{(calcAmount.payAmount || 0).toFixed(2)}}</text>
 			</view>
 			<text class="submit" @click="submit">提交订单</text>
 		</view>
@@ -140,8 +140,13 @@
 				couponList: [],
 				memberReceiveAddressList: [],
 				currentAddress: {},
-				cartPromotionItemList: [],
-				calcAmount: {},
+				cartItems: [],
+				calcAmount: {
+					totalAmount: 0,
+					freightAmount: 0,
+					promotionAmount: 0,
+					payAmount: 0
+				},
 				currCoupon: null,
 				useIntegration: 0,
 				integrationConsumeSetting: {},
@@ -150,22 +155,86 @@
 			}
 		},
 		onLoad(option) {
-			//商品数据
-			this.cartIds = JSON.parse(option.cartIds);
-			console.log(this.cartIds);
-			this.loadData();
+			// 初始化数据默认值
+			this.initData();
+			
+			// 处理购物车数据
+			try {
+				if (option.cartIds) {
+					console.log('收到的原始cartIds:', option.cartIds);
+					
+					// 如果是字符串形式，尝试解析
+					const decodedIds = decodeURIComponent(option.cartIds);
+					console.log('解码后的cartIds:', decodedIds);
+					
+					// 使用逗号分隔的字符串
+					if (decodedIds.includes(',')) {
+						this.cartIds = decodedIds.split(',').map(id => parseInt(id));
+					} else {
+						// 可能是单个ID
+						this.cartIds = [parseInt(decodedIds)];
+					}
+				} else {
+					this.cartIds = [];
+					uni.showToast({
+						title: '未获取到购物车数据',
+						icon: 'none'
+					});
+				}
+			} catch (e) {
+				console.error('解析cartIds出错:', e);
+				this.cartIds = [];
+			}
+			
+			console.log('最终处理后的cartIds:', this.cartIds);
+			
+			// 如果有购物车项目，则加载数据
+			if (this.cartIds && this.cartIds.length > 0) {
+				this.loadData();
+			} else {
+				uni.showToast({
+					title: '没有选择商品',
+					icon: 'none'
+				});
+				setTimeout(() => {
+					uni.navigateBack();
+				}, 1500);
+			}
 		},
 		filters: {
 			formatProductAttr(jsonAttr) {
-				let attrArr = JSON.parse(jsonAttr);
-				let attrStr = '';
-				for (let attr of attrArr) {
-					attrStr += attr.key;
-					attrStr += ":";
-					attrStr += attr.value;
-					attrStr += ";";
+				if (!jsonAttr) return '';
+				
+				try {
+					// 尝试作为JSON解析
+					if (typeof jsonAttr === 'string' && (jsonAttr.startsWith('[') || jsonAttr.startsWith('{'))) {
+						let attrArr = JSON.parse(jsonAttr);
+						let attrStr = '';
+						
+						// 如果是数组格式
+						if (Array.isArray(attrArr)) {
+							for (let attr of attrArr) {
+								if (attr && attr.key && attr.value) {
+									attrStr += attr.key + ":" + attr.value + ";";
+								}
+							}
+							return attrStr;
+						} 
+						// 如果是对象格式
+						else if (typeof attrArr === 'object') {
+							return Object.entries(attrArr)
+								.map(([key, value]) => `${key}:${value}`)
+								.join(';');
+						}
+					}
+					
+					// 不是标准JSON格式，直接返回
+					return jsonAttr;
+				} catch (e) {
+					console.log('商品属性解析出错:', e, jsonAttr);
+					// 解析失败则直接返回原值
+					return jsonAttr;
 				}
-				return attrStr
 			},
 			formatDateTime(time) {
 				if (time == null || time === '') {
@@ -186,20 +255,135 @@
 			},
 		},
 		methods: {
+			// 初始化数据和默认值
+			initData() {
+				// 确保calcAmount各属性有默认值，避免显示NaN
+				if (!this.calcAmount) {
+					this.calcAmount = {};
+				}
+				this.calcAmount.totalAmount = this.calcAmount.totalAmount || 0;
+				this.calcAmount.freightAmount = this.calcAmount.freightAmount || 0;
+				this.calcAmount.promotionAmount = this.calcAmount.promotionAmount || 0;
+				this.calcAmount.payAmount = this.calcAmount.payAmount || 0;
+				
+				// 确保优惠券和积分设置有默认值
+				this.useIntegration = this.useIntegration || 0;
+				this.integrationConsumeSetting = this.integrationConsumeSetting || {};
+				this.memberIntegration = this.memberIntegration || 0;
+			},
+			
 			//生成确认单信息
 			async loadData() {
-				generateConfirmOrder(JSON.stringify(this.cartIds)).then(response => {
-					this.memberReceiveAddressList = response.data.memberReceiveAddressList;
-					this.currentAddress = this.getDefaultAddress();
-					this.cartPromotionItemList = response.data.cartPromotionItemList;
-					this.couponList = [];
-					for (let item of response.data.couponHistoryDetailList) {
-						this.couponList.push(item.coupon);
+				try {
+					// 先初始化默认值
+					this.initData();
+					
+					// 确保购物车ID存在
+					if (!this.cartIds || this.cartIds.length === 0) {
+						uni.showToast({
+							title: '未获取到购物车数据',
+							icon: 'none',
+							duration: 2000
+						});
+						return;
 					}
-					this.calcAmount = response.data.calcAmount;
-					this.integrationConsumeSetting = response.data.integrationConsumeSetting;
-					this.memberIntegration = response.data.memberIntegration;
-				});
+					
+					// 记录请求发送前的时间
+					console.log('发送确认订单请求，cartIds:', this.cartIds);
+					const startTime = new Date();
+					
+					// API请求
+					generateConfirmOrder(this.cartIds).then(response => {
+						const endTime = new Date();
+						console.log(`确认单请求耗时: ${endTime - startTime}ms`);
+						console.log('确认单响应:', response);
+						
+						// 防空处理
+						if (!response || !response.data) {
+							throw new Error('响应数据为空');
+						}
+						
+						// 解析响应数据
+						let responseData = response.data;
+						console.log('原始响应数据:', responseData);
+						
+						// 处理数据
+						this.memberReceiveAddressList = responseData.memberReceiveAddressList || [];
+						this.currentAddress = this.getDefaultAddress();
+						
+						// 检查地址是否有效
+						if (!this.currentAddress || !this.currentAddress.id) {
+							console.warn('没有有效的收货地址');
+							uni.showToast({
+								title: '请先添加收货地址',
+								icon: 'none',
+								duration: 2000
+							});
+							
+							// 延迟跳转到地址页面
+							setTimeout(() => {
+								uni.navigateTo({
+									url: '/pages/address/address?source=1'
+								});
+							}, 1500);
+							return;
+						}
+						
+						this.cartItems = responseData.cartItems || [];
+						
+						// 检查是否有商品
+						if (!this.cartItems || this.cartItems.length === 0) {
+							console.warn('没有商品数据返回');
+							uni.showToast({
+								title: '没有可下单的商品',
+								icon: 'none',
+								duration: 2000
+							});
+						} else {
+							console.log('成功加载了', this.cartItems.length, '件商品');
+						}
+						
+						// 优惠券数据
+						this.couponList = responseData.couponList || [];
+						
+						// 金额计算
+						if (responseData.calcAmount) {
+							this.calcAmount = responseData.calcAmount;
+						} else {
+							console.warn('没有返回金额计算信息');
+						}
+						
+						// 再次初始化确保所有值有效
+						this.initData();
+						
+						// 计算支付金额
+						this.calcPayAmount();
+					}).catch(error => {
+						console.error('生成确认单失败:', error);
+						
+						// 查看完整错误信息
+						if (error.response) {
+							console.error('错误响应:', error.response);
+						} else if (error.request) {
+							console.error('请求错误:', error.request);
+						} else {
+							console.error('错误消息:', error.message);
+						}
+						
+						uni.showToast({
+							title: '获取订单信息失败',
+							icon: 'none',
+							duration: 2000
+						});
+					});
+				} catch (e) {
+					console.error('生成确认单异常:', e);
+					uni.showToast({
+						title: '获取订单信息异常',
+						icon: 'none',
+						duration: 2000
+					});
+				}
 			},
 			//显示优惠券面板
 			toggleMask(type) {
@@ -217,37 +401,125 @@
 				this.payType = type;
 			},
 			submit() {
-				let orderParam = {
-					payType: 0,
-					couponId: null,
-					cartIds:this.cartIds,
-					memberReceiveAddressId:this.currentAddress.id,
-					useIntegration:this.useIntegration
-				}
-				if(this.currCoupon!=null){
-					orderParam.couponId = this.currCoupon.id;
-				}
-				generateOrder(orderParam).then(response => {
-					let orderId = response.data.order.id;
-					uni.showModal({
-						title: '提示',
-						content: '订单创建成功，是否要立即支付？',
-						confirmText:'去支付',
-						cancelText:'取消',
-						success: function(res) {
-							if (res.confirm) {
-								uni.redirectTo({
-									url: `/pages/money/pay?orderId=${orderId}`
-								})
-							} else if (res.cancel) {
-								console.log("cancel")
-								uni.redirectTo({
-									url: '/pages/order/order?state=0'
-								})
+				try {
+					// 检查商品列表是否为空
+					if (!this.cartItems || this.cartItems.length === 0) {
+						uni.showToast({
+							title: '没有可下单的商品',
+							icon: 'none'
+						});
+						return;
+					}
+					
+					// 检查地址
+					if (!this.currentAddress || !this.currentAddress.id) {
+						uni.showToast({
+							title: '请选择收货地址',
+							icon: 'none'
+						});
+						
+						// 延迟跳转到地址页面
+						setTimeout(() => {
+							uni.navigateTo({
+								url: '/pages/address/address?source=1'
+							});
+						}, 1500);
+						return;
+					}
+					
+					// 再次检查地址ID是否有效
+					const addressId = Number(this.currentAddress.id);
+					if (!addressId || isNaN(addressId) || addressId <= 0) {
+						console.error('无效的地址ID:', this.currentAddress);
+						uni.showToast({
+							title: '收货地址无效，请重新选择',
+							icon: 'none'
+						});
+						return;
+					}
+					
+					// 构建订单参数
+					let orderParam = {
+						payType: 0, // 支付类型
+						couponId: null,
+						cartIds: this.cartIds.map(id => Number(id)), // 确保ID为数字类型
+						addressId: Number(this.currentAddress.id), // 修改参数名称为addressId
+						useIntegration: this.useIntegration ? Number(this.useIntegration) : 0, // 确保为数字
+						note: this.desc || '', // 备注信息
+						memberMessage: this.desc || '' // 添加memberMessage参数
+					};
+					
+					// 设置优惠券
+					if (this.currCoupon != null && this.currCoupon.id) {
+						orderParam.couponId = Number(this.currCoupon.id);
+					}
+					
+					// 检查订单参数
+					console.log('提交的订单参数:', orderParam);
+					
+					// 发送请求创建订单
+					generateOrder(orderParam).then(response => {
+						console.log('订单创建成功响应:', response);
+						
+						// 获取订单ID - 处理多种可能的响应格式
+						let orderId;
+						if (response.data) {
+							// 尝试从多种可能的位置获取orderId
+							if (response.data.order && response.data.order.id) {
+								// 格式1: { data: { order: { id: xxx } } }
+								orderId = response.data.order.id;
+							} else if (response.data.orderId) {
+								// 格式2: { data: { orderId: xxx } }
+								orderId = response.data.orderId;
+							} else if (typeof response.data === 'object') {
+								// 格式3: { data: { id: xxx } }
+								orderId = response.data.id;
+							} else {
+								console.error('无法从响应中获取订单ID:', response.data);
+								throw new Error('返回的订单数据格式错误');
 							}
+						} else {
+							console.error('响应中没有data字段:', response);
+							throw new Error('返回的订单数据为空');
 						}
+						
+						console.log('成功创建订单，ID:', orderId);
+						
+						// 显示支付提示对话框
+						uni.showModal({
+							title: '提示',
+							content: '订单创建成功，是否要立即支付？',
+							confirmText: '去支付',
+							cancelText: '取消',
+							success: function(res) {
+								if (res.confirm) {
+									uni.redirectTo({
+										url: `/pages/money/pay?orderId=${orderId}`
+									});
+								} else if (res.cancel) {
+									console.log("用户取消支付");
+									uni.redirectTo({
+										url: '/pages/order/order?state=0'
+									});
+								}
+							}
+						});
+					}).catch(error => {
+						console.error('生成订单失败:', error);
+						uni.showToast({
+							title: '创建订单失败，请稍后重试',
+							icon: 'none',
+							duration: 2000
+						});
 					});
-				});
+				} catch (error) {
+					console.error('提交订单异常:', error);
+					uni.showToast({
+						title: '系统异常，请稍后重试',
+						icon: 'none',
+						duration: 2000
+					});
+				}
 			},
 			stopPrevent() {},
 			//获取默认收货地址
@@ -269,23 +541,64 @@
 			},
 			//计算支付金额
 			calcPayAmount() {
-				this.calcAmount.payAmount = this.calcAmount.totalAmount - this.calcAmount.promotionAmount - this.calcAmount.freightAmount;
-				if (this.currCoupon != null) {
-					this.calcAmount.payAmount = this.calcAmount.payAmount - this.currCoupon.amount;
-				}
-				if (this.useIntegration != 0) {
-					this.calcAmount.payAmount = this.calcAmount.payAmount - this.calcIntegrationAmount();
+				try {
+					// 确保所有参与计算的值都是数字
+					const totalAmount = Number(this.calcAmount.totalAmount) || 0;
+					const promotionAmount = Number(this.calcAmount.promotionAmount) || 0;
+					const freightAmount = Number(this.calcAmount.freightAmount) || 0;
+					
+					// 基础金额计算
+					let payAmount = totalAmount - promotionAmount + freightAmount;
+					
+					// 优惠券抵扣
+					if (this.currCoupon != null) {
+						const couponAmount = Number(this.currCoupon.amount) || 0;
+						payAmount = payAmount - couponAmount;
+					}
+					
+					// 积分抵扣
+					if (this.useIntegration && this.useIntegration > 0) {
+						const integrationAmount = this.calcIntegrationAmount();
+						payAmount = payAmount - integrationAmount;
+					}
+					
+					// 确保金额不为负数
+					payAmount = Math.max(0, payAmount);
+					
+					// 最后格式化为两位小数
+					this.calcAmount.payAmount = Number(payAmount.toFixed(2));
+				} catch (error) {
+					console.error('计算支付金额出错:', error);
+					// 出错时使用0作为默认值
+					this.calcAmount.payAmount = 0;
 				}
 			},
 			//积分转金额
 			calcIntegrationAmount(integration) {
-				if (this.integrationConsumeSetting == undefined || this.integrationConsumeSetting == null) {
+				// 如果没有传入积分值，使用当前设置的积分
+				const integrationValue = integration !== undefined ? integration : this.useIntegration;
+				
+				// 检查积分抵扣设置
+				if (!this.integrationConsumeSetting || 
+					this.integrationConsumeSetting === undefined || 
+					this.integrationConsumeSetting === null) {
 					return 0;
 				}
-				if (this.integrationConsumeSetting.couponStatus == 0) {
+				
+				// 检查是否允许使用积分
+				if (this.integrationConsumeSetting.couponStatus === 0) {
 					return 0;
 				}
-				return integration / this.integrationConsumeSetting.deductionPerAmount;
+				
+				// 确保除数不为0
+				if (!this.integrationConsumeSetting.deductionPerAmount || 
+					this.integrationConsumeSetting.deductionPerAmount === 0) {
+					return 0;
+				}
+				
+				// 计算积分抵扣金额，使用Number确保返回数字而不是NaN
+				const amount = Number(integrationValue) / Number(this.integrationConsumeSetting.deductionPerAmount);
+				return isNaN(amount) ? 0 : Number(amount.toFixed(2));
 			},
 			handleIntegrationInput(event) {
 				if (event.detail.value > this.memberIntegration) {

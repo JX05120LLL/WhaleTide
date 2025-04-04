@@ -52,11 +52,6 @@ public class PmsProductComments implements Serializable {
     private Long orderItemId;
 
     /**
-     * 评论标题
-     */
-    private String title;
-
-    /**
      * 评论内容
      */
     private String content;

@@ -81,20 +81,25 @@
 		<view class="eva-section">
 			<view class="e-header">
 				<text class="tit">评价</text>
-				<text>(86)</text>
-				<text class="tip">好评率 100%</text>
+				<text>({{commentTotal}})</text>
+				<text class="tip">好评率 {{goodRate}}</text>
 				<text class="yticon icon-you"></text>
 			</view>
-			<view class="eva-box">
-				<image class="portrait" src="http://img3.imgtn.bdimg.com/it/u=1150341365,1327279810&fm=26&gp=0.jpg" mode="aspectFill"></image>
-				<view class="right">
-					<text class="name">Leo yo</text>
-					<text class="con">商品收到了，79元两件，质量不错，试了一下有点瘦，但是加个外罩很漂亮，我很喜欢</text>
-					<view class="bot">
-						<text class="attr">购买类型：XL 红色</text>
-						<text class="time">2019-04-01 19:21</text>
+			<view v-if="commentList.length > 0">
+				<view class="eva-box" v-for="(item, index) in commentList" :key="index">
+					<image class="portrait" :src="item.memberIcon || '/static/temp/missing-avatar.jpg'" mode="aspectFill"></image>
+					<view class="right">
+						<text class="name">{{item.memberNickName || '匿名用户'}}</text>
+						<text class="con">{{item.content || '该用户未填写评价内容'}}</text>
+						<view class="bot">
+							<text class="attr">评分：{{item.star || 5}}星</text>
+							<text class="time">{{item.createTime | formatDateTime}}</text>
+						</view>
 					</view>
 				</view>
+			</view>
+			<view v-else class="empty-box">
+				<text>暂无评价</text>
 			</view>
 		</view>
 
@@ -218,7 +223,8 @@
 <script>
 	import share from '@/components/share';
 	import {
-		fetchProductDetail
+		fetchProductDetail,
+		fetchProductCommentList
 	} from '@/api/product.js';
 	import {
 		addCartItem
@@ -317,7 +323,10 @@
 				shareList: [],
 				options: {},
 				maxNum: 99,
-				number: 1
+				number: 1,
+				commentList: [],
+				commentTotal: 0,
+				goodRate: '100%',
 			};
 		},
 		async onLoad(options) {
@@ -395,6 +404,7 @@
 					this.initProductDesc();
 					this.handleReadHistory();
 					this.initProductCollection();
+					this.loadCommentData(id);
 				}).catch(error => {
 					console.error('获取商品详情失败:', error);
 					uni.showToast({
@@ -491,29 +501,45 @@
 				if (this.favorite) {
 					//取消收藏
 					deleteProductCollection({
-						productId: this.product.id
-					}).then(response => {
+						productId: Number(this.product.id) || 0
+					})
+					.then(response => {
 						uni.showToast({
 							title: "取消收藏成功！",
 							icon: 'none'
 						});
 						this.favorite = !this.favorite;
+					})
+					.catch(error => {
+						console.error('取消收藏失败:', error);
+						uni.showToast({
+							title: "取消收藏失败，请稍后重试",
+							icon: 'none'
+						});
 					});
 				} else {
 					//收藏
-					let productCollection = {
-						productId: this.product.id,
-						productName: this.product.name,
-						productPic: this.product.pic,
-						productPrice: this.product.price,
-						productSubTitle: this.product.subTitle
-					}
-					createProductCollection(productCollection).then(response => {
+					// 确保所有字段都有值且格式正确
+					createProductCollection({
+						productId: Number(this.product.id),
+						productName: this.product.name || '',
+						productPic: this.product.pic || '',
+						productPrice: String(this.product.price || 0),  // 使用String()确保是字符串格式
+						productSubTitle: this.product.subTitle || ''
+					})
+					.then(response => {
 						uni.showToast({
 							title: "收藏成功！",
 							icon: 'none'
 						});
 						this.favorite = !this.favorite;
+					})
+					.catch(error => {
+						console.error('收藏失败:', error);
+						uni.showToast({
+							title: "收藏失败，请稍后重试",
+							icon: 'none'
+						});
 					});
 				}
 			},
@@ -678,11 +704,7 @@
 			handleReadHistory() {
 				if (this.hasLogin) {
 					let data = {
-						productId: this.product.id,
-						productName: this.product.name,
-						productPic: this.product.pic,
-						productPrice: this.product.price,
-						productSubTitle: this.product.subTitle,
+						keyword: this.product.name,
 					}
 					createReadHistory(data);
 				}
@@ -727,26 +749,63 @@
 				if (!this.checkForLogin()) {
 					return;
 				}
+				
+				// 检查商品是否存在
+				if (!this.product || !this.product.id) {
+					uni.showToast({
+						title: "商品信息不完整",
+						icon: 'none'
+					});
+					return;
+				}
+				
+				// 尝试获取SKU
 				let productSkuStock = this.getSkuStock();
+				
+				// 如果没有找到匹配的SKU或SKU列表为空，使用默认参数直接添加商品
+				if (!productSkuStock) {
+					console.log("未找到匹配SKU，使用默认参数");
+					
+					// 构造一个简单的购物车项目，只包含商品ID和数量
+					let cartItem = {
+						productId: Number(this.product.id),
+						productSkuId: 0, // 使用0表示默认SKU
+						quantity: 1
+					};
+					
+					addCartItem(cartItem).then(response => {
+						uni.showToast({
+							title: "添加购物车成功",
+							icon: 'success'
+						});
+					}).catch(error => {
+						console.error('添加购物车失败:', error);
+						uni.showToast({
+							title: "添加购物车失败，请稍后重试",
+							icon: 'none'
+						});
+					});
+					return;
+				}
+				
+				// 如果找到了匹配的SKU，正常添加
 				let cartItem = {
-					price: this.product.price,
-					productAttr: productSkuStock.spData,
-					productBrand: this.product.brandName,
-					productCategoryId: this.product.productCategoryId,
-					productId: this.product.id,
-					productName: this.product.name,
-					productPic: this.product.pic,
-					productSkuCode: productSkuStock.skuCode,
-					productSkuId: productSkuStock.id,
-					productSn: this.product.productSn,
-					productSubTitle: this.product.subTitle,
+					productId: Number(this.product.id),
+					productSkuId: Number(productSkuStock.id),
 					quantity: 1
 				};
+				
 				addCartItem(cartItem).then(response => {
 					uni.showToast({
-						title: response.message,
-						duration: 1500
-					})
+						title: "添加购物车成功",
+						icon: 'success'
+					});
+				}).catch(error => {
+					console.error('添加购物车失败:', error);
+					uni.showToast({
+						title: "添加购物车失败，请稍后重试",
+						icon: 'none'
+					});
 				});
 			},
 			//检查登录状态并弹出登录框
@@ -774,12 +833,25 @@
 			},
 			//初始化收藏状态
 			initProductCollection() {
-				if (this.hasLogin) {
-					productCollectionDetail({
-						productId: this.product.id
-					}).then(response => {
-						this.favorite = response.data != null;
-					});
+				if (this.hasLogin && this.product && this.product.id) {
+					try {
+						productCollectionDetail({
+							productId: Number(this.product.id) || 0
+						})
+						.then(response => {
+							// 判断response.data是否存在且不为null
+							this.favorite = response && response.data ? true : false;
+						})
+						.catch(error => {
+							console.error('获取收藏状态失败:', error);
+							this.favorite = false; // 默认为未收藏状态
+						});
+					} catch (e) {
+						console.error('获取收藏状态异常:', e);
+						this.favorite = false; // 默认为未收藏状态
+					}
+				} else {
+					this.favorite = false;
 				}
 			},
 			//跳转到品牌详情页
@@ -788,6 +860,27 @@
 				uni.navigateTo({
 					url: `/pages/brand/brandDetail?id=${id}`
 				})
+			},
+			loadCommentData(productId) {
+				fetchProductCommentList(productId, {
+					pageNum: 1,
+					pageSize: 5
+				}).then(response => {
+					if (response && response.data) {
+						this.commentList = response.data.list || [];
+						this.commentTotal = response.data.total || 0;
+						// 计算好评率，如果没有评论则显示100%
+						if (this.commentTotal > 0) {
+							const goodComments = this.commentList.filter(item => item.star >= 4).length;
+							const rate = Math.round((goodComments / this.commentList.length) * 100);
+							this.goodRate = rate + "%";
+						} else {
+							this.goodRate = "100%";
+						}
+					}
+				}).catch(error => {
+					console.error('获取商品评论失败:', error);
+				});
 			},
 		},
 
@@ -1041,6 +1134,15 @@
 			.icon-you {
 				margin-left: 10upx;
 			}
+		}
+
+		.empty-box {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100upx;
+			font-size: $font-base;
+			color: $font-color-light;
 		}
 	}
 

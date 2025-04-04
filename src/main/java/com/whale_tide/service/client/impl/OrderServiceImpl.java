@@ -84,7 +84,7 @@ public class OrderServiceImpl implements IOrderService {
     
     @Autowired
     private UmsUsersMapper umsUsersMapper;
-    
+
     @Autowired
     private JwtUtil jwtUtil;
     
@@ -96,14 +96,9 @@ public class OrderServiceImpl implements IOrderService {
      */
     @Override
     public ConfirmOrderResponse generateConfirmOrder(GenerateConfirmOrderRequest request) {
-        // 解析参数获取ID
-        Long addressId = request.getAddressId();
-
-        // 根据收货地址ID查询用户相关信息
-        UmsUserAddresses address = umsUserAddressesMapper.selectById(addressId);
-        if (address == null) throw new AddressNotFoundException("收货地址不存在");
-        Long userId = address.getUserId();
-
+        // 获取当前用户ID
+        Long userId = getCurrentUserId();
+        
         // 构建响应对象
         ConfirmOrderResponse response = new ConfirmOrderResponse();
         
@@ -116,7 +111,8 @@ public class OrderServiceImpl implements IOrderService {
         
         // 转换购物车项为响应对象
         List<ConfirmOrderResponse.CartItemResponse> cartItemList = convertCartItems(cartItems);
-        response.setCartItems(cartItemList);
+        response.setCartItems(cartItemList); // 使用正确的字段名
+        
         // 2. 获取用户收货地址列表
         List<UmsUserAddresses> addresses = getUserAddresses(userId);
         List<ConfirmOrderResponse.AddressResponse> addressList = convertAddresses(addresses);
@@ -126,9 +122,9 @@ public class OrderServiceImpl implements IOrderService {
         ConfirmOrderResponse.CalcAmountResponse calcAmount = calculateOrderAmount(cartItems);
         response.setCalcAmount(calcAmount);
         
-        // 4. 获取用户可用优惠券列表 (简化实现，实际中应该从优惠券表中查询)
-        List<ConfirmOrderResponse.CouponResponse> couponList = new ArrayList<>();
-        response.setCouponList(couponList);
+        // 4. 获取用户可用优惠券列表
+        List<ConfirmOrderResponse.CouponResponse> couponList = getUserAvailableCoupons(userId, calcAmount.getTotalAmount());
+        response.setCouponList(couponList); // 使用正确的字段名
         
         return response;
     }
@@ -142,8 +138,26 @@ public class OrderServiceImpl implements IOrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public GenerateOrderResponse generateOrder(GenerateOrderRequest request) {
+        // 参数检查
+        if (request == null) {
+            throw new OrderCreateFailedException("订单参数不能为空");
+        }
+        
+        // 检查必要参数
+        if (request.getAddressId() == null) {
+            throw new AddressNotFoundException("收货地址不能为空");
+        }
 
-        UmsUserAddresses address = umsUserAddressesMapper.selectById(request.getAddressId());// 获取收货地址
+        if (CollectionUtils.isEmpty(request.getCartIds())) {
+            throw new CartItemNotFoundException("购物车项不能为空");
+        }
+
+        // 获取收货地址
+        UmsUserAddresses address = umsUserAddressesMapper.selectById(request.getAddressId());
+        if (address == null) {
+            throw new AddressNotFoundException("收货地址不存在: ID=" + request.getAddressId());
+        }
+        
         Long userId = address.getUserId();// 获取当前用户ID
 
         // 1. 获取购物车项
@@ -160,11 +174,18 @@ public class OrderServiceImpl implements IOrderService {
 
         // 获取优惠券信息计算折扣金额
         BigDecimal couponAmount = BigDecimal.ZERO; // 优惠券金额
-        Long couponId = request.getCouponId(); // 优惠券ID
-        UmsUserCoupons coupon = umsUserCouponsMapper.selectById(couponId); // 获取优惠券信息
-        BigDecimal discount = coupon.getDiscount(); // 优惠券折扣
-        BigDecimal amount = coupon.getAmount(); // 优惠券金额
+        BigDecimal discount = BigDecimal.ZERO; // 优惠券折扣
         BigDecimal promotionAmount = BigDecimal.ZERO; // 促销金额默认0，需要根据实际业务计算
+        
+        // 处理优惠券
+        Long couponId = request.getCouponId(); // 优惠券ID
+        if (couponId != null) {
+            UmsUserCoupons coupon = umsUserCouponsMapper.selectById(couponId); // 获取优惠券信息
+            if (coupon != null) {
+                couponAmount = coupon.getAmount() != null ? coupon.getAmount() : BigDecimal.ZERO; // 优惠券金额
+                discount = coupon.getDiscount() != null ? coupon.getDiscount() : BigDecimal.ZERO; // 优惠券折扣
+            }
+        }
         
         // 应付金额 = 总金额 + 运费 - 折扣 - 优惠券 - 促销
         BigDecimal payAmount = totalAmount.add(freightAmount)
@@ -177,9 +198,6 @@ public class OrderServiceImpl implements IOrderService {
         
         // 5. 创建订单
         OmsOrders order = new OmsOrders();
-        if (order == null) {
-            throw new OrderCreateFailedException("订单创建失败");
-        }
 
         order.setOrderSn(orderSn);
         order.setUserId(userId);
@@ -201,28 +219,33 @@ public class OrderServiceImpl implements IOrderService {
         order.setCreateTime(LocalDateTime.now());
         order.setUpdateTime(LocalDateTime.now());
         
-        // 保存订单
-        omsOrdersMapper.insert(order);
-        
-        // 6. 创建订单状态历史记录
-        saveOrderStatusHistory(order.getId(), 0, "创建订单");
-        
-        // 7. 创建订单商品项
-        saveOrderItems(order, cartItems);
-        
-        // 8. 删除购物车项
-        deleteCartItems(request.getCartIds(), userId);
-        
-        // 9. 记录订单日志
-        saveOrderLog(order.getId(), "创建订单", String.format("用户ID：%d 创建订单", userId));
+        try {
+            // 保存订单
+            omsOrdersMapper.insert(order);
+            
+            // 6. 创建订单状态历史记录
+            saveOrderStatusHistory(order.getId(), 0, "创建订单");
+            
+            // 7. 创建订单商品项
+            saveOrderItems(order, cartItems);
+            
+            // 8. 删除购物车项
+            deleteCartItems(request.getCartIds(), userId);
+            
+            // 9. 记录订单日志
+            saveOrderLog(order.getId(), "创建订单", String.format("用户ID：%d 创建订单", userId));
 
-        // 10. 返回订单创建结果
-        GenerateOrderResponse response = new GenerateOrderResponse();
-        response.setOrderId(order.getId());
-        response.setPayAmount(payAmount);
-        response.setPayType(request.getPayType());
-        
-        return response;
+            // 10. 返回订单创建结果
+            GenerateOrderResponse response = new GenerateOrderResponse();
+            response.setOrderId(order.getId());
+            response.setPayAmount(payAmount);
+            response.setPayType(request.getPayType());
+            
+            return response;
+        } catch (Exception e) {
+            log.error("创建订单过程中发生错误:", e);
+            throw new OrderCreateFailedException("创建订单失败: " + e.getMessage());
+        }
     }
 
     /**
@@ -332,13 +355,11 @@ public class OrderServiceImpl implements IOrderService {
         if (CollectionUtils.isEmpty(cartItems)) {
             throw new CartItemNotFoundException("购物车项不存在");
         }
-        // 商品数量
-        int quantity = cartItems.stream().mapToInt(OmsCartItems::getQuantity).sum();
-        //商品单价
-        BigDecimal price = cartItems.stream().map(OmsCartItems::getPrice).reduce(BigDecimal.ZERO, BigDecimal::add);
-        // 商品总金额 = 单价 * 数量
-        BigDecimal amount = price.multiply(new BigDecimal(quantity));
-        return amount;
+        
+        // 累加每个购物车项的(单价 * 数量)
+        return cartItems.stream()
+            .map(item -> item.getPrice().multiply(new BigDecimal(item.getQuantity())))
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
     
     /**
@@ -357,14 +378,24 @@ public class OrderServiceImpl implements IOrderService {
      * @param note 备注
      */
     private void saveOrderStatusHistory(Long orderId, Integer status, String note) {
+        // 先查询订单获取订单号
+        OmsOrders order = omsOrdersMapper.selectById(orderId);
+        if (order == null) {
+            throw new RuntimeException("订单不存在");
+        }
+
         OmsOrderStatusHistory history = new OmsOrderStatusHistory();
         history.setOrderId(orderId);
+        history.setOrderSn(order.getOrderSn());  // 设置订单号
+        history.setPreviousStatus(0);
+        history.setPreviousStatus(status);
         history.setCurrentStatus(status);
         history.setNote(note);
         history.setCreateTime(LocalDateTime.now());
-        
+
         omsOrderStatusHistoryMapper.insert(history);
     }
+
     
     /**
      * 保存订单商品项
@@ -395,6 +426,7 @@ public class OrderServiceImpl implements IOrderService {
             orderItem.setProductBrand(BrandName);
             orderItem.setProductSn(product.getProductSn());orderItem.setProductCategoryId(product.getCategoryId());
             orderItem.setSkuId(item.getSkuId());
+            orderItem.setSkuCode(" ");//设默认为空
             orderItem.setSkuSpecs(item.getSkuSpecs());
             orderItem.setQuantity(item.getQuantity());
             orderItem.setPrice(item.getPrice());
@@ -458,6 +490,7 @@ public class OrderServiceImpl implements IOrderService {
         OmsOrderLogs orderLog = new OmsOrderLogs();
         orderLog.setOrderId(orderId);
         orderLog.setNote(note);
+        orderLog.setOrderSn(generateOrderSn());
         orderLog.setCreateTime(LocalDateTime.now());
         omsOrderLogsMapper.insert(orderLog);
     }
@@ -832,6 +865,37 @@ public class OrderServiceImpl implements IOrderService {
             response.setDistrict(address.getDistrict());
             response.setDetailAddress(address.getDetailAddress());
             
+            return response;
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 获取用户可用优惠券列表
+     * @param userId 用户ID
+     * @param totalAmount 订单总金额
+     * @return 优惠券列表
+     */
+    private List<ConfirmOrderResponse.CouponResponse> getUserAvailableCoupons(Long userId, BigDecimal totalAmount) {
+        // 查询用户可用优惠券
+        LambdaQueryWrapper<UmsUserCoupons> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(UmsUserCoupons::getUserId, userId)
+                   .eq(UmsUserCoupons::getStatus, 0) // 未使用状态
+                   .le(UmsUserCoupons::getMinPoint, totalAmount) // 满足最低消费金额
+                   .gt(UmsUserCoupons::getEndTime, LocalDateTime.now()); // 未过期
+        
+        List<UmsUserCoupons> coupons = umsUserCouponsMapper.selectList(queryWrapper);
+        
+        // 转换为响应对象
+        return coupons.stream().map(coupon -> {
+            ConfirmOrderResponse.CouponResponse response = new ConfirmOrderResponse.CouponResponse();
+            response.setId(coupon.getId());
+            response.setName(coupon.getCouponName());
+            response.setAmount(coupon.getAmount());
+            response.setMinPoint(coupon.getMinPoint());
+            response.setUseType(coupon.getGetType()); // 使用getType替代useType
+            // 转换LocalDateTime为Date
+            response.setStartTime(Date.from(coupon.getStartTime().atZone(ZoneId.systemDefault()).toInstant()));
+            response.setEndTime(Date.from(coupon.getEndTime().atZone(ZoneId.systemDefault()).toInstant()));
             return response;
         }).collect(Collectors.toList());
     }

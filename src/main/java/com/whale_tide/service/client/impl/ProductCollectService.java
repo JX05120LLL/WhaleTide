@@ -21,34 +21,43 @@ public class ProductCollectService implements IProductCollectService {
         return result;
     }
 
+    @Override
     public int deleteProductFavorite(Long userId, Long productId) {
+        if (userId == null || productId == null) {
+            return 0;
+        }
+        
         LambdaQueryWrapper<UmsUserFavorites> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UmsUserFavorites::getUserId, userId)
-                .eq(UmsUserFavorites::getProductId, productId);
-        int result = userFavoritesMapper.delete(wrapper);
-        userFavoritesMapper.deleteById(productId);
-        return result;
+               .eq(UmsUserFavorites::getProductId, productId);
+        
+        return userFavoritesMapper.delete(wrapper);
     }
 
     @Override
     public Page<UmsUserFavorites> getProductFavorites(Long userId, Long pageNum, Long pageSize) {
         LambdaQueryWrapper<UmsUserFavorites> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UmsUserFavorites::getUserId, userId);
+        
+        // 设置默认分页参数
+        if (pageNum == null) {
+            pageNum = 1L;
+        }
+        if (pageSize == null) {
+            pageSize = 10L;
+        }
+        
         Page<UmsUserFavorites> page = new Page<>(pageNum, pageSize);
         Page<UmsUserFavorites> result = userFavoritesMapper.selectPage(page, wrapper);
         return result;
     }
 
     @Override
-    public UmsUserFavorites getProductFavoriteDetail(Long userId, Long productId) {
-        if (productId == null)
-            return null;
-
+    public UmsUserFavorites getProductFavoriteDetail(Long productId, Long userId) {
         LambdaQueryWrapper<UmsUserFavorites> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(UmsUserFavorites::getUserId, userId)
                 .eq(UmsUserFavorites::getProductId, productId);
-        UmsUserFavorites result = userFavoritesMapper.selectOne(wrapper);
-        return result;
+        return userFavoritesMapper.selectOne(wrapper);
     }
 
     @Override

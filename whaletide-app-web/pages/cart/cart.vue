@@ -130,30 +130,38 @@
 						item.checked = true;
 						item.loaded = "loaded";
 						
-						// 如果productAttr为空或无效，设置一个默认值
+						// 处理商品属性显示
 						let spDataStr = '';
-						try {
-							if (item.productAttr) {
-								let spDataArr = JSON.parse(item.productAttr);
-								if (Array.isArray(spDataArr)) {
-									for (let attr of spDataArr) {
-										spDataStr += attr.key;
-										spDataStr += ":";
-										spDataStr += attr.value;
-										spDataStr += ";";
+						if (item.productAttr) {
+							try {
+								// 检查是否是JSON格式
+								if (item.productAttr.startsWith('[') || item.productAttr.startsWith('{')) {
+									let spDataArr = JSON.parse(item.productAttr);
+									if (Array.isArray(spDataArr)) {
+										for (let attr of spDataArr) {
+											spDataStr += attr.key;
+											spDataStr += ":";
+											spDataStr += attr.value;
+											spDataStr += ";";
+										}
+									} else if (typeof spDataArr === 'object') {
+										// 处理对象格式
+										spDataStr = Object.entries(spDataArr)
+											.map(([key, value]) => `${key}:${value}`)
+											.join(';');
 									}
-								} else if (typeof spDataArr === 'object') {
-									// 处理非数组情况，直接显示属性值
+								} else {
+									// 直接使用字符串值
 									spDataStr = item.productAttr;
 								}
-							} else if (item.skuSpecs) {
-								// 尝试使用skuSpecs作为替代
-								spDataStr = item.skuSpecs;
+							} catch (error) {
+								console.error('解析商品属性出错:', error, item.productAttr);
+								// 解析错误，直接使用原值
+								spDataStr = item.productAttr;
 							}
-						} catch (error) {
-							console.error('解析商品属性出错:', error, item.productAttr);
-							// 如果解析失败，直接显示原始数据或空字符串
-							spDataStr = item.productAttr || item.skuSpecs || '';
+						} else if (item.skuSpecs) {
+							// 直接使用skuSpecs
+							spDataStr = item.skuSpecs;
 						}
 						
 						item.spDataStr = spDataStr;
@@ -199,9 +207,10 @@
 			//数量
 			numberChange(data) {
 				let cartItem = this.cartList[data.index];
+				// 确保id为数字类型，quantity为正整数
 				updateQuantity({
-					id: cartItem.id,
-					quantity: data.number
+					id: Number(cartItem.id),
+					quantity: Math.max(1, parseInt(data.number))
 				}).then(response=>{
 					cartItem.quantity = data.number;
 					this.calcTotal();
@@ -272,8 +281,10 @@
 					})
 					return;
 				}
+				// 使用查询字符串传递数组，而不是JSON字符串
+				let cartIdsStr = cartIds.join(',');
 				uni.navigateTo({
-					url: `/pages/order/createOrder?cartIds=${JSON.stringify(cartIds)}`
+					url: `/pages/order/createOrder?cartIds=${cartIdsStr}`
 				})
 			}
 		}

@@ -20,7 +20,7 @@ export function fetchProductCollectionList(params) {
 	return request({
 		method: 'GET',
 		url: '/member/productCollection/list',
-		params:params
+		params: params
 	})
 }
 

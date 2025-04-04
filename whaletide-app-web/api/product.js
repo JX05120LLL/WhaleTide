@@ -21,3 +21,19 @@ export function fetchProductDetail(id) {
 		url: '/product/detail/'+id
 	})
 }
+
+export function fetchProductCommentList(productId, params) {
+	return request({
+		method: 'GET',
+		url: `/product/comment/list/${productId}`,
+		params: params
+	})
+}
+
+export function addProductComment(data) {
+	return request({
+		method: 'POST',
+		url: '/product/comment/add',
+		data: data
+	})
+}
