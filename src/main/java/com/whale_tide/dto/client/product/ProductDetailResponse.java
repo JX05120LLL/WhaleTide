@@ -33,7 +33,7 @@ public class ProductDetailResponse {
     @ApiModelProperty("商品分类ID")
     private String categoryName;
     @ApiModelProperty("商品属性")
-    private List<ProductAttribute> attributes;
+    private List<ProductAttribute> productAttributeList;
     @ApiModelProperty("商品描述")
     private String description;
 

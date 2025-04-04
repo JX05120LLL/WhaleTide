@@ -357,10 +357,10 @@
 						});
 						return;
 					}
-					
+
 					// 处理图片URL
-					if (response.data.product) {
-						const product = response.data.product;
+					if (response.data) {
+						const product = response.data;
 						if (product.pic) {
 							product.pic = getFullImageUrl(product.pic);
 						}
@@ -372,7 +372,7 @@
 					} else {
 						this.product = this.product;
 					}
-					
+
 					// 处理品牌LOGO
 					if (response.data.brand) {
 						const brand = response.data.brand;
@@ -383,9 +383,9 @@
 					} else {
 						this.brand = this.brand;
 					}
-					
+
 					this.skuStockList = response.data.skuStockList || [];
-					
+
 					// 初始化各种数据
 					this.initImgList();
 					this.initServiceList();
@@ -531,11 +531,11 @@
 					this.imgList = [{ src: this.product.pic || this.DefaultImg }];
 					return;
 				}
-				
+
 				let tempPics = this.product.albumPics.split(',');
 				// 确保主图存在，否则使用默认图片
 				tempPics.unshift(this.product.pic || this.DefaultImg);
-				
+
 				this.imgList = []; // 清空之前的图片列表
 				for (let item of tempPics) {
 					if (item != null && item != '') {
@@ -546,7 +546,7 @@
 						});
 					}
 				}
-				
+
 				// 确保至少有一张图片
 				if (this.imgList.length === 0) {
 					this.imgList = [{ src: this.DefaultImg }];
@@ -559,7 +559,7 @@
 					this.serviceList = [];
 					return;
 				}
-				
+
 				this.serviceList = [];
 				for (let item of defaultServiceList) {
 					if (this.product.serviceIds.indexOf(item.id) != -1) {
@@ -1555,14 +1555,14 @@
 			font-size: $font-base + 2upx;
 			color: $font-color-dark;
 			position: relative;
-		
+
 			text {
 				padding: 0 20upx;
 				background: #fff;
 				position: relative;
 				z-index: 1;
 			}
-		
+
 			&:after {
 				position: absolute;
 				left: 50%;
