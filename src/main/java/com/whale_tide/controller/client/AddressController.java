@@ -10,6 +10,8 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/member")
 @Api(tags = "用户地址管理")
@@ -21,8 +23,8 @@ public class AddressController {
     // 获取用户地址列表
     @GetMapping("/address/list")
     @ApiOperation(value = "getAddressList", notes = "获取用户地址列表")
-    public CommonResult<AddressResponse> getAddressList() {
-        AddressResponse addressList = addressService.getAddressList();
+    public CommonResult<List<AddressResponse>> getAddressList() {
+        List<AddressResponse> addressList = addressService.getAddressList();
         return CommonResult.success(addressList);
     }
 

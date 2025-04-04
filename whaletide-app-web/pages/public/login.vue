@@ -61,33 +61,79 @@
 			},
 			async toLogin() {
 				this.logining = true;
+				
+				// 先清除可能存在的旧token
+				uni.removeStorageSync('Authorization');
+				uni.removeStorageSync('FullAuthorization');
+				
 				memberLogin({
 					username: this.username,
 					password: this.password
 				}).then(response => {
-					// 构建完整的授权头
-					let tokenHead = response.data.tokenHead;
-					if (!tokenHead.endsWith(' ')) {
-						tokenHead += ' ';
-					}
+					// 打印完整响应用于调试
+					console.log('登录响应完整数据:', JSON.stringify(response));
 					
-					// 直接保存完整的授权头
-					const authHeader = tokenHead + response.data.token;
-					uni.setStorageSync('Authorization', authHeader);
-					uni.setStorageSync('username', this.username);
-					uni.setStorageSync('password', this.password);
-					
-					console.log('登录成功，授权头:', authHeader);
-					
-					memberInfo().then(response => {
-						this.login(response.data);
-						uni.switchTab({url:'/pages/index/index'});
-					}).catch(error => {
-						console.error('获取用户信息失败:', error);
+					if(response.code === 200) {
+						// 存储用户token
+						let token = response.data.token;
+						let tokenHead = response.data.tokenHead || 'Bearer ';
+						
+						// 检查token格式并记录
+						console.log('服务器返回token:', token);
+						console.log('token格式:', { 
+							length: token.length,
+							hasDots: token.includes('.'),
+							dotParts: token.split('.').length
+						});
+						
+						// 如果token已经包含Bearer前缀，移除它，保持一致性
+						if(token.startsWith('Bearer ')) {
+							token = token.substring(7);
+							console.log('移除Bearer前缀后的token:', token);
+						}
+						
+						// 单独存储原始token和完整的授权头
+						const cleanToken = token.trim();
+						uni.setStorageSync('Authorization', cleanToken);
+						uni.setStorageSync('FullAuthorization', tokenHead + cleanToken);
+						
+						// 记录存储值
+						console.log('存储的token:', cleanToken);
+						console.log('存储的完整授权头:', tokenHead + cleanToken);
+						
+						// 存储用户名和密码，便于自动重新登录
+						uni.setStorageSync('username', this.username);
+						uni.setStorageSync('password', this.password);
+						
+						// 登录成功后延迟一下再获取用户信息，确保token已存储完成
+						setTimeout(() => {
+							memberInfo().then(response => {
+								this.login(response.data);
+								uni.switchTab({url:'/pages/index/index'});
+							}).catch(error => {
+								console.error('获取用户信息失败:', error);
+								// 处理获取用户信息失败的情况
+								uni.showToast({
+									title: '获取用户信息失败，请重试',
+									icon: 'none'
+								});
+								this.logining = false;
+							});
+						}, 300);
+					} else {
+						console.error('登录失败: 服务器返回的认证信息格式不正确');
 						this.logining = false;
-					});
+						uni.showToast({
+							title: '登录失败: 服务器返回的认证信息格式不正确',
+							icon: 'none'
+						});
+					}
 				}).catch(error => {
 					console.error('登录失败:', error);
+					uni.showToast({
+						title: '用户名或密码错误',
+						icon: 'none'
+					});
 					this.logining = false;
 				});
 			},

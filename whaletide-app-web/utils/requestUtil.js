@@ -21,20 +21,118 @@ http.validateStatus = (statusCode) => {
 }
 
 http.interceptor.request((config, cancel) => { /* 请求之前拦截器 */
-	const authorization = uni.getStorageSync('Authorization');
+	const token = uni.getStorageSync('Authorization');
+	const fullAuth = uni.getStorageSync('FullAuthorization');
 	
 	console.log('发送请求URL:', config.url);
+	console.log('存储的token值:', token);
+	console.log('存储的完整授权头:', fullAuth);
 	
-	if(authorization) {
+	// 尝试验证token格式是否正确
+	const validateToken = (token) => {
+		if (!token) return false;
+		
+		try {
+			// 如果带有Bearer前缀，先移除前缀
+			let rawToken = token;
+			if (token.startsWith('Bearer ')) {
+				rawToken = token.substring(7);
+			}
+			
+			// 检查是否符合JWT格式（三段由点分隔的字符串）
+			const parts = rawToken.split('.');
+			if (parts.length !== 3) {
+				console.error('Token格式错误: 不是三段式JWT格式');
+				return false;
+			}
+			
+			// 检查但不进行Base64解码，防止不兼容的解码导致错误
+			// JWT使用的是URL安全的Base64，允许特殊字符
+			return true;
+		} catch (e) {
+			console.error('Token格式验证失败:', e);
+			return false;
+		}
+	};
+	
+	// 优先使用完整授权头进行尝试
+	if (fullAuth && validateToken(fullAuth)) {
+		console.log('使用完整授权头:', fullAuth);
+		
+		// 确保授权头格式正确
+		const effectiveAuth = fullAuth.startsWith('Bearer ') ? fullAuth : 'Bearer ' + fullAuth;
+		
 		config.header = {
-			'Authorization': authorization,
+			'Authorization': effectiveAuth,
 			...config.header
 		}
-		console.log('Authorization头:', authorization);
+	} 
+	// 如果没有完整授权头但有token，则构建授权头
+	else if (token && validateToken(token)) {
+		// 确保token格式正确，包含Bearer前缀
+		const authHeader = token.startsWith('Bearer ') ? token : 'Bearer ' + token;
+		
+		config.header = {
+			'Authorization': authHeader,
+			...config.header
+		}
+		console.log('构建的Authorization头:', authHeader);
 	} else {
-		console.log('无Authorization头，匿名请求');
+		console.log('无有效的Authorization头，匿名请求');
+		
+		// 如果token无效但存在，尝试清理并重新登录
+		if ((token && !validateToken(token)) || (fullAuth && !validateToken(fullAuth))) {
+			console.warn('存储的token格式无效，清理并准备重新登录');
+			
+			// 检查token长度和格式
+			if (token) console.log('无效token详情:', {token, length: token.length, format: token.split('.').length});
+			if (fullAuth) console.log('无效fullAuth详情:', {fullAuth, length: fullAuth.length, format: fullAuth.split('.').length});
+			
+			uni.removeStorageSync('Authorization');
+			uni.removeStorageSync('FullAuthorization');
+			
+			// 检查是否是需要登录的请求
+			if (config.url.includes('/member/') || config.url.includes('/order/') || config.url.includes('/cart/') || config.url.includes('/sso/info')) {
+				setTimeout(() => {
+					uni.showModal({
+						title: '登录状态异常',
+						content: '您的登录凭证无效，请重新登录',
+						confirmText: '去登录',
+						success: (res) => {
+							if (res.confirm) {
+								uni.navigateTo({
+									url: '/pages/public/login'
+								});
+							}
+						}
+					});
+				}, 100);
+			}
+		}
+		
+		// 保持原有请求头
 		config.header = {
 			...config.header
+		}
+		
+		// 检查是否是需要登录的请求
+		if (config.url.includes('/member/') || config.url.includes('/order/') || config.url.includes('/cart/')) {
+			// 如果是需要授权的API，但没有token，引导用户登录
+			console.warn('尝试访问需要登录的API，但没有token');
+			setTimeout(() => {
+				uni.showModal({
+					title: '提示',
+					content: '您的登录已过期，请重新登录',
+					confirmText: '去登录',
+					success: (res) => {
+						if (res.confirm) {
+							uni.navigateTo({
+								url: '/pages/public/login'
+							});
+						}
+					}
+				});
+			}, 100);
 		}
 	}
 	

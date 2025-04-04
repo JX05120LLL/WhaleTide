@@ -32,9 +32,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.sun.deploy.util.SessionState.save;
-import static net.sf.jsqlparser.parser.feature.Feature.comment;
-import static net.sf.jsqlparser.util.validation.metadata.NamedObject.user;
 /**
  * 商品评论服务实现
  */

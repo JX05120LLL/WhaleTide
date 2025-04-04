@@ -1,7 +1,11 @@
 <template>
 	<view class="container">
-		<view class="list-cell b-b m-t" @click="navTo('个人资料')" hover-class="cell-hover" :hover-stay-time="50">
+		<view class="list-cell b-b m-t" @click="navTo('/pages/userinfo/userinfo')" hover-class="cell-hover" :hover-stay-time="50">
 			<text class="cell-tit">个人资料</text>
+			<text class="cell-more yticon icon-you"></text>
+		</view>
+		<view class="list-cell b-b" @click="navTo('/pages/userinfo/change-password')" hover-class="cell-hover" :hover-stay-time="50">
+			<text class="cell-tit">修改密码</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<view class="list-cell b-b" @click="navTo('/pages/address/address')" hover-class="cell-hover" :hover-stay-time="50">
@@ -21,8 +25,8 @@
 			<text class="cell-tit">清除缓存</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
-		<view class="list-cell b-b" @click="navToOuter('https://github.com/macrozheng/mall')" hover-class="cell-hover" :hover-stay-time="50">
-			<text class="cell-tit">关于mall-app-web</text>
+		<view class="list-cell b-b" @click="navTo('/pages/about/about')" hover-class="cell-hover" :hover-stay-time="50">
+			<text class="cell-tit">关于whaletide-app-web</text>
 			<text class="cell-more yticon icon-you"></text>
 		</view>
 		<view class="list-cell">
@@ -50,15 +54,30 @@
 			...mapMutations(['logout']),
 
 			navTo(url){
-				if(url.indexOf("pages")!=-1){
+				if(url.indexOf("pages") != -1){
 					uni.navigateTo({
-						url:url
+						url: url
 					});
+				} else {
+					// 对于非页面路径的情况，只显示提示信息
+					this.$api.msg(`跳转到${url}`);
 				}
-				this.$api.msg(`跳转到${url}`);
 			},
 			navToOuter(url){
+				// #ifdef H5
 				window.location.href = url;
+				// #endif
+				// #ifndef H5
+				uni.setClipboardData({
+					data: url,
+					success: () => {
+						uni.showToast({
+							title: '链接已复制',
+							icon: 'none'
+						});
+					}
+				});
+				// #endif
 			},
 			//退出登录
 			toLogout(){
@@ -66,10 +85,32 @@
 				    content: '确定要退出登录么',
 				    success: (e)=>{
 				    	if(e.confirm){
+				    		// 清除所有存储的用户信息和token
+				    		uni.removeStorageSync('Authorization');
+				    		uni.removeStorageSync('username');
+				    		uni.removeStorageSync('password');
+				    		// 清除其他可能存在的信息
+				    		try {
+				    			uni.clearStorageSync();
+				    		} catch(e) {
+				    			console.error('清除缓存失败', e);
+				    		}
+				    		
+				    		// 调用vuex的登出操作
 				    		this.logout();
+				    		
+				    		// 显示提示
+				    		uni.showToast({
+				    			title: '已退出登录',
+				    			icon: 'success'
+				    		});
+				    		
+				    		// 返回首页或登录页
 				    		setTimeout(()=>{
-				    			uni.navigateBack();
-				    		}, 200)
+				    			uni.reLaunch({
+				    				url: '/pages/public/login'
+				    			});
+				    		}, 500);
 				    	}
 				    }
 				});

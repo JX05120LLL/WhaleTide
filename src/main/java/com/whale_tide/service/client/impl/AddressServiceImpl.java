@@ -18,6 +18,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import com.whale_tide.util.JwtUtil;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户地址服务实现类
@@ -39,29 +42,30 @@ public class AddressServiceImpl implements IAddressService {
 
     // 获取用户地址列表
     @Override
-    public AddressResponse getAddressList() {
+    public List<AddressResponse> getAddressList() {
         // 从token中获取用户id
         Long userId = getCurrentUserId();
         // 根据用户id查询地址列表
         LambdaQueryWrapper<UmsUserAddresses> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(UmsUserAddresses::getUserId, userId);
-        UmsUserAddresses address = userAddressMapper.selectOne(queryWrapper);
-        if (address == null) {
-            throw new AddressNotFoundException("用户地址不存在");
+        List<UmsUserAddresses> addresses = userAddressMapper.selectList(queryWrapper);
+        if (addresses == null || addresses.isEmpty()) {
+            return new ArrayList<>();
         }
 
-        // 封装 返回值
-        AddressResponse response = new AddressResponse();
-        response.setId(address.getId());
-        response.setName(address.getReceiverName());
-        response.setPhoneNumber(address.getReceiverPhone());
-        response.setDefaultStatus(address.getDefaultStatus());
-        response.setProvince(address.getProvince());
-        response.setCity(address.getCity());
-        response.setDistrict(address.getDistrict());
-        response.setDetailAddress(address.getDetailAddress());
-
-        return response;
+        // 封装返回值
+        return addresses.stream().map(address -> {
+            AddressResponse response = new AddressResponse();
+            response.setId(address.getId());
+            response.setName(address.getReceiverName());
+            response.setPhoneNumber(address.getReceiverPhone());
+            response.setDefaultStatus(address.getDefaultStatus());
+            response.setProvince(address.getProvince());
+            response.setCity(address.getCity());
+            response.setDistrict(address.getDistrict());
+            response.setDetailAddress(address.getDetailAddress());
+            return response;
+        }).collect(Collectors.toList());
     }
 
     // 获取用户地址详情

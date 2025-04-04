@@ -35,3 +35,43 @@ export function memberRegister(data) {
 		data: data
 	})
 }
+
+// 更新用户信息
+export function updateMemberInfo(data) {
+	// 直接使用完整授权头，不尝试解析token
+	const fullAuth = uni.getStorageSync('FullAuthorization');
+	
+	// 记录授权信息
+	console.log('请求授权头:', fullAuth);
+	
+	// 确保有授权头
+	const header = {};
+	if (fullAuth) {
+		header['Authorization'] = fullAuth;
+	}
+	
+	return request({
+		method: 'POST',
+		url: '/member/info/update',
+		data: data,
+		header: header
+	})
+}
+
+// 修改密码
+export function updatePassword(data) {
+	return request({
+		method: 'POST',
+		url: '/member/password/update',
+		data: data
+	})
+}
+
+// 上传头像
+export function uploadAvatar(data) {
+	return request({
+		method: 'POST',
+		url: '/member/avatar/upload',
+		data: data
+	})
+}

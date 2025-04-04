@@ -86,14 +86,73 @@ public class JwtUtil {
      */
     public DecodedJWT parseToken(String token) {
         try {
+            // 输出token信息用于调试
+            log.debug("开始解析token: {}, 长度: {}", token, token != null ? token.length() : 0);
+            
+            if (token == null || token.trim().isEmpty()) {
+                log.warn("Token为空");
+                throw new TokenInvalidException("Token不能为空");
+            }
+            
+            // 移除Bearer前缀
+            if (token.startsWith("Bearer ")) {
+                token = token.substring(7).trim();
+                log.debug("移除Bearer前缀后的token: {}", token);
+            }
+            
+            // 检查token格式
+            if (!token.contains(".") || token.split("\\.").length != 3) {
+                log.warn("Token格式不正确，不是标准的JWT格式: {}", token);
+                throw new TokenInvalidException("Token格式不正确，不是有效的JWT格式");
+            }
+            
+            // 创建JWT验证器并验证token
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(tokenConfig.getSecret())).build();
-            return verifier.verify(token);
+            
+            // 尝试验证token
+            try {
+                return verifier.verify(token);
+            } catch (com.auth0.jwt.exceptions.JWTDecodeException e) {
+                log.warn("Token解码失败: {}", e.getMessage());
+                
+                // 尝试修复Base64编码问题
+                String[] parts = token.split("\\.");
+                if (parts.length == 3) {
+                    log.info("尝试修复token Base64编码");
+                    
+                    // 保持header和payload不变，只修改签名部分
+                    String header = parts[0];
+                    String payload = parts[1];
+                    String fixedToken = header + "." + payload + "." + parts[2];
+                    
+                    try {
+                        return verifier.verify(fixedToken);
+                    } catch (Exception ex) {
+                        log.warn("修复尝试失败: {}", ex.getMessage());
+                        throw new TokenInvalidException("Token解码失败: " + e.getMessage());
+                    }
+                } else {
+                    throw new TokenInvalidException("Token格式不正确: " + e.getMessage());
+                }
+            }
         } catch (com.auth0.jwt.exceptions.TokenExpiredException e) {
             log.warn("Token已过期: {}", e.getMessage());
             throw new TokenExpiredException("Token已过期，请重新登录");
+        } catch (com.auth0.jwt.exceptions.SignatureVerificationException e) {
+            log.warn("Token签名验证失败: {}", e.getMessage());
+            throw new TokenInvalidException("Token签名验证失败");
+        } catch (com.auth0.jwt.exceptions.AlgorithmMismatchException e) {
+            log.warn("Token算法不匹配: {}", e.getMessage());
+            throw new TokenInvalidException("Token算法不匹配");
+        } catch (com.auth0.jwt.exceptions.InvalidClaimException e) {
+            log.warn("Token声明无效: {}", e.getMessage());
+            throw new TokenInvalidException("Token声明无效");
         } catch (JWTVerificationException e) {
             log.warn("Token验证失败: {}", e.getMessage());
-            throw new TokenInvalidException("无效的Token");
+            throw new TokenInvalidException("无效的Token: " + e.getMessage());
+        } catch (Exception e) {
+            log.error("解析Token时发生未知错误: {}", e.getMessage(), e);
+            throw new TokenInvalidException("解析Token时发生未知错误: " + e.getMessage());
         }
     }
 

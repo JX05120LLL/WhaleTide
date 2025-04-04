@@ -3,11 +3,12 @@ package com.whale_tide.service.client;
 
 import com.whale_tide.dto.client.address.AddressRequest;
 import com.whale_tide.dto.client.address.AddressResponse;
+import java.util.List;
 
 public interface IAddressService {
 
     // 获取收获地址列表
-    AddressResponse getAddressList();
+    List<AddressResponse> getAddressList();
 
     // 获取收获地址详情
     AddressResponse getAddressDetails(long id);

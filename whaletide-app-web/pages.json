@@ -4,10 +4,7 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				// #ifdef MP 
 				"navigationBarTitleText": "Mall商城",
-				//"navigationStyle": "custom",
-				// #endif 
 				"enablePullDownRefresh": true,
 				"app-plus": {
 					"titleNView": {
@@ -62,7 +59,14 @@
 			"style": {
 				"navigationBarTitleText": "修改资料"
 			}
-		}, {
+		},
+		{
+			"path": "pages/userinfo/change-password",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		},
+		{
 			"path": "pages/cart/cart",
 			"style": {
 				"navigationBarTitleText": "购物车"
@@ -91,9 +95,7 @@
 			"path": "pages/user/user",
 			"style": {
 				"navigationBarTitleText": "我的",
-				// #ifdef MP
 				"navigationStyle": "custom",
-				// #endif
 				"app-plus": {
 					"bounce": "none",
 					"titleNView": {
@@ -164,6 +166,11 @@
 			"path": "pages/notice/notice",
 			"style": {
 				"navigationBarTitleText": "通知"
+			}
+		}, {
+			"path": "pages/about/about",
+			"style": {
+				"navigationBarTitleText": "关于我们"
 			}
 		}, {
 			"path": "pages/category/category",

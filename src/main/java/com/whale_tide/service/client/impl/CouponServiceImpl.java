@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.PageResponse;
 import com.whale_tide.common.exception.coupon.*;
+import com.whale_tide.common.exception.auth.TokenInvalidException;
 import com.whale_tide.dto.client.coupon.ProductCouponResponse;
 import com.whale_tide.dto.client.coupon.UserCouponListRequest;
 import com.whale_tide.dto.client.coupon.UserCouponResponse;
@@ -284,8 +285,24 @@ public class CouponServiceImpl implements ICouponService {
                 // 从请求头中获取token
                 String token = request.getHeader("Authorization");
                 if (token != null) {
+                    // 记录原始token，便于调试
+                    log.debug("原始token: {}", token);
+                    
+                    // 检查token前缀，如果存在Bearer前缀则移除
+                    if (token.startsWith("Bearer ")) {
+                        token = token.substring(7).trim();
+                        log.debug("去除Bearer前缀后的token: {}", token);
+                    }
+                    
+                    // 检查token格式是否有效
+                    if (token.isEmpty() || !token.matches("^[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_=]+\\.[A-Za-z0-9-_.+/=]*$")) {
+                        log.error("Token格式不正确: {}", token);
+                        throw new TokenInvalidException("无效的Token格式");
+                    }
+                    
                     // 使用JwtUtil解析token获取用户名
                     String username = jwtUtil.getUsernameFromToken(token);
+                    log.debug("从token解析出的用户名: {}", username);
                     
                     // 根据用户名查询用户信息
                     LambdaQueryWrapper<UmsUsers> queryWrapper = new LambdaQueryWrapper<>();
@@ -295,6 +312,8 @@ public class CouponServiceImpl implements ICouponService {
                     if (user != null) {
                         return user.getId();
                     }
+                } else {
+                    log.warn("请求头中没有找到Authorization字段");
                 }
             }
             
