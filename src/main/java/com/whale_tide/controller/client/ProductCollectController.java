@@ -3,9 +3,9 @@ package com.whale_tide.controller.client;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.CommonResult;
-import com.whale_tide.dto.client.productCollect.ProductCollectionPageResponse;
-import com.whale_tide.dto.client.productCollect.ProductCollectionRequest;
-import com.whale_tide.dto.client.productCollect.ProductCollectionResponse;
+import com.whale_tide.dto.client.productCollection.ProductCollectionPageResponse;
+import com.whale_tide.dto.client.productCollection.ProductCollectionRequest;
+import com.whale_tide.dto.client.productCollection.ProductCollectionResponse;
 import com.whale_tide.entity.ums.UmsUserFavorites;
 import com.whale_tide.service.client.IProductCollectService;
 import com.whale_tide.service.client.IUserService;
@@ -24,7 +24,7 @@ import java.util.List;
 
 @Slf4j
 @Api(tags = "用户产品收藏")
-@RestController("clientProductCollectController")
+@RestController("clientProductCollectionController")
 @RequestMapping("/member/productCollection")
 public class ProductCollectController {
 
@@ -36,7 +36,6 @@ public class ProductCollectController {
 
     @Autowired
     private JwtUtil jwtUtil;
-
 
 
     /**
