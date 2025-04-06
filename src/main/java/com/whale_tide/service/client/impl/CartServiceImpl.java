@@ -240,19 +240,24 @@ public class CartServiceImpl implements ICartService {
 
     // 删除购物车
     @Override
-    public void cartDelete(CartDeleteRequest request) {
-        //解析请求参数
-        String ids = request.getIds();
+    public void cartDelete(Long id) {
+//        //解析请求参数
+//        String ids = request.getIds();
+//
+//        //解析参数
+//        List<Long> idList = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());
+//
+//        // 创建更新包装器
+//        UpdateWrapper<OmsCartItems> updateWrapper = new UpdateWrapper<>();
+//        updateWrapper.in("id", idList);
+//        // 执行更新
+//        omsCartItemsMapper.delete(updateWrapper);
+//        log.info("购物车项已删除，影响记录数：" + idList.size());
+        LambdaQueryWrapper<OmsCartItems> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OmsCartItems::getId, id);
+        omsCartItemsMapper.delete(queryWrapper);
+        log.info("购物车项已删除，ID: {}", id);
 
-        //解析参数
-        List<Long> idList = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());
-
-        // 创建更新包装器
-        UpdateWrapper<OmsCartItems> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.in("id", idList);
-        // 执行更新
-        omsCartItemsMapper.delete(updateWrapper);
-        log.info("购物车项已删除，影响记录数：" + idList.size());
     }
 
     // 清空购物车

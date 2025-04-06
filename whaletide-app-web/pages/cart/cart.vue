@@ -227,7 +227,7 @@
 				let list = this.cartList;
 				let row = list[index];
 				let id = row.id;
-				deletCartItem({ids:id}).then(response=>{
+				deletCartItem({id:id}).then(response=>{
 					this.cartList.splice(index, 1);
 					this.calcTotal();
 					uni.hideLoading();

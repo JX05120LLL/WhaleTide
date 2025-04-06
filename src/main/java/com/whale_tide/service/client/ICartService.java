@@ -36,10 +36,10 @@ public interface ICartService {
     void cartUpdateChecked(CartUpdateCheckedRequest request);
     /**
      * 删除购物车中的商品
-     * @param request
+     * @param id
      * @return
      */
-    void cartDelete(CartDeleteRequest request);
+    void cartDelete(Long id);
     /**
      * 清空购物车
      * @return

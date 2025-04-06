@@ -53,8 +53,8 @@ public class CartController {
     }
     @ApiOperation("删除购物车中商品")
     @PostMapping("/delete")
-    public CommonResult<Void> cartDelete(@RequestBody CartDeleteRequest request){
-        cartService.cartDelete(request);
+    public CommonResult<Void> cartDelete(@RequestParam Long id){
+        cartService.cartDelete(id);
         return CommonResult.success(null);
     }
     @ApiOperation("清空购物车")
