@@ -19,7 +19,7 @@ export function deletCartItem(params) {
 	return request({
 		method: 'POST',
 		url: '/cart/delete',
-		params:params
+		data: params
 	})
 }
 
