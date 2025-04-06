@@ -64,7 +64,7 @@ export function generateOrder(data) {
 export function fetchOrderList(params) {
 	return request({
 		method: 'GET',
-		url: '/order/list',
+		url: '/order/get/orderList',
 		params: params
 	})
 }
