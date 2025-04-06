@@ -511,7 +511,7 @@ public class OrderServiceImpl implements IOrderService {
                     .eq(OmsOrders::getIsDeleted, 0);
         
         // 根据订单状态筛选
-        if (request.getStatus() != null) {
+        if (request.getStatus() != -1) {
             queryWrapper.eq(OmsOrders::getStatus, request.getStatus());
         }
         
