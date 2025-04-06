@@ -227,30 +227,10 @@
 				let list = this.cartList;
 				let row = list[index];
 				let id = row.id;
-				
-				// 显示加载提示
-				uni.showLoading({
-					title: '正在删除'
-				});
-				
-				// 根据错误消息修改参数格式
-				deletCartItem({
-					ids: id  // 直接传递id值，不要包装成数组
-				}).then(response => {
+				deletCartItem({id:id}).then(response=>{
 					this.cartList.splice(index, 1);
 					this.calcTotal();
 					uni.hideLoading();
-					uni.showToast({
-						title: '删除成功',
-						icon: 'success'
-					});
-				}).catch(error => {
-					console.error('删除购物车商品失败:', error);
-					uni.hideLoading();
-					uni.showToast({
-						title: '删除失败',
-						icon: 'none'
-					});
 				});
 			},
 			//清空

@@ -110,8 +110,27 @@ public class CartServiceImpl implements ICartService {
             }
         }
 
+        OmsCartItems cartItem = null;
+
+        //购物车有相同商品时，只更新数量
+        LambdaQueryWrapper<OmsCartItems> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OmsCartItems::getUserId, userId)
+                .eq(OmsCartItems::getProductId, request.getProductId())
+                .eq(OmsCartItems::getSkuId, pmsProductSkus.getId());
+        cartItem = omsCartItemsMapper.selectOne(queryWrapper);
+        if (cartItem != null) {
+            // 更新数量
+            cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());
+            // 更新时间
+            cartItem.setUpdateTime(LocalDateTime.now());
+            // 更新数据库
+            omsCartItemsMapper.updateById(cartItem);
+            log.info("购物车项已更新，ID: {}, 新数量: {}", cartItem.getId(), cartItem.getQuantity());
+            return 1;
+        }
+
         // 封装购物车
-        OmsCartItems cartItem = new OmsCartItems();
+        cartItem = new OmsCartItems();
         cartItem.setUserId(userId);
         cartItem.setProductId(request.getProductId());
         cartItem.setSkuId(pmsProductSkus.getId());
@@ -240,19 +259,24 @@ public class CartServiceImpl implements ICartService {
 
     // 删除购物车
     @Override
-    public void cartDelete(CartDeleteRequest request) {
-        //解析请求参数
-        String ids = request.getIds();
+    public void cartDelete(Long id) {
+//        //解析请求参数
+//        String ids = request.getIds();
+//
+//        //解析参数
+//        List<Long> idList = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());
+//
+//        // 创建更新包装器
+//        UpdateWrapper<OmsCartItems> updateWrapper = new UpdateWrapper<>();
+//        updateWrapper.in("id", idList);
+//        // 执行更新
+//        omsCartItemsMapper.delete(updateWrapper);
+//        log.info("购物车项已删除，影响记录数：" + idList.size());
+        LambdaQueryWrapper<OmsCartItems> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OmsCartItems::getId, id);
+        omsCartItemsMapper.delete(queryWrapper);
+        log.info("购物车项已删除，ID: {}", id);
 
-        //解析参数
-        List<Long> idList = Arrays.stream(ids.split(",")).map(Long::parseLong).collect(Collectors.toList());
-
-        // 创建更新包装器
-        UpdateWrapper<OmsCartItems> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.in("id", idList);
-        // 执行更新
-        omsCartItemsMapper.delete(updateWrapper);
-        log.info("购物车项已删除，影响记录数：" + idList.size());
     }
 
     // 清空购物车

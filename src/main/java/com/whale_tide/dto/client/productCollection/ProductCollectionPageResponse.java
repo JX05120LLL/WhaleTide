@@ -1,4 +1,4 @@
-package com.whale_tide.dto.client.productCollect;
+package com.whale_tide.dto.client.productCollection;
 
 import lombok.Data;
 
