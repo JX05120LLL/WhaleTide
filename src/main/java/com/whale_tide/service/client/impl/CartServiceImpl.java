@@ -110,8 +110,27 @@ public class CartServiceImpl implements ICartService {
             }
         }
 
+        OmsCartItems cartItem = null;
+
+        //购物车有相同商品时，只更新数量
+        LambdaQueryWrapper<OmsCartItems> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(OmsCartItems::getUserId, userId)
+                .eq(OmsCartItems::getProductId, request.getProductId())
+                .eq(OmsCartItems::getSkuId, pmsProductSkus.getId());
+        cartItem = omsCartItemsMapper.selectOne(queryWrapper);
+        if (cartItem != null) {
+            // 更新数量
+            cartItem.setQuantity(cartItem.getQuantity() + request.getQuantity());
+            // 更新时间
+            cartItem.setUpdateTime(LocalDateTime.now());
+            // 更新数据库
+            omsCartItemsMapper.updateById(cartItem);
+            log.info("购物车项已更新，ID: {}, 新数量: {}", cartItem.getId(), cartItem.getQuantity());
+            return 1;
+        }
+
         // 封装购物车
-        OmsCartItems cartItem = new OmsCartItems();
+        cartItem = new OmsCartItems();
         cartItem.setUserId(userId);
         cartItem.setProductId(request.getProductId());
         cartItem.setSkuId(pmsProductSkus.getId());
