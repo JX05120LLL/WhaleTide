@@ -146,15 +146,23 @@
 				return statusTip;
 			},
 			formatProductAttr(jsonAttr) {
-				let attrArr = JSON.parse(jsonAttr);
-				let attrStr = '';
-				for (let attr of attrArr) {
-					attrStr += attr.key;
-					attrStr += ":";
-					attrStr += attr.value;
-					attrStr += ";";
+				try {
+					// 尝试解析JSON字符串
+					let attrArr = JSON.parse(jsonAttr);
+					let attrStr = '';
+					for (let attr of attrArr) {
+						attrStr += attr.key;
+						attrStr += ":";
+						attrStr += attr.value;
+						attrStr += ";";
+					}
+					return attrStr;
+				} catch (e) {
+					// 当JSON解析失败时，直接返回原始字符串或一个默认值
+					console.log('JSON解析失败:', e);
+					// 如果jsonAttr是一个字符串但不是有效的JSON，直接返回它
+					return typeof jsonAttr === 'string' ? jsonAttr : '默认规格';
 				}
-				return attrStr
 			},
 			formatDateTime(time) {
 				if (time == null || time === '') {

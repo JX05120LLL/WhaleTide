@@ -257,7 +257,7 @@ public class CartServiceImpl implements ICartService {
         log.info("购物车项选中状态已更新，影响记录数：" + idList.size());
     }
 
-    // 删除购物车
+    // 删除购物车的商品
     @Override
     public void cartDelete(Long id) {
 //        //解析请求参数
