@@ -61,8 +61,39 @@
 					const response = await fetchBrandRecommendList(this.queryParams);
 					console.log("品牌列表原始数据:", response);
 					
+					// 确保我们有有效的响应
+					if (!response) {
+						uni.showToast({
+							title: '获取品牌列表失败',
+							icon: 'none'
+						});
+						return;
+					}
+					
+					// 处理分页响应格式，支持多种格式
+					let brands = [];
+					if (response.list) {
+						console.log("检测到list字段");
+						brands = response.list;
+					} else if (response.data && response.data.list) {
+						console.log("检测到data.list字段");
+						brands = response.data.list;
+					} else if (response.data && Array.isArray(response.data)) {
+						console.log("检测到data数组");
+						brands = response.data;
+					} else if (Array.isArray(response)) {
+						console.log("检测到直接数组");
+						brands = response;
+					} else {
+						console.warn("未识别的响应格式:", response);
+						uni.showToast({
+							title: '返回数据格式错误',
+							icon: 'none'
+						});
+						return;
+					}
+					
 					// 处理图片路径
-					const brands = response.data && response.data.list ? response.data.list : [];
 					brands.forEach(item => {
 						// 确保logo是完整URL
 						if (item.logo) {
@@ -78,7 +109,13 @@
 						this.brandList = [...this.brandList, ...brands];
 					}
 					
-					this.loadingType = brands.length < this.queryParams.pageSize ? 'nomore' : 'more';
+					// 确定是否有更多数据
+					const total = response.total || (response.data && response.data.total) || 0;
+					const pageSize = this.queryParams.pageSize || 10;
+					const isLastPage = brands.length < pageSize || 
+									  (this.queryParams.pageNum * pageSize >= total);
+					
+					this.loadingType = isLastPage ? 'nomore' : 'more';
 					console.log("处理后的品牌列表:", this.brandList);
 				} catch (error) {
 					console.error("加载品牌列表失败:", error);

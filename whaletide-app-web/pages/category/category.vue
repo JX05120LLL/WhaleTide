@@ -34,21 +34,87 @@
 		methods: {
 			async loadData() {
 				fetchProductCateList(0).then(response => {
-					this.flist = response.data;
+					console.log("一级分类原始数据:", response);
+					
+					// 处理不同的响应格式
+					let categoryData = [];
+					
+					// 检查各种可能的响应格式
+					if (Array.isArray(response)) {
+						console.log("响应直接是数组");
+						categoryData = response;
+					} else if (response && response.data && Array.isArray(response.data)) {
+						console.log("响应包含data数组");
+						categoryData = response.data;
+					} else if (response && response.list && Array.isArray(response.list)) {
+						console.log("响应包含list数组");
+						categoryData = response.list;
+					} else {
+						console.warn("未识别的响应格式:", response);
+						uni.showToast({
+							title: '获取分类失败',
+							icon: 'none'
+						});
+						return;
+					}
+					
+					// 更新一级分类列表
+					this.flist = categoryData;
+					
+					// 如果有数据，加载二级分类
 					if (this.flist.length > 0) {
 						this.currentId = this.flist[0].id;
-						fetchProductCateList(this.currentId).then(response => {
-							this.slist = response.data;
-						});
+						this.loadSecondCategories(this.currentId);
 					}
-				})
+				}).catch(error => {
+					console.error("加载一级分类失败:", error);
+					uni.showToast({
+						title: '获取分类失败',
+						icon: 'none'
+					});
+				});
+			},
+			// 加载二级分类
+			loadSecondCategories(parentId) {
+				fetchProductCateList(parentId).then(response => {
+					console.log("二级分类原始数据:", response);
+					
+					// 处理不同的响应格式
+					let categoryData = [];
+					
+					// 检查各种可能的响应格式
+					if (Array.isArray(response)) {
+						console.log("响应直接是数组");
+						categoryData = response;
+					} else if (response && response.data && Array.isArray(response.data)) {
+						console.log("响应包含data数组");
+						categoryData = response.data;
+					} else if (response && response.list && Array.isArray(response.list)) {
+						console.log("响应包含list数组");
+						categoryData = response.list;
+					} else {
+						console.warn("未识别的响应格式:", response);
+						uni.showToast({
+							title: '获取子分类失败',
+							icon: 'none'
+						});
+						return;
+					}
+					
+					// 更新二级分类列表
+					this.slist = categoryData;
+				}).catch(error => {
+					console.error("加载二级分类失败:", error);
+					uni.showToast({
+						title: '获取子分类失败',
+						icon: 'none'
+					});
+				});
 			},
 			//一级分类点击
 			tabtap(item) {
 				this.currentId = item.id;
-				fetchProductCateList(this.currentId).then(response => {
-					this.slist = response.data;
-				});
+				this.loadSecondCategories(this.currentId);
 			},
 			navToList(sid) {
 				uni.navigateTo({

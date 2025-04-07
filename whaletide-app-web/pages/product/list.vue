@@ -54,6 +54,7 @@
 		fetchCategoryTreeList
 	} from '@/api/product.js';
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	import { getFullImageUrl, extractApiData, extractPaginationInfo } from '@/utils/requestUtil.js';
 	export default {
 		components: {
 			uniLoadMore
@@ -125,41 +126,75 @@
 					this.searchParam.pageNum=1;
 					this.productList = [];
 				}
-				if(this.filterIndex==0){
-					this.searchParam.sort=0;
-				}
-				if (this.filterIndex === 1) {
-					this.searchParam.sort = 2;
-				}
-				if (this.filterIndex === 2) {
-					if (this.priceOrder == 1) {
-						this.searchParam.sort = 3;
-					} else {
-						this.searchParam.sort = 4;
-					}
-				}
+				
 				searchProductList(this.searchParam).then(response => {
-					let productList = response.data.list;
-					if (response.data.list.length === 0) {
-						//没有更多了
+					console.log("商品列表原始数据:", response);
+					
+					// 使用工具函数从响应中提取数据列表
+					const productData = extractApiData(response, '商品列表');
+					
+					// 提取分页信息
+					const pagination = extractPaginationInfo(response, {
+						pageSize: this.searchParam.pageSize,
+						pageNum: this.searchParam.pageNum
+					});
+					
+					// 处理没有更多数据的情况
+					if (productData.length === 0) {
+						// 没有更多了
 						this.loadingType = 'nomore';
-						this.searchParam.pageNum--;
-					} else {
-						if (response.data.list.length < this.searchParam.pageSize) {
-							this.loadingType = 'nomore';
+						if (type === 'add') {
 							this.searchParam.pageNum--;
+						}
+					} else {
+						// 判断是否还有更多数据
+						if (productData.length < pagination.pageSize || 
+							(pagination.pageNum * pagination.pageSize >= pagination.total && pagination.total > 0)) {
+							this.loadingType = 'nomore';
 						} else {
 							this.loadingType = 'more';
 						}
-						this.productList = this.productList.concat(productList);
+						
+						// 处理图片URL
+						const processedProducts = productData.map(item => {
+							if (item.pic) {
+								item.pic = getFullImageUrl(item.pic);
+							}
+							return item;
+						});
+						
+						// 追加到列表
+						this.productList = this.productList.concat(processedProducts);
 					}
+					
+					// 处理刷新完成
 					if (type === 'refresh') {
 						if (loading == 1) {
-							uni.hideLoading()
+							uni.hideLoading();
 						} else {
 							uni.stopPullDownRefresh();
 						}
 					}
+				}).catch(error => {
+					console.error("加载商品列表失败:", error);
+					// 如果在加载更多时遇到错误，恢复页码
+					if (type === 'add') {
+						this.searchParam.pageNum--;
+					}
+					this.loadingType = 'more';
+					
+					if (type === 'refresh') {
+						if (loading == 1) {
+							uni.hideLoading();
+						} else {
+							uni.stopPullDownRefresh();
+						}
+					}
+					
+					uni.showToast({
+						title: '加载商品列表失败',
+						icon: 'none'
+					});
 				});
 			},
 			//筛选点击

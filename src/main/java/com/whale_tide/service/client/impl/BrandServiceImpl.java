@@ -1,7 +1,7 @@
 package com.whale_tide.service.client.impl;
 
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.PageResponse;
 import com.whale_tide.common.exception.brand.BrandNotFoundException;
 import com.whale_tide.common.exception.product.ProductNotFoundException;
@@ -15,14 +15,17 @@ import com.whale_tide.mapper.pms.PmsProductCommentsMapper;
 import com.whale_tide.mapper.pms.PmsProductSkusMapper;
 import com.whale_tide.mapper.pms.PmsProductsMapper;
 import com.whale_tide.service.client.IBrandService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service("clientBrandService")
 public class BrandServiceImpl implements IBrandService {
 
@@ -85,60 +88,66 @@ public class BrandServiceImpl implements IBrandService {
      */
     @Override
     public PageResponse<BrandListItemResponse> getRecommendBrands(RecommendBrandRequest request) {
-
+        log.info("获取品牌列表, request={}", request);
+        
         // 解析参数
         int pageNum = request.getPageNum().intValue();  // 当前页
         int pageSize = request.getPageSize().intValue(); // 每页记录数
-        // 构建查询
-        LambdaQueryWrapper<PmsProducts> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(PmsProducts::getRecommendStatus, 1);// 1 表示推荐状态
-        queryWrapper.last("LIMIT " + (pageNum - 1) * pageSize + ", " + pageSize);
-        // 查询数据
-        List<PmsProducts> productList = pmsProductsMapper.selectList(queryWrapper);
         
-        // 获取品牌ID (添加去重逻辑避免重复ID)
-        List<Long> brandIdList = productList.stream()
-            .map(PmsProducts::getBrandId)
-            .distinct() // 确保ID列表中没有重复
-            .collect(Collectors.toList());
-            
-        if (brandIdList.isEmpty()) {
-            // 如果没有找到品牌ID，返回空结果
+        // 构建查询 - 直接查询品牌表
+        LambdaQueryWrapper<PmsBrands> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(PmsBrands::getStatus, 1); // 状态为1的品牌(显示)
+        
+        // 计算总记录数
+        long total = pmsBrandsMapper.selectCount(queryWrapper);
+        
+        // 分页查询
+        Page<PmsBrands> page = new Page<>(pageNum, pageSize);
+        page = pmsBrandsMapper.selectPage(page, queryWrapper);
+        
+        // 获取品牌列表
+        List<PmsBrands> brandList = page.getRecords();
+        
+        if (brandList.isEmpty()) {
+            log.warn("未找到符合条件的品牌");
             return PageResponse.of(new ArrayList<>(), pageNum, pageSize, 0, 0);
         }
         
-        // 查询品牌信息
-        List<PmsBrands> brandList = pmsBrandsMapper.selectBatchIds(brandIdList);
+        // 计算每个品牌的产品数量
+        List<Long> brandIds = brandList.stream()
+            .map(PmsBrands::getId)
+            .collect(Collectors.toList());
         
-        // 构建ID到品牌的映射，以便后续快速查找
-        Map<Long, PmsBrands> brandMap = brandList.stream()
-            .collect(Collectors.toMap(PmsBrands::getId, brand -> brand));
+        // 查询各品牌的产品数量 
+        Map<Long, Integer> productCountMap = new HashMap<>();
+        if (!brandIds.isEmpty()) {
+            // 查询每个品牌关联的产品数量
+            LambdaQueryWrapper<PmsProducts> productQuery = new LambdaQueryWrapper<>();
+            productQuery.in(PmsProducts::getBrandId, brandIds);
+            List<PmsProducts> products = pmsProductsMapper.selectList(productQuery);
             
-        // 构建ID到销量的映射
-        Map<Long, Integer> productCountMap = productList.stream()
-            .collect(Collectors.groupingBy(
-                PmsProducts::getBrandId,
-                Collectors.summingInt(product -> product.getSale() != null ? product.getSale() : 0)
-            ));
-
-        //封装结果
-        List<BrandListItemResponse> responseList = new ArrayList<>();
-        for (Long brandId : brandIdList) {
-            PmsBrands brand = brandMap.get(brandId);
-            if (brand != null) {
-                BrandListItemResponse response = new BrandListItemResponse();
-                response.setId(brandId); // 品牌ID
-                response.setName(brand.getName()); // 品牌名称
-                response.setLogo(brand.getLogo()); // 品牌logo
-                response.setProductCount(productCountMap.getOrDefault(brandId, 0)); // 品牌商品数量
-                responseList.add(response);
-            }
+            productCountMap = products.stream()
+                .collect(Collectors.groupingBy(
+                    PmsProducts::getBrandId,
+                    Collectors.summingInt(product -> 1) // 每个产品计数1
+                ));
         }
-
-        // 分页处理
-        int total = responseList.size();
-        int totalPage = (int) Math.ceil((double) total / pageSize);
-        return PageResponse.of(responseList, pageNum, pageSize, total, totalPage);
+        
+        // 转换为响应对象
+        List<BrandListItemResponse> responseList = new ArrayList<>();
+        for (PmsBrands brand : brandList) {
+            BrandListItemResponse item = new BrandListItemResponse();
+            item.setId(brand.getId());
+            item.setName(brand.getName());
+            item.setLogo(brand.getLogo());
+            // 设置产品数量，如果没有则为0
+            item.setProductCount(productCountMap.getOrDefault(brand.getId(), 0));
+            responseList.add(item);
+        }
+        
+        log.info("品牌列表获取成功, 总记录数:{}, 总页数:{}", total, (total + pageSize - 1) / pageSize);
+        int totalPages = (int)Math.ceil((double)total / pageSize);
+        return PageResponse.of(responseList, pageNum, pageSize, total, totalPages);
     }
 
 

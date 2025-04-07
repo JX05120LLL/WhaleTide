@@ -109,13 +109,54 @@
 		},
 		onShow(){
 			if(this.hasLogin){
-				fetchMemberCouponList(0).then(response=>{
-					if(response.data!=null&&response.data.length>0){
-						this.couponCount = response.data.length;
+				fetchMemberCouponList(0).then(response => {
+					console.log('优惠券API响应:', response);
+					
+					// 处理不同的响应格式
+					let coupons = null;
+					
+					if (!response) {
+						console.error('优惠券API响应为空');
+						return;
 					}
+					
+					// 检查各种可能的响应格式
+					if (response.data && Array.isArray(response.data)) {
+						console.log('检测到data数组格式');
+						coupons = response.data;
+					} else if (response.list && Array.isArray(response.list)) {
+						console.log('检测到list数组格式');
+						coupons = response.list;
+					} else if (response.records && Array.isArray(response.records)) {
+						console.log('检测到records数组格式');
+						coupons = response.records;
+					} else if (Array.isArray(response)) {
+						console.log('检测到直接数组格式');
+						coupons = response;
+					} else if (response.data && response.data.list && Array.isArray(response.data.list)) {
+						console.log('检测到data.list格式');
+						coupons = response.data.list;
+					} else if (response.data && response.data.records && Array.isArray(response.data.records)) {
+						console.log('检测到data.records格式');
+						coupons = response.data.records;
+					} else {
+						console.error('无法识别的优惠券数据格式:', response);
+						return;
+					}
+					
+					if (coupons && coupons.length > 0) {
+						this.couponCount = coupons.length;
+						console.log('优惠券数量:', this.couponCount);
+					} else {
+						console.log('没有可用的优惠券');
+						this.couponCount = 0;
+					}
+				}).catch(error => {
+					console.error('获取优惠券列表失败:', error);
+					this.couponCount = 0;
 				});
-			}else{
-				this.couponCount=null;
+			} else {
+				this.couponCount = null;
 			}
 		},
 		// #ifndef MP

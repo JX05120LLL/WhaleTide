@@ -154,10 +154,10 @@
 		<view class="guess-section">
 			<view v-for="(item, index) in recommendProductList" :key="index" class="guess-item" @click="navToDetailPage(item)">
 				<view class="image-wrapper">
-					<image :src="item.pic" mode="aspectFill"></image>
+					<image :src="item.pic" mode="aspectFill" @error="handleImageError(item, index)"></image>
 				</view>
 				<text class="title clamp">{{item.name}}</text>
-				<text class="title2 clamp">{{item.subTitle}}</text>
+				<text class="title2 clamp">{{item.subTitle || ''}}</text>
 				<text class="price">￥{{item.price}}</text>
 			</view>
 		</view>
@@ -173,7 +173,8 @@
 	import {
 		formatDate
 	} from '@/utils/date';
-	import { getFullImageUrl } from '@/utils/requestUtil.js';
+	import { getFullImageUrl, extractApiData } from '@/utils/requestUtil.js';
+	import { API_BASE_URL } from '@/utils/appConfig.js';
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
 	export default {
 		components: {
@@ -181,6 +182,7 @@
 		},
 		data() {
 			return {
+				apiBaseUrl: API_BASE_URL,
 				titleNViewBackground: '',
 				titleNViewBackgroundList: ['rgb(203, 87, 60)', 'rgb(205, 215, 218)'],
 				swiperCurrent: 0,
@@ -250,16 +252,32 @@
 			this.recommendParams.pageNum++;
 			this.loadingType = 'loading';
 			fetchRecommendProductList(this.recommendParams).then(response => {
-				let addProductList = response.data;
-				if(response.data.length===0){
-					//没有更多了
+				console.log("加载更多响应:", response);
+				
+				// 检查如果响应是包含list字段的对象
+				if (response && response.list) {
+					const addProductList = response.list;
+					if (addProductList.length === 0) {
+						// 没有更多了
+						this.recommendParams.pageNum--;
+						this.loadingType = 'nomore';
+					} else {
+						// 处理图片
+						const processedList = this.processImages(addProductList);
+						this.recommendProductList = this.recommendProductList.concat(processedList);
+						this.loadingType = 'more';
+					}
+				} else {
+					// 没有数据或者响应格式不正确
+					console.error("加载更多数据格式不正确:", response);
 					this.recommendParams.pageNum--;
 					this.loadingType = 'nomore';
-				}else{
-					this.recommendProductList = this.recommendProductList.concat(addProductList);
-					this.loadingType = 'more';
 				}
-			})
+			}).catch(error => {
+				console.error("加载更多失败:", error);
+				this.recommendParams.pageNum--;
+				this.loadingType = 'more';
+			});
 		},
 		computed: {
 			cutDownTime() {
@@ -292,6 +310,133 @@
 			},
 		},
 		methods: {
+			// 添加一个单独的图片处理函数，供其他方法调用
+			processImages(items) {
+				if (!items || !Array.isArray(items)) return [];
+				
+				console.log("处理前的图片数据:", JSON.stringify(items.slice(0, 1)));
+				
+				return items.map(item => {
+					if (item) {
+						// 处理图片路径 - 检查多种可能的字段名
+						if (item.pic) {
+							console.log("原始pic URL:", item.pic);
+							item.pic = getFullImageUrl(item.pic);
+							console.log("处理后pic URL:", item.pic);
+						}
+						else if (item.mainImage) {
+							console.log("发现mainImage字段:", item.mainImage);
+							// 如果存在mainImage但没有pic字段，将mainImage复制到pic
+							item.pic = getFullImageUrl(item.mainImage);
+							console.log("从mainImage生成pic:", item.pic);
+						}
+						else {
+							// 如果既没有pic也没有mainImage，使用默认图片
+							console.warn("商品缺少图片字段:", item.id, item.name);
+							item.pic = '/static/temp/product.jpg';
+						}
+						
+						if (item.logo) {
+							item.logo = getFullImageUrl(item.logo);
+						}
+					}
+					return item;
+				});
+			},
+			/**
+			 * 获取推荐产品列表
+			 */
+			async getRecommendProductList() {
+				try {
+					const response = await fetchRecommendProductList();
+					console.log('首页推荐产品原始响应:', response);
+					
+					// 使用工具函数从响应中提取产品列表
+					const productList = extractApiData(response, '推荐产品');
+					
+					if (productList.length === 0) {
+						console.log('未找到推荐产品，使用默认数据');
+						this.showDefaultRecommendProducts();
+						return;
+					}
+					
+					console.log('提取到的推荐产品数量:', productList.length);
+					
+					// 处理产品数据，确保图片URL是完整的
+					const processedList = productList.map(item => {
+						// 处理图片URL
+						if (item.pic) {
+							item.pic = getFullImageUrl(item.pic);
+						} else if (item.mainImage) {
+							item.pic = getFullImageUrl(item.mainImage);
+						} else {
+							item.pic = '/static/errorImage.jpg';
+						}
+						return item;
+					});
+					
+					this.recommendProductList = processedList;
+					console.log('处理后的推荐产品:', this.recommendProductList);
+				} catch (error) {
+					console.error('获取推荐产品失败:', error);
+					this.showDefaultRecommendProducts();
+				}
+			},
+			/**
+			 * 显示默认推荐产品（网络错误或数据为空时）
+			 */
+			showDefaultRecommendProducts() {
+				this.recommendProductList = [{
+					id: 1,
+					name: '默认产品',
+					pic: '/static/errorImage.jpg',
+					price: 0
+				}];
+			},
+			/**
+			 * 处理图片加载错误
+			 */
+			handleImageError(item, index) {
+				console.error(`商品[${index}]图片加载失败:`, item.name, item.pic);
+				// 设置默认图片
+				this.$set(this.recommendProductList[index], 'pic', '/static/errorImage.jpg');
+			},
+			/**
+			 * 处理可能的分页数据结构
+			 * @param {Object|Array} data 可能是分页对象或数组的数据
+			 * @param {Array} defaultData 默认数据
+			 * @param {Function} processor 数据处理函数
+			 * @returns {Array} 处理后的数据数组
+			 */
+			processPageableData(data, defaultData, processor) {
+				if (!data) return defaultData;
+				
+				// 检查是否是对象而非数组
+				if (typeof data === 'object' && !Array.isArray(data)) {
+					// 检查常见的分页字段
+					if (data.list && Array.isArray(data.list)) {
+						console.log("使用分页list字段:", data.list.length);
+						return data.list.length > 0 ? processor(data.list) : defaultData;
+					} else if (data.records && Array.isArray(data.records)) {
+						console.log("使用分页records字段:", data.records.length);
+						return data.records.length > 0 ? processor(data.records) : defaultData;
+					} else if (data.content && Array.isArray(data.content)) {
+						console.log("使用分页content字段:", data.content.length);
+						return data.content.length > 0 ? processor(data.content) : defaultData;
+					} else if (data.data && Array.isArray(data.data)) {
+						console.log("使用分页data字段:", data.data.length);
+						return data.data.length > 0 ? processor(data.data) : defaultData;
+					} else if (data.items && Array.isArray(data.items)) {
+						console.log("使用分页items字段:", data.items.length);
+						return data.items.length > 0 ? processor(data.items) : defaultData;
+					}
+					// 没有找到有效字段
+					return defaultData;
+				}
+				
+				// 数据本身是数组
+				return Array.isArray(data) && data.length > 0 ? processor(data) : defaultData;
+			},
 			/**
 			 * 加载数据
 			 */
@@ -327,105 +472,88 @@
 					return null;
 				};
 				
-				// 处理图片URL的函数
-				const processImages = (items) => {
-					if (!items || !Array.isArray(items)) return [];
-					
-					return items.map(item => {
-						if (item) {
-							// 处理图片路径
-							if (item.pic) {
-								item.pic = getFullImageUrl(item.pic);
-							}
-							if (item.logo) {
-								item.logo = getFullImageUrl(item.logo);
-							}
-							if (item.mainImage) {
-								item.mainImage = getFullImageUrl(item.mainImage);
-							}
-						}
-						return item;
-					});
-				};
+				// 处理图片URL的函数 - 使用新的方法
+				const processImages = this.processImages;
 				
 				fetchContent().then(response => {
-					console.log("首页内容完整响应:", response);
+					console.log("首页内容完整响应(JSON):", JSON.stringify(response));
+					
+					// 检查响应是否为null/undefined
+					if (!response) {
+						console.error("首页响应为null或undefined，使用默认数据");
+						this.setDefaultData(defaultData);
+						uni.stopPullDownRefresh();
+						return;
+					}
 					
 					// 根据返回格式调整数据结构
 					let responseData = response;
 					// 兼容可能的响应格式: response, response.data, response.data.data
 					if (response && response.data) {
+						console.log("检测到response.data结构");
 						responseData = response.data;
 					}
 					if (responseData && responseData.data) {
+						console.log("检测到responseData.data结构");
 						responseData = responseData.data;
 					}
 					
 					// 检查响应数据是否正确
-					console.log("处理后的响应数据:", responseData);
+					console.log("处理后的响应数据(JSON):", JSON.stringify(responseData));
 					
 					// 尝试设置数据，如果数据不存在则使用默认数据
 					if (responseData) {
 						// 广告列表
 						const advList = extractField(responseData, fieldMappings.advertiseList) || [];
-						console.log("广告列表:", advList);
-						this.advertiseList = advList.length > 0 ? processImages(advList) : defaultData.advertiseList;
+						console.log("广告列表提取字段:", JSON.stringify(fieldMappings.advertiseList));
+						console.log("广告列表(JSON):", JSON.stringify(advList));
+						this.advertiseList = this.processPageableData(advList, defaultData.advertiseList, processImages);
+						console.log("处理后的广告列表:", this.advertiseList.length);
 						this.swiperLength = this.advertiseList.length;
 						this.titleNViewBackground = this.titleNViewBackgroundList[0];
 						
 						// 品牌列表
 						const brdList = extractField(responseData, fieldMappings.brandList) || [];
-						console.log("品牌列表:", brdList);
-						this.brandList = brdList.length > 0 ? processImages(brdList) : defaultData.brandList;
+						console.log("品牌列表提取字段:", JSON.stringify(fieldMappings.brandList));
+						console.log("品牌列表(JSON):", JSON.stringify(brdList));
+						this.brandList = this.processPageableData(brdList, defaultData.brandList, processImages);
+						console.log("处理后的品牌列表:", this.brandList.length);
 						
 						// 秒杀专区
 						const flashPromo = extractField(responseData, fieldMappings.homeFlashPromotion);
-						console.log("秒杀专区:", flashPromo);
+						console.log("秒杀专区提取字段:", JSON.stringify(fieldMappings.homeFlashPromotion));
+						console.log("秒杀专区(JSON):", JSON.stringify(flashPromo));
 						this.homeFlashPromotion = flashPromo ? flashPromo : defaultData.homeFlashPromotion;
 						if (this.homeFlashPromotion && this.homeFlashPromotion.productList) {
 							this.homeFlashPromotion.productList = processImages(this.homeFlashPromotion.productList);
+							console.log("处理后的秒杀产品列表:", this.homeFlashPromotion.productList.length);
 						}
 						
 						// 新品列表
 						const newList = extractField(responseData, fieldMappings.newProductList) || [];
-						console.log("新品列表:", newList);
-						this.newProductList = newList.length > 0 ? processImages(newList) : defaultData.newProductList;
+						console.log("新品列表提取字段:", JSON.stringify(fieldMappings.newProductList));
+						console.log("新品列表(JSON):", JSON.stringify(newList));
+						this.newProductList = this.processPageableData(newList, defaultData.newProductList, processImages);
+						console.log("处理后的新品列表:", this.newProductList.length);
 						
 						// 热门列表
 						const hotList = extractField(responseData, fieldMappings.hotProductList) || [];
-						console.log("热门列表:", hotList);
-						this.hotProductList = hotList.length > 0 ? processImages(hotList) : defaultData.hotProductList;
+						console.log("热门列表提取字段:", JSON.stringify(fieldMappings.hotProductList));
+						console.log("热门列表(JSON):", JSON.stringify(hotList));
+						this.hotProductList = this.processPageableData(hotList, defaultData.hotProductList, processImages);
+						console.log("处理后的热门列表:", this.hotProductList.length);
 						
 						// 加载推荐列表
-						fetchRecommendProductList(this.recommendParams).then(recommendResponse => {
-							console.log("推荐商品完整响应:", recommendResponse);
-							
-							// 同样兼容不同响应格式
-							let recData = recommendResponse;
-							if (recommendResponse && recommendResponse.data) {
-								recData = recommendResponse.data;
-							}
-							if (recData && recData.data) {
-								recData = recData.data;
-							}
-							
-							console.log("处理后的推荐数据:", recData);
-							
-							// 更新推荐列表
-							if (recData && (Array.isArray(recData) ? recData.length > 0 : true)) {
-								const products = Array.isArray(recData) ? recData : [recData];
-								this.recommendProductList = processImages(products);
-							} else {
-								console.log("使用默认推荐数据");
-							}
-							
+						this.getRecommendProductList().then(() => {
 							uni.stopPullDownRefresh();
 						}).catch(error => {
 							console.error("获取推荐商品失败:", error);
+							this.showDefaultRecommendProducts();
 							uni.stopPullDownRefresh();
 						});
 					} else {
 						console.error("首页数据格式不正确，使用模拟数据:", responseData);
+						this.setDefaultData(defaultData);
 						uni.showToast({
 							title: '使用本地数据',
 							icon: 'none'
@@ -434,6 +562,7 @@
 					}
 				}).catch(error => {
 					console.error("加载首页数据失败，使用模拟数据:", error);
+					this.setDefaultData(defaultData);
 					uni.showToast({
 						title: '使用本地数据',
 						icon: 'none'
@@ -484,6 +613,21 @@
 				uni.navigateTo({
 					url: `/pages/product/hotProductList`
 				})
+			},
+			// 添加设置默认数据的方法
+			setDefaultData(defaultData) {
+				// 确保使用默认模拟数据
+				this.advertiseList = defaultData.advertiseList;
+				this.swiperLength = this.advertiseList.length;
+				this.titleNViewBackground = this.titleNViewBackgroundList[0];
+				
+				this.brandList = defaultData.brandList;
+				this.homeFlashPromotion = defaultData.homeFlashPromotion;
+				this.newProductList = defaultData.newProductList;
+				this.hotProductList = defaultData.hotProductList;
+				this.recommendProductList = defaultData.recommendProductList;
+				
+				console.log("已设置所有默认数据");
 			},
 		},
 		// #ifndef MP
