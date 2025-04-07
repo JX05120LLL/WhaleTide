@@ -170,4 +170,19 @@ public class OrderController {
             return CommonResult.failed("查询支付宝订单状态失败: " + e.getMessage());
         }
     }
+
+    /**
+     * 直接购买商品
+     */
+    @ApiOperation("直接购买商品")
+    @PostMapping("/directBuy")
+    public CommonResult<Long> directBuy(@RequestBody DirectBuyRequest request) {
+        try {
+            Long cartItemId = orderService.directBuy(request);
+            return CommonResult.success(cartItemId, "创建临时购物项成功");
+        } catch (Exception e) {
+            log.error("直接购买商品异常: {}", e.getMessage(), e);
+            return CommonResult.failed("直接购买失败: " + e.getMessage());
+        }
+    }
 } 

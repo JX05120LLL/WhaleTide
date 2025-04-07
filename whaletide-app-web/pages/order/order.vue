@@ -121,7 +121,6 @@
 				this.loadData()
 			}
 			// #endif
-
 		},
 		filters: {
 			formatStatus(status) {

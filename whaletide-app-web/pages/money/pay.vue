@@ -14,7 +14,6 @@
 				</view>
 				<label class="radio">
 					<radio value="" color="#fa436a" :checked='payType == 1' />
-					</radio>
 				</label>
 			</view>
 			<view class="type-item b-b" @click="changePayType(2)">
@@ -24,7 +23,6 @@
 				</view>
 				<label class="radio">
 					<radio value="" color="#fa436a" :checked='payType == 2' />
-					</radio>
 				</label>
 			</view>
 		</view>
@@ -70,16 +68,47 @@
 					}
 					window.location.href = API_BASE_URL+"/alipay/webPay?outTradeNo=" + this.orderInfo.orderSn + "&subject=" + this.orderInfo.receiverName + "的商品订单" + "&totalAmount=" + this.orderInfo.totalAmount
 				}else{
-					payOrderSuccess({
+					// 在非支付宝模式下，显示正在模拟支付的提示
+					uni.showLoading({
+						title: '正在模拟支付...'
+					});
+					
+					// 处理请求数据
+					const payData = {
 						orderId: this.orderId,
 						payType: this.payType
-					}).then(response => {
-						uni.redirectTo({
-							url: '/pages/money/paySuccess'
-						})
-					});
+					};
+					
+					console.log('支付请求数据:', JSON.stringify(payData));
+					
+					try {
+						// 尝试调用后端支付接口
+						const response = await payOrderSuccess(payData);
+						console.log('支付响应:', response);
+						
+						uni.hideLoading();
+						uni.showToast({
+							title: '支付成功',
+							icon: 'success',
+							duration: 1500
+						});
+						
+						// 延迟一下再跳转，让用户看到成功提示
+						setTimeout(() => {
+							uni.redirectTo({
+								url: '/pages/money/paySuccess'
+							});
+						}, 1500);
+					} catch (error) {
+						console.error('支付失败:', error);
+						uni.hideLoading();
+						uni.showToast({
+							title: '支付失败',
+							icon: 'none',
+							duration: 1500
+						});
+					}
 				}
-
 			},
 		}
 	}

@@ -73,8 +73,8 @@ export function payOrderSuccess(data) {
 	return request({
 		method: 'POST',
 		url: '/order/paySuccess',
-		header: {
-			'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+		headers: {
+			'Content-Type': 'application/json; charset=UTF-8'
 		},
 		data: data
 	})
@@ -91,8 +91,8 @@ export function cancelUserOrder(data) {
 	return request({
 		method: 'POST',
 		url: '/order/cancelUserOrder',
-		header: {
-			'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+		headers: {
+			'Content-Type': 'application/json; charset=UTF-8'
 		},
 		data: data
 	})
@@ -102,8 +102,8 @@ export function confirmReceiveOrder(data) {
 	return request({
 		method: 'POST',
 		url: '/order/confirmReceiveOrder',
-		header: {
-			'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+		headers: {
+			'Content-Type': 'application/json; charset=UTF-8'
 		},
 		data: data
 	})
@@ -113,8 +113,8 @@ export function deleteUserOrder(data) {
 	return request({
 		method: 'POST',
 		url: '/order/deleteOrder',
-		header: {
-			'content-type': 'application/x-www-form-urlencoded;charset=utf-8'
+		headers: {
+			'Content-Type': 'application/json; charset=UTF-8'
 		},
 		data: data
 	})
@@ -126,4 +126,29 @@ export function fetchAliapyStatus(params) {
 		url: '/alipay/query',
 		params: params
 	})
+}
+
+/**
+ * 商品直接购买接口
+ * @param {Object} data - 包含商品ID、SKU ID和数量的对象
+ * @returns {Promise} 返回包含临时购物车项ID的Promise
+ */
+export function directBuy(data) {
+	// 确保数据格式正确
+	const requestData = {
+		productId: Number(data.productId) || 0,
+		productSkuId: Number(data.productSkuId) || 0,
+		quantity: Number(data.quantity) || 1
+	};
+	
+	console.log('直接购买请求数据:', JSON.stringify(requestData));
+	
+	return request({
+		method: 'POST',
+		url: '/order/directBuy',
+		data: requestData,
+		headers: {
+			'Content-Type': 'application/json; charset=UTF-8'
+		}
+	});
 }

@@ -27,6 +27,7 @@
 				this.payText = '支付成功';
 				return;
 			}
+			
 			let outTradeNo = options.out_trade_no;
 			console.log(options.out_trade_no);
 			fetchAliapyStatus({outTradeNo:outTradeNo}).then(response => {

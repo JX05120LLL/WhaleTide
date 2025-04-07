@@ -242,6 +242,9 @@
 		productCollectionDetail
 	} from '@/api/memberProductCollection.js';
 	import {
+		directBuy
+	} from '@/api/order.js';
+	import {
 		mapState
 	} from 'vuex';
 	import {
@@ -544,9 +547,68 @@
 				}
 			},
 			buy() {
-				uni.showToast({
-					title: "暂时只支持从购物车下单！",
-					icon: 'none'
+				if (!this.checkForLogin()) {
+					return;
+				}
+				
+				// 检查商品是否存在
+				if (!this.product || !this.product.id) {
+					uni.showToast({
+						title: "商品信息不完整",
+						icon: 'none'
+					});
+					return;
+				}
+				
+				// 获取当前选中的商品SKU
+				const productSkuStock = this.getSkuStock();
+				
+				// 构建直接购买参数对象
+				let buyProduct = {
+					productId: Number(this.product.id),
+					productSkuId: productSkuStock ? Number(productSkuStock.id) : 0,
+					quantity: 1
+				};
+				
+				// 显示加载
+				uni.showLoading({
+					title: '正在准备订单...'
+				});
+				
+				// 调用API创建临时购物项
+				directBuy(buyProduct).then(response => {
+					uni.hideLoading();
+					
+					// 检查响应
+					if (response && response.data) {
+						const cartId = response.data;
+						
+						// 检查是否返回有效的购物车ID
+						if (!cartId) {
+							uni.showToast({
+								title: '创建订单失败，请稍后重试',
+								icon: 'none'
+							});
+							return;
+						}
+						
+						// 跳转到订单创建页面
+						uni.navigateTo({
+							url: `/pages/order/createOrder?cartIds=${cartId}`
+						});
+					} else {
+						uni.showToast({
+							title: '创建订单失败，请稍后重试',
+							icon: 'none'
+						});
+					}
+				}).catch(error => {
+					uni.hideLoading();
+					console.error('直接购买失败:', error);
+					uni.showToast({
+						title: '网络错误，请稍后重试',
+						icon: 'none'
+					});
 				});
 			},
 			stopPrevent() {},

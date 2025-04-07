@@ -769,16 +769,19 @@ public class OrderServiceImpl implements IOrderService {
             throw new RuntimeException("订单不存在");
         }
         
-        // 更新订单状态为已支付
-        order.setStatus(1); // 假设1为已支付状态
-        order.setPayType(request.getPayType());
+        // 当前时间
         LocalDateTime now = LocalDateTime.now();
+        
+        // 1. 更新订单状态为已支付
+        order.setStatus(1); // 状态1为已支付状态
+        order.setPayType(request.getPayType());
         order.setPaymentTime(now);
         order.setUpdateTime(now);
         omsOrdersMapper.updateById(order);
         
-        // 添加订单状态历史
+        // 记录订单状态历史和日志
         saveOrderStatusHistory(order.getId(), 1, "订单支付成功");
+        saveOrderLog(order.getId(), "支付成功", "订单支付成功");
         
         // 记录支付信息
         OmsPayments payment = new OmsPayments();
@@ -787,10 +790,42 @@ public class OrderServiceImpl implements IOrderService {
         payment.setPaymentMethod(request.getPayType());
         payment.setAmount(order.getPayAmount());
         payment.setCreateTime(now);
+        payment.setUserId(order.getUserId()); // 设置用户ID
+        // 生成支付流水号（使用时间戳+随机数）
+        String paymentSn = "PAY" + System.currentTimeMillis() + String.format("%04d", new Random().nextInt(10000));
+        payment.setPaymentSn(paymentSn);
+        payment.setStatus(2); // 设置为支付成功状态
         omsPaymentsMapper.insert(payment);
         
-        // 记录订单日志
-        saveOrderLog(order.getId(), "支付成功", "订单支付成功");
+        // 2. 模拟物流发货过程 - 自动将订单状态设置为已发货（待收货）
+        try {
+            // 更新订单状态为已发货（待收货）
+            order.setStatus(2); // 状态2为已发货状态（待收货）
+            order.setDeliveryTime(LocalDateTime.now()); // 设置发货时间
+            order.setUpdateTime(LocalDateTime.now());
+            omsOrdersMapper.updateById(order);
+            
+            // 记录订单状态历史和日志
+            saveOrderStatusHistory(order.getId(), 2, "商品已发货");
+            saveOrderLog(order.getId(), "商品发货", "商家已发货，等待用户收货");
+            
+            // 模拟创建物流信息
+            OmsOrderDeliveries delivery = new OmsOrderDeliveries();
+            delivery.setOrderId(order.getId());
+            delivery.setOrderSn(order.getOrderSn());
+            delivery.setDeliveryCompany("模拟快递公司");
+            delivery.setDeliverySn("SF" + System.currentTimeMillis());
+            delivery.setDeliveryTime(LocalDateTime.now());
+            delivery.setCreateTime(LocalDateTime.now());
+            delivery.setDeliveryStatus(1); // 已发货状态
+            delivery.setUserId(order.getUserId()); // 设置用户ID
+            omsOrderDeliveriesMapper.insert(delivery);
+            
+            log.info("订单 {} 已自动设置为已发货状态", order.getId());
+        } catch (Exception e) {
+            log.error("模拟发货过程失败", e);
+            // 发货过程失败不影响支付成功的处理
+        }
         
         // 构建响应
         PaySuccessResponse response = new PaySuccessResponse();
@@ -898,5 +933,53 @@ public class OrderServiceImpl implements IOrderService {
             response.setEndTime(Date.from(coupon.getEndTime().atZone(ZoneId.systemDefault()).toInstant()));
             return response;
         }).collect(Collectors.toList());
+    }
+
+    /**
+     * 直接购买商品
+     *
+     * @param request 直接购买请求
+     * @return 临时购物车项ID
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Long directBuy(DirectBuyRequest request) {
+        log.info("直接购买商品: {}", request);
+        
+        // 参数验证
+        if (request == null || request.getProductId() == null || request.getQuantity() == null || request.getQuantity() <= 0) {
+            throw new IllegalArgumentException("商品参数不正确");
+        }
+        
+        // 获取当前用户ID
+        Long userId = getCurrentUserId();
+        
+        // 查询商品信息
+        PmsProducts product = pmsProductsMapper.selectById(request.getProductId());
+        if (product == null) {
+            throw new ProductNotFoundException("商品不存在: " + request.getProductId());
+        }
+        
+        // 创建购物车项
+        OmsCartItems cartItem = new OmsCartItems();
+        cartItem.setProductId(request.getProductId());
+        cartItem.setSkuId(request.getProductSkuId());
+        cartItem.setUserId(userId);
+        cartItem.setQuantity(request.getQuantity());
+        cartItem.setPrice(product.getPrice());
+        cartItem.setProductImage(product.getMainImage()); // 设置商品图片
+        cartItem.setProductName(product.getName());
+        cartItem.setSkuSpecs(""); // 临时商品无规格
+        cartItem.setChecked(1); // 设置为选中状态
+        cartItem.setCreateTime(LocalDateTime.now());
+        cartItem.setUpdateTime(LocalDateTime.now());
+        
+        // 保存购物车项
+        omsCartItemsMapper.insert(cartItem);
+        
+        log.info("直接购买商品成功, cartItemId: {}", cartItem.getId());
+        
+        // 返回购物车项ID
+        return cartItem.getId();
     }
 } 

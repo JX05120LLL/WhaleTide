@@ -81,4 +81,12 @@ public interface IOrderService {
      * @return 支付宝查询响应
      */
     AlipayQueryResponse queryAlipayStatus(AlipayQueryRequest request);
+
+    /**
+     * 直接购买商品
+     *
+     * @param request 直接购买请求
+     * @return 临时购物车项ID
+     */
+    Long directBuy(DirectBuyRequest request);
 } 

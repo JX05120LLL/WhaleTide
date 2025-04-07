@@ -37,6 +37,11 @@ public class OmsOrderDeliveries implements Serializable {
     private Long orderId;
 
     /**
+     * 用户ID
+     */
+    private Long userId;
+
+    /**
      * 订单编号
      */
     private String orderSn;
