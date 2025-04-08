@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ import java.util.List;
 @Slf4j
 @Api(tags = "用户品牌关注接口")
 @RestController("clientBrandAttentionController")
-@RequestMapping("/member/brand/attention")
+@RequestMapping("/member/attention")
 public class BrandAttentionController {
 
     @Autowired
@@ -66,7 +67,7 @@ public class BrandAttentionController {
      * 取消关注品牌
      */
     @RequestMapping("/delete")
-    public CommonResult deleteBrandAttention(@RequestBody Long brandId, @RequestHeader("Authorization") String token) {
+    public CommonResult deleteBrandAttention(@RequestParam Long brandId, @RequestHeader("Authorization") String token) {
         int result = memberService.deleteBrandAttention(userService.getUserInfo(jwtUtil.getUsernameFromToken(token)).getId(), brandId);
 
         if (result > 0) {
@@ -83,8 +84,8 @@ public class BrandAttentionController {
      * 关注品牌列表
      */
     @RequestMapping("/list")
-    public CommonResult<BrandAttentionPageResponse> getBrandAttentionList(@RequestBody Long pageNum,
-                                                                          @RequestBody Long pageSize,
+    public CommonResult<BrandAttentionPageResponse> getBrandAttentionList(@RequestParam(defaultValue = "1") Long pageNum,
+                                                                          @RequestParam(defaultValue = "10") Long pageSize,
                                                                           @RequestHeader("Authorization") String token) {
 
         Page<UmsUserBrandAttentions> userBrandAttentionsList =
@@ -109,11 +110,11 @@ public class BrandAttentionController {
      * 获取品牌详情
      */
     @RequestMapping("/detail")
-    public CommonResult<BrandAttentionResponse> getBrandAttentionDetail(@RequestBody Long brandId,
+    public CommonResult<BrandAttentionResponse> getBrandAttentionDetail(@RequestParam Long brandId,
                                                                         @RequestHeader("Authorization") String token) {
         UmsUserBrandAttentions userBrandAttentions = memberService.getBrandAttentionDetail(brandId, userService.getUserInfo(jwtUtil.getUsernameFromToken(token)).getId());
         if (userBrandAttentions == null) {
-            return CommonResult.failed();
+            return CommonResult.success(null);
         } else {
             BrandAttentionResponse response = getBrandAttentionResponse(userBrandAttentions);
             return CommonResult.success(response);

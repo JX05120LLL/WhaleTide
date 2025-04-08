@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 /**
  * 个人中心相关接口
  */
@@ -100,12 +101,12 @@ public class MemberController {
     }
     /**
      * 上传头像
-     * @param request
+     * @param file 头像文件
      * @return
      */
     @ApiImplicitParam(name = "Authorization", value = "身份认证Token", required = true, paramType = "header")
     @PostMapping("/avatar/upload")
-    public CommonResult<String> avatarUpload(@RequestHeader(value = "Authorization", required = false) String authHeader, @RequestBody AvatarUploadResponse request) {
+    public CommonResult<String> avatarUpload(@RequestHeader(value = "Authorization", required = false) String authHeader, @RequestParam("file") MultipartFile file) {
         try {
             // 验证token有效性
             if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -120,7 +121,7 @@ public class MemberController {
                 return CommonResult.failed("Token验证失败: " + e.getMessage());
             }
             
-            String url = memberService.avatarUpload(request);
+            String url = memberService.avatarUpload(file);
             return CommonResult.success(url);
         } catch (Exception e) {
             return CommonResult.failed(e.getMessage());

@@ -22,7 +22,7 @@
 		<!-- 品牌故事 -->
 		<view class="section-tit">品牌故事</view>
 		<view class="brand-story">
-			<text class="text">{{brand.brandStory}}</text>
+			<text class="text">{{brand.description}}</text>
 		</view>
 		<!-- 相关商品 -->
 		<view class="section-tit">相关商品</view>
@@ -80,8 +80,27 @@
 			this.loaded = true;
 			let id = options.id;
 			getBrandDetail(id).then(response => {
+				if (response.code === 2001) {
+					uni.showToast({
+						title: response.message || '商品不存在',
+						icon: 'none'
+					});
+					setTimeout(() => {
+						uni.navigateBack();
+					}, 1500);
+					return;
+				}
 				this.brand = response.data;
 				this.initBrandAttention();
+			}).catch(error => {
+				console.error('获取品牌详情失败:', error);
+				uni.showToast({
+					title: '获取品牌详情失败，请稍后重试',
+					icon: 'none'
+				});
+				setTimeout(() => {
+					uni.navigateBack();
+				}, 1500);
 			});
 			this.queryParam.brandId = id;
 			this.loadData('refresh');
@@ -187,6 +206,9 @@
 				if(this.hasLogin){
 					brandAttentionDetail({brandId:this.brand.id}).then(response=>{
 						this.favoriteStatus = response.data!=null;
+					}).catch(error => {
+						console.error('获取品牌关注状态失败:', error);
+						this.favoriteStatus = false;
 					});
 				}
 			},
@@ -247,12 +269,15 @@
 		background: #fff;
 		margin-top: 16upx;
 		.image-wrapper {
-			width: 210upx;
-			height: 70upx;
+			width: 120upx;
+			height: 120upx;
 			background: #fff;
+			border-radius: 8upx;
+			overflow: hidden;
 			image{
 				width:100%;
 				height: 100%;
+				object-fit: contain;
 			}
 		}
 
@@ -287,10 +312,14 @@
 		display: flex;
 		padding: 30upx;
 		background: #fff;
+		margin-top: 16upx;
 
 		.text {
-			font-size: $font-sm;
-			color: $font-color-light;
+			font-size: $font-base;
+			color: $font-color-dark;
+			line-height: 1.6;
+			white-space: pre-wrap;
+			word-break: break-all;
 		}
 	}
 

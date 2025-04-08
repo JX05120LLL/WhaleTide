@@ -14,7 +14,7 @@ public interface IBrandAttentionService {
     Page<UmsUserBrandAttentions> getBrandAttentionList(Long userId, Long pageNum, Long pageSize);
 
     //获取品牌关注详情
-    UmsUserBrandAttentions getBrandAttentionDetail(Long userId, Long brandId);
+    UmsUserBrandAttentions getBrandAttentionDetail(Long brandId, Long userId);
 
     //清空用户品牌关注
     int clearBrandAttention(Long userId);

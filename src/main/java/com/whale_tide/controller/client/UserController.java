@@ -10,6 +10,7 @@ import com.whale_tide.service.client.IUserService;
 import com.whale_tide.util.CookieUtil;
 import com.whale_tide.util.JwtUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -106,5 +107,13 @@ public class UserController {
             log.error("用户注册失败: {}", e.getMessage());
             return CommonResult.failed(e.getMessage());
         }
+    }
+
+    @ApiOperation("退出登录")
+    @PostMapping("/logout")
+    public CommonResult logout(HttpServletResponse response) {
+        // 清除cookie中的token
+        CookieUtil.deleteCookie(response, "token");
+        return CommonResult.success(null);
     }
 } 

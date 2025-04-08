@@ -38,6 +38,15 @@
 			}
 		},
 		{
+			"path": "pages/product/search",
+			"style": {
+				"navigationBarTitleText": "搜索",
+				"app-plus": {
+					"titleNView": false
+				}
+			}
+		},
+		{
 			"path": "pages/product/product",
 			"style": {
 				"navigationBarTitleText": "详情展示",

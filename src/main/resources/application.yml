@@ -18,9 +18,7 @@ spring:
     port: 6379 # Redis服务器连接端口
     password: # Redis服务器连接密码（默认为空）
     timeout: 3000ms # 连接超时时间（毫秒）
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
+
 
 token:
   expireHours: 12  # token 过期时间为 12 小时
@@ -51,3 +49,17 @@ logging:
 
 knife4j:
   enable: true
+
+# 文件上传配置
+file:
+  upload:
+    # 文件上传路径（绝对路径）
+    path: D:/uploads
+    # 文件访问URL前缀
+    url-prefix: http://localhost:8085/uploads
+
+# 文件上传大小限制
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB

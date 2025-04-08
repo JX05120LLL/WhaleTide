@@ -50,30 +50,31 @@ public class BrandServiceImpl implements IBrandService {
      */
     @Override
     public BrandDetailResponse getBrandDetail(Long id) {
-        // 根据id拿到商品
-        PmsProducts product = pmsProductsMapper.selectById(id);
-        if (product == null) throw new ProductNotFoundException("商品不存在");
-        // 获得品牌id
-        Long brandId = product.getBrandId();
-        // 根据品牌id查询品牌信息
-        LambdaQueryWrapper<PmsBrands> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(PmsBrands::getId, brandId);
-        PmsBrands brand = brandsMapper.selectOne(queryWrapper);
+        // 直接查询品牌信息
+        PmsBrands brand = brandsMapper.selectById(id);
+        if (brand == null) {
+            throw new BrandNotFoundException("品牌不存在");
+        }
 
-        if (brand == null) throw new BrandNotFoundException("品牌不存在");
+        // 查询该品牌的商品数量
+        LambdaQueryWrapper<PmsProducts> productQuery = new LambdaQueryWrapper<>();
+        productQuery.eq(PmsProducts::getBrandId, id);
+        Long productCount = pmsProductsMapper.selectCount(productQuery);
 
-        //查询商品数量
-        Long l = pmsProductSkusMapper.selectCount(new LambdaQueryWrapper<PmsProductSkus>().eq(PmsProductSkus::getProductId, id));
-        //查询评论数量
-        Long c = commentsMapper.selectCount(new LambdaQueryWrapper<PmsProductComments>().eq(PmsProductComments::getProductId, id));
+        // 查询该品牌的评论数量
+        LambdaQueryWrapper<PmsProductComments> commentQuery = new LambdaQueryWrapper<>();
+        commentQuery.inSql(PmsProductComments::getProductId, 
+            "SELECT id FROM pms_products WHERE brand_id = " + id);
+        Long commentCount = commentsMapper.selectCount(commentQuery);
+
         // 封装品牌详情
         BrandDetailResponse response = new BrandDetailResponse();
         response.setId(brand.getId());
         response.setName(brand.getName());
         response.setLogo(brand.getLogo());
-        response.setBigPic(product.getMainImage());
-        response.setProductCount(l.intValue());
-        response.setProductCommentCount(c.intValue());
+        response.setBigPic(brand.getLogo()); // 如果没有大图，使用logo
+        response.setProductCount(productCount.intValue());
+        response.setProductCommentCount(commentCount.intValue());
         response.setDescription(brand.getDescription());
 
         return response;

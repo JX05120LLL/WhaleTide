@@ -3,7 +3,12 @@
 		<!-- 小程序头部兼容 -->
 		<!-- #ifdef MP -->
 		<view class="mp-search-box">
-			<input class="ser-input" type="text" value="输入关键字搜索" disabled />
+			<input class="ser-input" type="text" v-model="searchKeyword" placeholder="输入关键字搜索" @confirm="handleSearch" @click="navToSearchPage" />
+		</view>
+		<!-- #endif -->
+		<!-- #ifndef MP -->
+		<view class="search-box">
+			<input class="ser-input" type="text" v-model="searchKeyword" placeholder="输入关键字搜索" @confirm="handleSearch" @click="navToSearchPage" />
 		</view>
 		<!-- #endif -->
 
@@ -176,6 +181,7 @@
 	import { getFullImageUrl, extractApiData } from '@/utils/requestUtil.js';
 	import { API_BASE_URL } from '@/utils/appConfig.js';
 	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	import { searchProductList } from '@/api/product.js';
 	export default {
 		components: {
 			uniLoadMore	
@@ -236,7 +242,8 @@
 					pageNum: 1,
 					pageSize: 4
 				},
-				loadingType:'more'
+				loadingType:'more',
+				searchKeyword: ''
 			};
 		},
 		onLoad() {
@@ -629,11 +636,30 @@
 				
 				console.log("已设置所有默认数据");
 			},
+			// 跳转到搜索页面
+			navToSearchPage() {
+				uni.navigateTo({
+					url: '/pages/product/search'
+				});
+			},
+			// 处理搜索
+			handleSearch() {
+				if (!this.searchKeyword) {
+					uni.showToast({
+						title: '请输入搜索关键词',
+						icon: 'none'
+					});
+					return;
+				}
+				uni.navigateTo({
+					url: '/pages/product/search?keyword=' + encodeURIComponent(this.searchKeyword)
+				});
+			},
 		},
 		// #ifndef MP
 		// 标题栏input搜索框点击
 		onNavigationBarSearchInputClicked: async function(e) {
-			this.$api.msg('点击了搜索框');
+			this.navToSearchPage();
 		},
 		//点击导航栏 buttons 时触发
 		onNavigationBarButtonTap(e) {
@@ -711,6 +737,27 @@
 
 	/* #endif */
 
+	/* #ifndef MP */
+	.search-box {
+		position: absolute;
+		left: 0;
+		top: 30upx;
+		z-index: 9999;
+		width: 100%;
+		padding: 0 80upx;
+
+		.ser-input {
+			flex: 1;
+			height: 56upx;
+			line-height: 56upx;
+			text-align: center;
+			font-size: 28upx;
+			color: $font-color-base;
+			border-radius: 20px;
+			background: rgba(255, 255, 255, .6);
+		}
+	}
+	/* #endif */
 
 	page {
 		background: #f5f5f5;

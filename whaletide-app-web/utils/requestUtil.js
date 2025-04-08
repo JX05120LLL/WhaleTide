@@ -7,6 +7,14 @@ window._lastAPIResponse = null;
 const http = new Request()
 
 http.setConfig((config) => { /* 设置全局配置 */
+	console.log('请求配置:', {
+		baseUrl: API_BASE_URL,
+		url: config.url,
+		method: config.method,
+		data: config.data,
+		header: config.header
+	});
+	
 	config.baseUrl = API_BASE_URL /* 根域名不同 */
 	config.header = {
 		...config.header

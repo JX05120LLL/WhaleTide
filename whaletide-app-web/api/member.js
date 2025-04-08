@@ -1,6 +1,7 @@
 import request from '@/utils/requestUtil'
 
 export function memberLogin(data) {
+	console.log('登录请求数据:', data);
 	return request({
 		method: 'POST',
 		url: '/sso/login',

@@ -62,6 +62,7 @@
 	    mapMutations  
 	} from 'vuex';
 	import { updateMemberInfo, uploadAvatar } from '@/api/member.js';
+	import { API_BASE_URL } from '@/utils/appConfig.js';
 	
 	export default {
 		data() {
@@ -135,45 +136,69 @@
 					title: '上传中...'
 				});
 				
-				// 这里应该是上传文件到服务器的逻辑
-				// 实际项目中可能需要调用uni.uploadFile上传文件
-				// 这里直接模拟上传成功，传递base64数据
-				// 实际项目应根据后端接口调整
-				
-				uni.getFileSystemManager().readFile({
+				// 使用uni.uploadFile上传文件
+				uni.uploadFile({
+					url: API_BASE_URL + '/member/avatar/upload',
 					filePath: filePath,
-					encoding: 'base64',
-					success: (res) => {
-						let base64Data = 'data:image/jpeg;base64,' + res.data;
-						// 调用上传头像接口
-						uploadAvatar({
-							avatar: base64Data
-						}).then(response => {
+					name: 'file',
+					header: {
+						'Authorization': uni.getStorageSync('FullAuthorization')
+					},
+					success: (uploadRes) => {
+						try {
+							const response = JSON.parse(uploadRes.data);
 							if(response.code === 200) {
 								// 更新本地存储的用户信息
 								let userInfo = this.userInfo;
 								userInfo.avatar = response.data;
 								this.updateUserInfo(userInfo);
 								
-								uni.showToast({
-									title: '头像上传成功'
+								// 更新数据库中的用户信息
+								updateMemberInfo({
+									avatar: response.data
+								}).then(updateRes => {
+									if(updateRes.code === 200) {
+										uni.showToast({
+											title: '头像上传成功'
+										});
+									} else {
+										uni.showToast({
+											title: updateRes.message || '头像更新失败',
+											icon: 'none'
+										});
+									}
+								}).catch(error => {
+									uni.showToast({
+										title: '头像更新失败',
+										icon: 'none'
+									});
+								}).finally(() => {
+									uni.hideLoading();
 								});
+							} else {
+								uni.showToast({
+									title: response.message || '头像上传失败',
+									icon: 'none'
+								});
+								uni.hideLoading();
 							}
-						}).catch(() => {
+						} catch(e) {
 							uni.showToast({
 								title: '头像上传失败',
 								icon: 'none'
 							});
-						}).finally(() => {
 							uni.hideLoading();
-						});
+						}
 					},
 					fail: () => {
-						uni.hideLoading();
 						uni.showToast({
-							title: '图片读取失败',
+							title: '头像上传失败',
 							icon: 'none'
 						});
+						uni.hideLoading();
+					},
+					complete: () => {
+						// 注意：这里不再调用 hideLoading，因为已经在 success 和 fail 中调用了
 					}
 				});
 			},
@@ -296,6 +321,7 @@
 						});
 					} else {
 						// 没有保存用户名密码，直接跳登录页
+						uni.hideLoading();
 						uni.showModal({
 							title: '登录状态失效',
 							content: '您的登录状态已失效，请重新登录',

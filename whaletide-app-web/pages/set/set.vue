@@ -85,32 +85,61 @@
 				    content: '确定要退出登录么',
 				    success: (e)=>{
 				    	if(e.confirm){
-				    		// 清除所有存储的用户信息和token
-				    		uni.removeStorageSync('Authorization');
-				    		uni.removeStorageSync('username');
-				    		uni.removeStorageSync('password');
-				    		// 清除其他可能存在的信息
-				    		try {
-				    			uni.clearStorageSync();
-				    		} catch(e) {
-				    			console.error('清除缓存失败', e);
-				    		}
-				    		
-				    		// 调用vuex的登出操作
-				    		this.logout();
-				    		
-				    		// 显示提示
-				    		uni.showToast({
-				    			title: '已退出登录',
-				    			icon: 'success'
+				    		// 调用后端登出接口
+				    		uni.request({
+				    			url: 'http://localhost:8085/sso/logout',
+				    			method: 'POST',
+				    			header: {
+				    				'Authorization': uni.getStorageSync('FullAuthorization')
+				    			},
+				    			success: (res) => {
+				    				// 清除所有存储的用户信息和token
+				    				uni.removeStorageSync('Authorization');
+				    				uni.removeStorageSync('FullAuthorization');
+				    				uni.removeStorageSync('username');
+				    				uni.removeStorageSync('password');
+				    				// 清除其他可能存在的信息
+				    				try {
+				    					uni.clearStorageSync();
+				    				} catch(e) {
+				    					console.error('清除缓存失败', e);
+				    				}
+				    				
+				    				// 调用vuex的登出操作
+				    				this.logout();
+				    				
+				    				// 显示提示
+				    				uni.showToast({
+				    					title: '已退出登录',
+				    					icon: 'success'
+				    				});
+				    				
+				    				// 返回首页或登录页
+				    				setTimeout(()=>{
+				    					uni.reLaunch({
+				    						url: '/pages/public/login'
+				    					});
+				    				}, 500);
+				    			},
+				    			fail: (err) => {
+				    				console.error('登出失败:', err);
+				    				// 即使后端登出失败，也执行本地登出操作
+				    				uni.removeStorageSync('Authorization');
+				    				uni.removeStorageSync('FullAuthorization');
+				    				uni.removeStorageSync('username');
+				    				uni.removeStorageSync('password');
+				    				this.logout();
+				    				uni.showToast({
+				    					title: '已退出登录',
+				    					icon: 'success'
+				    				});
+				    				setTimeout(()=>{
+				    					uni.reLaunch({
+				    						url: '/pages/public/login'
+				    					});
+				    				}, 500);
+				    			}
 				    		});
-				    		
-				    		// 返回首页或登录页
-				    		setTimeout(()=>{
-				    			uni.reLaunch({
-				    				url: '/pages/public/login'
-				    			});
-				    		}, 500);
 				    	}
 				    }
 				});

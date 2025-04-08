@@ -1,7 +1,6 @@
 package com.whale_tide.service.client.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.whale_tide.dto.client.member.AvatarUploadResponse;
 import com.whale_tide.dto.client.member.IntegrationDetailResponse;
 import com.whale_tide.dto.client.member.MemberInfoUpdateRequest;
 import com.whale_tide.dto.client.member.PasswordUpdateRequest;
@@ -14,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -97,31 +97,12 @@ public class MemberServiceImpl implements IMemberService {
     }
     /**
      * 个人中心-上传头像
-     * @param request
+     * @param file 头像文件
      * @return
      */
     @Override
-    public String avatarUpload(AvatarUploadResponse request) {
-        // 从请求中获取当前用户ID
-        // 获取当前请求
-        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (attributes != null) {
-            HttpServletRequest req = attributes.getRequest();
-            // 从请求头中获取token
-            String token = req.getHeader("Authorization");
-            if (token != null) {
-                // 使用JwtUtil解析token获取用户名
-                String username = jwtUtil.getUsernameFromToken(token);
-                // 查询用户
-                UmsUsers user = umsUsersMapper.selectOne(Wrappers.<UmsUsers>lambdaQuery().eq(UmsUsers::getUsername, username));
-                // 更新用户头像
-                user.setAvatar(request.getUrl());
-                // 更新用户信息
-                umsUsersMapper.updateById(user);
-                // 返回头像URL
-                return request.getUrl();
-            }
-        }
+    public String avatarUpload(MultipartFile file) {
+        // 待开发
         return null;
     }
     /**

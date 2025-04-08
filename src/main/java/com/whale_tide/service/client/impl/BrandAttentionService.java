@@ -47,7 +47,7 @@ public class BrandAttentionService implements IBrandAttentionService {
     }
 
     @Override
-    public UmsUserBrandAttentions getBrandAttentionDetail(Long userId, Long brandId) {
+    public UmsUserBrandAttentions getBrandAttentionDetail(Long brandId, Long userId) {
         if (brandId == null)
             return null;
 

@@ -4,6 +4,7 @@ import com.whale_tide.dto.client.member.AvatarUploadResponse;
 import com.whale_tide.dto.client.member.IntegrationDetailResponse;
 import com.whale_tide.dto.client.member.MemberInfoUpdateRequest;
 import com.whale_tide.dto.client.member.PasswordUpdateRequest;
+import org.springframework.web.multipart.MultipartFile;
 /**
  * 个人中心服务接口
  */
@@ -20,10 +21,10 @@ public interface IMemberService {
     void PasswordUpdate(PasswordUpdateRequest request);
     /**
      * 上传头像
-     * @param request
+     * @param file 头像文件
      * @return
      */
-    String avatarUpload(AvatarUploadResponse request);
+    String avatarUpload(MultipartFile file);
     /**
      * 获取积分详情
      * @return
