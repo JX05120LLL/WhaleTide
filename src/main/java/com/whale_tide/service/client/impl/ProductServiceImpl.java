@@ -45,6 +45,64 @@ public class ProductServiceImpl implements IProductService {
     private PmsBrandsMapper pmsBrandsMapper;
 
     /**
+     * 获取热门搜索关键词
+     *
+     * @return 热门搜索关键词列表
+     */
+    @Override
+    public List<String> getHotKeywords() {
+        log.info("获取热门搜索关键词");
+        // 返回固定的热门关键词列表
+        List<String> keywords = new ArrayList<>();
+        keywords.add("手机");
+        keywords.add("电脑");
+        keywords.add("相机");
+        keywords.add("手表");
+        keywords.add("耳机");
+        keywords.add("平板");
+        keywords.add("电视");
+        log.info("热门搜索关键词获取成功, 数量:{}", keywords.size());
+        return keywords;
+    }
+
+    /**
+     * 获取搜索建议
+     *
+     * @param keyword 搜索关键词
+     * @return 搜索建议列表
+     */
+    @Override
+    public List<ProductSuggestionResponse> getSuggestions(String keyword) {
+        log.info("获取搜索建议，关键词: {}", keyword);
+        
+        if (StringUtils.isEmpty(keyword)) {
+            return Collections.emptyList();
+        }
+        
+        // 查询包含关键词的商品
+        LambdaQueryWrapper<PmsProducts> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(PmsProducts::getName, keyword);
+        queryWrapper.eq(PmsProducts::getPublishStatus, 1); // 确保商品已上架
+        queryWrapper.orderByDesc(PmsProducts::getSale); // 按销量排序
+        queryWrapper.last("LIMIT 10"); // 最多返回10个建议
+        
+        List<PmsProducts> products = pmsProductsMapper.selectList(queryWrapper);
+        
+        // 转换为建议响应对象
+        List<ProductSuggestionResponse> suggestions = products.stream()
+                .map(product -> {
+                    ProductSuggestionResponse suggestion = new ProductSuggestionResponse();
+                    suggestion.setId(product.getId());
+                    suggestion.setName(product.getName());
+                    return suggestion;
+                })
+                .collect(Collectors.toList());
+        
+        log.info("搜索建议获取成功, 数量: {}", suggestions.size());
+        return suggestions;
+    }
+
+    /**
      * 商品关键词搜索
      *
      * @param request 搜索请求参数

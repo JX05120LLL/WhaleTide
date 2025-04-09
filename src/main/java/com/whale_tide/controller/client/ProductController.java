@@ -119,6 +119,40 @@ public class ProductController {
             return CommonResult.failed("添加商品评论失败: " + e.getMessage());
         }
     }
+    
+    /**
+     * 获取热门搜索关键词
+     */
+    @ApiOperation("获取热门搜索关键词")
+    @GetMapping("/hotKeywords")
+    public CommonResult<List<String>> getHotKeywords() {
+        try {
+            List<String> hotKeywords = productService.getHotKeywords();
+            return CommonResult.success(hotKeywords);
+        } catch (Exception e) {
+            log.error("获取热门搜索关键词异常: {}", e.getMessage(), e);
+            return CommonResult.failed("获取热门搜索关键词失败: " + e.getMessage());
+        }
+    }
+
+    /**
+     * 获取搜索建议
+     * 
+     * @param keyword 关键词
+     * @return 搜索建议列表
+     */
+    @ApiOperation("获取搜索建议")
+    @GetMapping("/suggestions")
+    public CommonResult<List<ProductSuggestionResponse>> getSuggestions(
+            @ApiParam(value = "关键词", required = true) @RequestParam String keyword) {
+        try {
+            List<ProductSuggestionResponse> suggestions = productService.getSuggestions(keyword);
+            return CommonResult.success(suggestions);
+        } catch (Exception e) {
+            log.error("获取搜索建议异常: {}", e.getMessage(), e);
+            return CommonResult.failed("获取搜索建议失败: " + e.getMessage());
+        }
+    }
 }
 
 
