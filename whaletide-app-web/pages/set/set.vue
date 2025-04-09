@@ -154,53 +154,91 @@
 	}
 </script>
 
-<style lang='scss'>
-	page{
-		background: $page-color-base;
+<style lang="scss">
+	page {
+		background: $page-color-light;
 	}
-	.list-cell{
-		display:flex;
-		align-items:baseline;
-		padding: 20upx $page-row-spacing;
-		line-height:60upx;
-		position:relative;
+	
+	.container {
+		padding: 20upx;
+	}
+	
+	.list-cell {
+		display: flex;
+		align-items: center;
+		padding: 24upx 30upx;
+		line-height: 60upx;
+		position: relative;
 		background: #fff;
-		justify-content: center;
-		&.log-out-btn{
-			margin-top: 40upx;
-			.cell-tit{
-				color: $uni-color-primary;
-				text-align: center;
-				margin-right: 0;
-			}
-		}
-		&.cell-hover{
-			background:#fafafa;
-		}
-		&.b-b:after{
+		justify-content: space-between;
+		border-radius: 8upx;
+		margin-bottom: 1upx;
+		box-shadow: 0 2upx 8upx rgba(255, 76, 124, 0.06);
+		transition: all 0.3s;
+		
+		&:after {
+			position: absolute;
+			z-index: 3;
+			right: 0;
+			bottom: 0;
 			left: 30upx;
+			height: 0;
+			content: '';
+			transform: scaleY(.5);
+			border-bottom: 1px solid $border-color-light;
 		}
-		&.m-t{
-			margin-top: 16upx; 
+		
+		&:last-child:after {
+			height: 0;
 		}
-		.cell-more{
-			align-self: baseline;
-			font-size:$font-lg;
-			color:$font-color-light;
-			margin-left:10upx;
+		
+		&.cell-hover {
+			background-color: $pink-lightest;
 		}
-		.cell-tit{
+		
+		.cell-more {
+			align-self: center;
+			font-size: 32upx;
+			color: $font-color-light;
+			margin-left: 10upx;
+		}
+		
+		.cell-tit {
 			flex: 1;
-			font-size: $font-base + 2upx;
+			font-size: 30upx;
 			color: $font-color-dark;
-			margin-right:10upx;
 		}
-		.cell-tip{
-			font-size: $font-base;
+		
+		.cell-tip {
+			font-size: 28upx;
 			color: $font-color-light;
 		}
-		switch{
-			transform: translateX(16upx) scale(.84);
+	}
+	
+	switch {
+		transform: translateX(16upx) scale(.9);
+	}
+	
+	.m-t {
+		margin-top: 20upx;
+	}
+	
+	.log-out-btn {
+		margin-top: 40upx;
+		background: linear-gradient(to right, #FF4C7C, #FF85A2);
+		color: #fff;
+		border-radius: 100upx;
+		font-size: 32upx;
+		padding: 20upx 30upx;
+		text-align: center;
+		font-weight: bold;
+		box-shadow: 0 6upx 16upx rgba(255, 76, 124, 0.2);
+		border: none;
+		
+		.cell-tit {
+			color: #fff;
+			text-align: center;
+			margin: 0 auto;
 		}
 	}
 </style>

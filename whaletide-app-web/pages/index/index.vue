@@ -34,7 +34,7 @@
 				duration="500" 
 				@change="swiperChange">
 				<swiper-item v-for="(item, index) in advertiseList" :key="index" class="carousel-item" @click="navToAdvertisePage(item)">
-					<image :src="item.pic" mode="aspectFill" />
+					<image :src="item.pic" mode="aspectFit" />
 				</swiper-item>
 			</swiper>
 			<!-- 自定义swiper指示器 -->
@@ -246,10 +246,16 @@
 				},
 				newProductList: [{
 					id: 2,
-					name: '新品手机',
-					subTitle: '全新上市',
-					pic: 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png',
+					name: '小米手机',
+					subTitle: '骁龙8处理器 | 6000万像素',
+					pic: 'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/0cf8b19bf9048c6f309e95647a7ffe97.jpg',
 					price: 4999
+				}, {
+					id: 3,
+					name: '华为P60 Pro',
+					subTitle: '超感知徕卡影像 | XMAGE影像',
+					pic: 'https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/phones/p60-pro-white.png',
+					price: 6999
 				}],
 				hotProductList: [{
 					id: 3,
@@ -771,10 +777,11 @@
 		left: 0;
 		width: 100%;
 		z-index: 999;
+		box-shadow: 0 2px 10px rgba(255, 76, 124, 0.2);
 	}
 	
 	.status-bar {
-		background-color: #FF4C7C;
+		background: linear-gradient(to right, #FF4C7C, #FF85A2);
 		width: 100%;
 	}
 	
@@ -782,7 +789,7 @@
 	.custom-search-box {
 		width: 100%;
 		padding: 15upx 30upx;
-		background-color: #FF4C7C;
+		background: linear-gradient(to right, #FF4C7C, #FF85A2);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -791,37 +798,64 @@
 	.search-input-box {
 		flex: 1;
 		height: 70upx;
-		background-color: #FFFFFF;
+		background-color: rgba(255, 255, 255, 0.9);
 		border-radius: 35upx;
 		display: flex;
 		align-items: center;
 		padding: 0 30upx;
 		margin-right: 20upx;
+		box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.8);
 	}
 	
 	.search-icon {
 		font-size: 34upx;
-		color: #909399;
+		color: #FF4C7C;
 		margin-right: 10upx;
 	}
 	
 	.search-placeholder {
 		font-size: 28upx;
-		color: #909399;
+		color: #999;
 	}
 	
 	.message-icon {
 		font-size: 40upx;
 		color: #FFFFFF;
+		text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 	}
 
 	/* 内容区样式 */
 	.container {
 		padding-top: 120upx; /* 为导航栏预留空间 */
+		background-color: #FFF5F8;
+		min-height: 100vh;
+		position: relative;
+		
+		&::before, &::after {
+			content: '';
+			position: absolute;
+			width: 300upx;
+			height: 300upx;
+			border-radius: 50%;
+			z-index: -1;
+		}
+		
+		&::before {
+			background: radial-gradient(rgba(255, 76, 124, 0.1), rgba(255, 76, 124, 0));
+			top: 400upx;
+			left: -100upx;
+		}
+		
+		&::after {
+			background: radial-gradient(rgba(255, 76, 124, 0.08), rgba(255, 76, 124, 0));
+			bottom: 300upx;
+			right: -100upx;
+		}
 	}
 
 	page {
-		background: #f5f5f5;
+		background: #FFF5F8;
 	}
 
 	.m-t {
@@ -831,7 +865,11 @@
 	/* 头部 轮播图 */
 	.carousel-section {
 		position: relative;
-		padding-top: 0; /* 已经在container中设置了padding-top，这里不需要再设置 */
+		padding-top: 0;
+		margin: 20upx;
+		border-radius: 16upx;
+		overflow: hidden;
+		box-shadow: 0 8px 20px rgba(255, 76, 124, 0.15);
 
 		.titleNview-placing {
 			height: 0; /* 不再需要为系统导航栏预留空间 */
@@ -846,6 +884,7 @@
 			width: 100%;
 			height: 426upx;
 			transition: .4s;
+			background: linear-gradient(to right, #FF4C7C, #FF85A2) !important;
 		}
 	}
 
@@ -856,14 +895,14 @@
 		.carousel-item {
 			width: 100%;
 			height: 100%;
-			padding: 0 28upx;
+			padding: 0;
 			overflow: hidden;
 		}
 
 		image {
 			width: 100%;
 			height: 100%;
-			border-radius: 10upx;
+			border-radius: 0;
 		}
 	}
 
@@ -906,6 +945,9 @@
 		flex-wrap: wrap;
 		padding: 30upx 22upx;
 		background: #fff;
+		margin: 20upx;
+		border-radius: 16upx;
+		box-shadow: 0 8px 16upx rgba(255, 76, 124, 0.12);
 
 		.cate-item {
 			display: flex;
@@ -915,14 +957,20 @@
 			color: $font-color-dark;
 		}
 
-		/* 原图标颜色太深,不想改图了,所以加了透明度 */
 		image {
-			width: 88upx;
-			height: 88upx;
+			width: 90upx;
+			height: 90upx;
 			margin-bottom: 14upx;
 			border-radius: 50%;
-			opacity: .7;
-			box-shadow: 4upx 4upx 20upx rgba(250, 67, 106, 0.3);
+			opacity: .9;
+			box-shadow: 0 6upx 16upx rgba(255, 76, 124, 0.35);
+			transition: all 0.3s;
+			border: 2px solid rgba(255, 76, 124, 0.1);
+			
+			&:hover {
+				transform: translateY(-5upx) scale(1.05);
+				box-shadow: 0 10upx 26upx rgba(255, 76, 124, 0.5);
+			}
 		}
 	}
 
@@ -940,93 +988,102 @@
 
 	/* 秒杀专区 */
 	.seckill-section {
-		padding: 4upx 30upx 24upx;
+		padding: 20upx;
 		background: #fff;
-
-		.s-header {
-			display: flex;
-			align-items: center;
-			height: 92upx;
-			line-height: 1;
-
-			.s-img {
-				width: 140upx;
-				height: 30upx;
-			}
-
-			.tip {
-				font-size: $font-base;
-				color: $font-color-light;
-				margin: 0 20upx 0 40upx;
-			}
-
-			.timer {
-				display: inline-block;
-				width: 40upx;
-				height: 36upx;
-				text-align: center;
-				line-height: 36upx;
-				margin-right: 14upx;
-				font-size: $font-sm+2upx;
-				color: #fff;
-				border-radius: 2px;
-				background: rgba(0, 0, 0, .8);
-			}
-
-			.icon-you {
-				font-size: $font-lg;
-				color: $font-color-light;
-				flex: 1;
-				text-align: right;
-			}
-		}
-
-		.floor-list {
+		border-radius: 16upx;
+		box-shadow: 0 8upx 20upx rgba(255, 76, 124, 0.12);
+		margin: 20upx;
+		
+		.bd {
+			width: 100%;
 			white-space: nowrap;
 		}
-
+		
+		.floor-list {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			padding: 10upx 0;
+		}
+		
 		.scoll-wrapper {
+			padding: 10upx 0;
 			display: flex;
 			align-items: flex-start;
-		}
-
-		.floor-item {
-			width: 300upx;
-			margin-right: 20upx;
-			font-size: $font-sm+2upx;
-			color: $font-color-dark;
-			line-height: 1.8;
-
-			image {
+			
+			.floor-item {
 				width: 300upx;
-				height: 300upx;
-				border-radius: 6upx;
+				height: 430upx;
+				margin-left: 30upx;
+				display: flex;
+				flex-direction: column;
+				padding: 15upx;
+				border-radius: 16upx;
+				background: #ffffff;
+				box-shadow: 0 8upx 16upx rgba(255, 76, 124, 0.08);
+				transition: all 0.3s;
+				border: 1px solid rgba(255, 76, 124, 0.05);
+				
+				&:hover {
+					box-shadow: 0 12upx 24upx rgba(255, 76, 124, 0.2);
+					transform: translateY(-8upx);
+					border-color: rgba(255, 76, 124, 0.1);
+				}
+				
+				image {
+					width: 270upx;
+					height: 270upx;
+					border-radius: 12upx;
+					object-fit: cover;
+				}
+				
+				.price {
+					color: #FF4C7C;
+					font-weight: bold;
+					padding: 10upx 20upx;
+					font-size: 32upx;
+					background: linear-gradient(to right, #FF4C7C, #FF85A2);
+					-webkit-background-clip: text;
+					-webkit-text-fill-color: transparent;
+				}
+				
+				.title {
+					padding: 10upx 20upx 0;
+					font-size: 28upx;
+					font-weight: bold;
+				}
+				
+				.title2 {
+					font-size: $font-sm;
+					color: $font-color-light;
+					line-height: 40upx;
+					padding: 0 20upx 20upx;
+				}
 			}
-
-			.price {
-				color: $uni-color-primary;
-			}
-		}
-
-		.title2 {
-			font-size: $font-sm;
-			color: $font-color-light;
-			line-height: 40upx;
 		}
 	}
 
+	/* 通用标题栏样式 */
 	.f-header {
 		display: flex;
 		align-items: center;
-		height: 140upx;
+		height: 120upx;
 		padding: 6upx 30upx 8upx;
 		background: #fff;
+		margin: 20upx 20upx 0;
+		border-radius: 16upx 16upx 0 0;
+		box-shadow: 0 4px 16upx rgba(255, 76, 124, 0.1);
+		border-bottom: 2px solid rgba(255, 76, 124, 0.1);
 
 		image {
 			flex-shrink: 0;
-			width: 80upx;
-			height: 80upx;
+			width: 70upx;
+			height: 70upx;
 			margin-right: 20upx;
+			border-radius: 50%;
+			border: 2px solid rgba(255, 76, 124, 0.1);
+			padding: 5upx;
+			background: rgba(255, 76, 124, 0.05);
 		}
 
 		.tit-box {
@@ -1037,8 +1094,10 @@
 
 		.tit {
 			font-size: $font-lg + 2upx;
-			color: $font-color-dark;
-			line-height: 1.3;
+			background: linear-gradient(to right, #FF4C7C, #FF85A2);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			font-weight: bold;
 		}
 
 		.tit2 {
@@ -1047,222 +1106,292 @@
 		}
 
 		.icon-you {
-			font-size: $font-lg +2upx;
-			color: $font-color-light;
-		}
-
-		.timer {
-			display: inline-block;
-			width: 40upx;
-			height: 36upx;
-			text-align: center;
-			line-height: 36upx;
-			margin-right: 14upx;
-			font-size: $font-sm+2upx;
-			color: #fff;
-			border-radius: 2px;
-			background: rgba(0, 0, 0, .8);
+			font-size: $font-lg + 2upx;
+			color: #FF4C7C;
 		}
 	}
 
 	/* 分类推荐楼层 */
-	.hot-floor {
-		width: 100%;
-		overflow: hidden;
-		margin-bottom: 20upx;
-
-		.floor-img-box {
-			width: 100%;
-			height: 320upx;
-			position: relative;
-
-			&:after {
-				content: '';
-				position: absolute;
-				left: 0;
-				top: 0;
-				width: 100%;
-				height: 100%;
-				background: linear-gradient(rgba(255, 255, 255, .06) 30%, #f8f8f8);
-			}
-		}
-
-		.floor-img {
-			width: 100%;
-			height: 100%;
-		}
-
-		.floor-list {
-			white-space: nowrap;
-			padding: 20upx;
-			padding-right: 50upx;
-			border-radius: 6upx;
-			margin-top: -140upx;
-			margin-left: 30upx;
-			background: #fff;
-			box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
-			position: relative;
-			z-index: 1;
-		}
-
-		.scoll-wrapper {
-			display: flex;
-			align-items: flex-start;
-		}
-
-		.floor-item {
-			width: 180upx;
-			margin-right: 20upx;
-			font-size: $font-sm+2upx;
-			color: $font-color-dark;
-			line-height: 1.8;
-
-			image {
-				width: 180upx;
-				height: 180upx;
-				border-radius: 6upx;
-			}
-
-			.price {
-				color: $uni-color-primary;
-			}
-		}
-
-		.more {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			flex-direction: column;
-			flex-shrink: 0;
-			width: 180upx;
-			height: 180upx;
-			border-radius: 6upx;
-			background: #f3f3f3;
-			font-size: $font-base;
-			color: $font-color-light;
-
-			text:first-child {
-				margin-bottom: 4upx;
-			}
-		}
-	}
-
-	/* 猜你喜欢 */
-	.guess-section {
-		display: flex;
-		flex-wrap: wrap;
-		padding: 0 30upx;
-		background: #fff;
-
-		.guess-item {
-			display: flex;
-			flex-direction: column;
-			width: 48%;
-			padding-bottom: 40upx;
-
-			&:nth-child(2n+1) {
-				margin-right: 4%;
-			}
-		}
-
-		.image-wrapper {
-			width: 100%;
-			height: 330upx;
-			border-radius: 3px;
-			overflow: hidden;
-
-			image {
-				width: 100%;
-				height: 100%;
-				opacity: 1;
-			}
-		}
-		
-		.image-wrapper-brand {
-			width: 100%;
-			height: 150upx;
-			border-radius: 3px;
-			overflow: hidden;
-		
-			image {
-				width: 100%;
-				height: 100%;
-				opacity: 1;
-			}
-		}
-
-		.title {
-			font-size: $font-lg;
-			color: $font-color-dark;
-			line-height: 80upx;
-		}
-
-		.title2 {
-			font-size: $font-sm;
-			color: $font-color-light;
-			line-height: 40upx;
-		}
-
-		.price {
-			font-size: $font-lg;
-			color: $uni-color-primary;
-			line-height: 1;
-		}
-	}
-
 	.hot-section {
 		display: flex;
 		flex-wrap: wrap;
-		padding: 0 30upx;
+		padding: 10upx 20upx 30upx;
 		background: #fff;
+		margin: 0 20upx 20upx;
+		border-radius: 0 0 16upx 16upx;
+		box-shadow: 0 8px 20upx rgba(255, 76, 124, 0.1);
 
 		.guess-item {
 			display: flex;
 			flex-direction: row;
 			width: 100%;
-			padding-bottom: 40upx;
+			padding: 20upx;
+			margin-bottom: 20upx;
+			background: #fff;
+			border-radius: 16upx;
+			box-shadow: 0 8upx 16upx rgba(255, 76, 124, 0.08);
+			transition: all 0.3s;
+			border: 1px solid rgba(255, 76, 124, 0.05);
+			
+			&:hover {
+				transform: translateY(-8upx);
+				box-shadow: 0 12upx 24upx rgba(255, 76, 124, 0.16);
+				border-color: rgba(255, 76, 124, 0.1);
+			}
 		}
 
 		.image-wrapper {
 			width: 30%;
-			height: 250upx;
-			border-radius: 3px;
+			height: 220upx;
+			border-radius: 16upx;
 			overflow: hidden;
 
 			image {
 				width: 100%;
 				height: 100%;
 				opacity: 1;
+				transition: all 0.4s;
+				
+				&:hover {
+					transform: scale(1.08);
+				}
 			}
 		}
 
 		.title {
 			font-size: $font-lg;
 			color: $font-color-dark;
-			line-height: 80upx;
+			line-height: 60upx;
+			font-weight: bold;
 		}
 
 		.title2 {
 			font-size: $font-sm;
 			color: $font-color-light;
 			line-height: 40upx;
-			height: 80upx;
+			max-height: 80upx;
 			overflow: hidden;
 			text-overflow: ellipsis;
-			display: block;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
 		}
 
 		.price {
 			font-size: $font-lg;
-			color: $uni-color-primary;
-			line-height: 80upx;
+			background: linear-gradient(to right, #FF4C7C, #FF85A2);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			line-height: 60upx;
+			font-weight: bold;
 		}
 
 		.txt {
 			width: 70%;
 			display: flex;
 			flex-direction: column;
-			padding-left: 40upx;
+			padding-left: 30upx;
+			justify-content: space-between;
+			position: relative;
+			
+			&::after {
+				content: '';
+				position: absolute;
+				bottom: 10upx;
+				left: 30upx;
+				width: 80upx;
+				height: 6upx;
+				background: linear-gradient(to right, #FF4C7C, #FF85A2);
+				border-radius: 3upx;
+			}
+		}
+	}
+	
+	/* 品牌专区 */
+	.guess-section .image-wrapper-brand {
+		width: 100%;
+		height: 150upx;
+		border-radius: 16upx;
+		overflow: hidden;
+		box-shadow: 0 6upx 16upx rgba(255, 76, 124, 0.1);
+		border: 1px solid rgba(255, 76, 124, 0.05);
+		transition: all 0.3s;
+		
+		&:hover {
+			transform: translateY(-5upx);
+			box-shadow: 0 10upx 20upx rgba(255, 76, 124, 0.2);
+		}
+		
+		image {
+			width: 100%;
+			height: 100%;
+			opacity: 1;
+			transition: all 0.4s;
+			
+			&:hover {
+				transform: scale(1.08);
+			}
+		}
+	}
+	
+	/* 秒杀专区的计时器 */
+	.timer {
+		display: inline-block;
+		width: 40upx;
+		height: 36upx;
+		text-align: center;
+		line-height: 36upx;
+		margin-right: 8upx;
+		font-size: $font-sm+2upx;
+		color: #fff;
+		border-radius: 6upx;
+		background: linear-gradient(to right, #FF4C7C, #FF85A2);
+		box-shadow: 0 4px 8upx rgba(255, 76, 124, 0.3);
+	}
+
+	/* 猜你喜欢 */
+	.guess-section {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 10upx 20upx 30upx;
+		background: #fff;
+		margin: 0 20upx 20upx;
+		border-radius: 0 0 16upx 16upx;
+		box-shadow: 0 8px 20upx rgba(255, 76, 124, 0.1);
+
+		.guess-item {
+			display: flex;
+			flex-direction: column;
+			width: 48%;
+			padding-bottom: 20upx;
+			background: #fff;
+			margin-top: 20upx;
+			border-radius: 16upx;
+			overflow: hidden;
+			box-shadow: 0 8upx 16upx rgba(255, 76, 124, 0.08);
+			transition: all 0.3s;
+			border: 1px solid rgba(255, 76, 124, 0.05);
+
+			&:nth-child(2n+1) {
+				margin-right: 4%;
+			}
+			
+			&:hover {
+				transform: translateY(-8upx);
+				box-shadow: 0 12upx 24upx rgba(255, 76, 124, 0.16);
+				border-color: rgba(255, 76, 124, 0.1);
+			}
+		}
+
+		.image-wrapper {
+			width: 100%;
+			height: 330upx;
+			border-radius: 0;
+			overflow: hidden;
+			position: relative;
+			
+			&::after {
+				content: '';
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				width: 100%;
+				height: 60upx;
+				background: linear-gradient(to top, rgba(255, 76, 124, 0.06), transparent);
+			}
+
+			image {
+				width: 100%;
+				height: 100%;
+				opacity: 1;
+				transition: all 0.4s;
+				
+				&:hover {
+					transform: scale(1.08);
+				}
+			}
+		}
+		
+		.title {
+			font-size: $font-lg;
+			color: $font-color-dark;
+			line-height: 80upx;
+			padding: 0 20upx;
+		}
+
+		.title2 {
+			font-size: $font-sm;
+			color: $font-color-light;
+			padding: 0 20upx;
+		}
+
+		.price {
+			font-size: $font-lg;
+			background: linear-gradient(to right, #FF4C7C, #FF85A2);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			line-height: 1;
+			padding: 20upx;
+			font-weight: bold;
+		}
+	}
+
+	/* 动画淡入效果 */
+	@keyframes fadeIn {
+		from { opacity: 0; transform: translateY(20upx); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+
+	.f-header {
+		animation: fadeIn 0.8s ease-out;
+	}
+
+	.seckill-section, .cate-section, .carousel-section {
+		animation: fadeIn 0.8s ease-out;
+	}
+
+	.guess-section, .hot-section {
+		animation: fadeIn 0.8s ease-out 0.2s backwards;
+	}
+
+	/* 标题装饰 */
+	.f-header .tit {
+		position: relative;
+		
+		&::after {
+			content: '';
+			position: absolute;
+			bottom: -6upx;
+			left: 0;
+			width: 40upx;
+			height: 4upx;
+			background: linear-gradient(to right, #FF4C7C, transparent);
+			border-radius: 2upx;
+		}
+	}
+
+	/* 卡片阴影样式美化 */
+	.floor-item, .guess-item, .cate-item image {
+		position: relative;
+		overflow: visible;
+		
+		&::before {
+			content: '';
+			position: absolute;
+			bottom: -8upx;
+			left: 10%;
+			width: 80%;
+			height: 20upx;
+			background: radial-gradient(rgba(255, 76, 124, 0.3), rgba(255, 76, 124, 0));
+			border-radius: 50%;
+			z-index: -1;
+			opacity: 0;
+			transition: opacity 0.3s;
+		}
+		
+		&:hover::before {
+			opacity: 0.5;
 		}
 	}
 </style>
+

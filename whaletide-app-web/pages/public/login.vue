@@ -142,27 +142,30 @@
 	}
 </script>
 
-<style lang='scss'>
+<style lang="scss">
 	page {
-		background: #fff;
+		background: #FFF5F8;
 	}
-
+	
 	.container {
 		padding-top: 115px;
 		position: relative;
 		width: 100vw;
 		height: 100vh;
 		overflow: hidden;
-		background: #fff;
+		background: linear-gradient(170deg, #FFF5F8 0%, #FFF 60%);
 	}
-
+	
 	.wrapper {
 		position: relative;
 		z-index: 90;
 		background: #fff;
 		padding-bottom: 40upx;
+		border-radius: 20upx;
+		box-shadow: 0 10upx 30upx rgba(255, 76, 124, 0.1);
+		margin: 0 30upx;
 	}
-
+	
 	.back-btn {
 		position: absolute;
 		left: 40upx;
@@ -170,147 +173,153 @@
 		padding-top: var(--status-bar-height);
 		top: 40upx;
 		font-size: 40upx;
-		color: $font-color-dark;
+		color: #FF4C7C;
 	}
-
+	
 	.left-top-sign {
 		font-size: 120upx;
-		color: $page-color-base;
+		color: #FF4C7C;
 		position: relative;
 		left: -16upx;
+		font-weight: bold;
+		opacity: 0.1;
+		text-shadow: 0 5upx 10upx rgba(255, 76, 124, 0.3);
 	}
-
+	
 	.right-top-sign {
 		position: absolute;
 		top: 80upx;
 		right: -30upx;
 		z-index: 95;
-
-		&:before,
-		&:after {
-			display: block;
-			content: "";
-			width: 400upx;
-			height: 80upx;
-			background: #b4f3e2;
-		}
-
-		&:before {
-			transform: rotate(50deg);
-			border-radius: 0 50px 0 0;
-		}
-
-		&:after {
-			position: absolute;
-			right: -198upx;
-			top: 0;
-			transform: rotate(-50deg);
-			border-radius: 50px 0 0 0;
-			/* background: pink; */
-		}
+		width: 200upx;
+		height: 200upx;
+		border-radius: 50%;
+		background: linear-gradient(145deg, #FF85A2 0%, #FF4C7C 80%);
+		box-shadow: 0 10upx 30upx rgba(255, 76, 124, 0.2);
+		opacity: 0.8;
 	}
-
+	
 	.left-bottom-sign {
 		position: absolute;
-		left: -270upx;
-		bottom: -320upx;
-		border: 100upx solid #d0d1fd;
-		border-radius: 50%;
-		padding: 180upx;
+		left: -5upx;
+		bottom: -40upx;
+		z-index: 95;
+		width: 140upx;
+		height: 140upx;
+		border-radius: 40upx;
+		background: linear-gradient(45deg, #FF85A2 0%, #FF4C7C 80%);
+		transform: rotate(45deg);
+		box-shadow: 0 10upx 30upx rgba(255, 76, 124, 0.2);
+		opacity: 0.8;
 	}
-
+	
 	.welcome {
 		position: relative;
 		left: 50upx;
 		top: -90upx;
 		font-size: 46upx;
-		color: #555;
-		text-shadow: 1px 0px 1px rgba(0, 0, 0, .3);
+		color: #FF4C7C;
+		text-shadow: 1px 0px 1px rgba(255, 76, 124, 0.3);
+		font-weight: bold;
 	}
-
+	
 	.input-content {
 		padding: 0 60upx;
 	}
-
+	
 	.input-item {
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
 		justify-content: center;
 		padding: 0 30upx;
-		background: $page-color-light;
+		background: #FFF5F8;
 		height: 120upx;
-		border-radius: 4px;
+		border-radius: 10upx;
 		margin-bottom: 50upx;
-
+		box-shadow: 0 4upx 16upx rgba(255, 76, 124, 0.08);
+		transition: all 0.3s;
+		
+		&:hover {
+			box-shadow: 0 8upx 20upx rgba(255, 76, 124, 0.15);
+		}
+		
 		&:last-child {
 			margin-bottom: 0;
 		}
-
+		
 		.tit {
 			height: 50upx;
 			line-height: 56upx;
-			font-size: $font-sm+2upx;
-			color: $font-color-base;
+			font-size: 30upx;
+			color: #606266;
 		}
-
+		
 		input {
 			height: 60upx;
-			font-size: $font-base + 2upx;
-			color: $font-color-dark;
+			font-size: 30upx;
+			color: #303133;
 			width: 100%;
 		}
 	}
-
+	
 	.confirm-btn {
-		width: 630upx;
-		height: 76upx;
-		line-height: 76upx;
-		border-radius: 50px;
-		margin-top: 70upx;
-		background: $uni-color-primary;
+		width: 570upx;
+		height: 100upx;
+		line-height: 100upx;
+		border-radius: 50upx;
+		margin: 70upx auto 40upx;
+		font-size: 32upx;
 		color: #fff;
-		font-size: $font-lg;
-
-		&:after {
-			border-radius: 100px;
+		background: linear-gradient(to right, #FF4C7C, #FF85A2);
+		box-shadow: 0 8upx 20upx rgba(255, 76, 124, 0.3);
+		transition: all 0.3s;
+		
+		&:active {
+			transform: translateY(3upx);
+			box-shadow: 0 4upx 10upx rgba(255, 76, 124, 0.3);
 		}
 	}
 	
 	.confirm-btn2 {
-		width: 630upx;
-		height: 76upx;
-		line-height: 76upx;
-		border-radius: 50px;
-		margin-top: 40upx;
-		background: $uni-color-primary;
-		color: #fff;
-		font-size: $font-lg;
-	
-		&:after {
-			border-radius: 100px;
+		width: 570upx;
+		height: 100upx;
+		line-height: 100upx;
+		border-radius: 50upx;
+		margin: 70upx auto;
+		font-size: 32upx;
+		color: #FF4C7C;
+		background: transparent;
+		border: 1px solid #FF4C7C;
+		box-shadow: 0 4upx 10upx rgba(255, 76, 124, 0.1);
+		transition: all 0.3s;
+		
+		&:active {
+			transform: translateY(3upx);
+			background: rgba(255, 76, 124, 0.05);
 		}
 	}
-
+	
 	.forget-section {
-		font-size: $font-sm+2upx;
-		color: $font-color-spec;
+		font-size: 28upx;
+		color: #FF4C7C;
 		text-align: center;
 		margin-top: 40upx;
 	}
-
+	
 	.register-section {
 		position: absolute;
 		left: 0;
 		bottom: 50upx;
 		width: 100%;
-		font-size: $font-sm+2upx;
-		color: $font-color-base;
+		font-size: 28upx;
+		color: #606266;
 		text-align: center;
-
+		
 		text {
-			color: $font-color-spec;
+			color: #FF4C7C;
 			margin-left: 10upx;
+			font-weight: bold;
 		}
 	}
 </style>

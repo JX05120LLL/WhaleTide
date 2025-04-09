@@ -255,13 +255,13 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "鲸浪商城",
+		"navigationBarTitleText": "WhaleTide",
 		"navigationBarBackgroundColor": "#FF4C7C",
-		"backgroundColor": "#f8f8f8"
+		"backgroundColor": "#FFF5F8"
 	},
 	"tabBar": {
-		"color": "#C0C4CC",
-		"selectedColor": "#fa436a",
+		"color": "#909399",
+		"selectedColor": "#FF4C7C",
 		"borderStyle": "black",
 		"backgroundColor": "#ffffff",
 		"list": [{

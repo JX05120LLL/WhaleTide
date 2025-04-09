@@ -334,10 +334,6 @@
 		content: "\e617";
 	}
 
-
-
-
-
 	view,
 	scroll-view,
 	swiper,
@@ -447,5 +443,116 @@
 
 	.placeholder {
 		color: #999999;
+	}
+
+	/* 全局粉色主题样式 */
+	/* 应用于所有页面 */
+	
+	/* 背景色 */
+	page {
+		background-color: #FFF5F8;
+		color: #303133;
+	}
+	
+	/* 按钮样式 */
+	button {
+		&.primary-btn {
+			background: linear-gradient(to right, #FF4C7C, #FF85A2);
+			color: #fff;
+			border-radius: 50upx;
+			font-weight: bold;
+			box-shadow: 0 6upx 16upx rgba(255, 76, 124, 0.25);
+			border: none;
+			
+			&:after {
+				border: none;
+			}
+			
+			&:active {
+				transform: translateY(3upx);
+				box-shadow: 0 3upx 8upx rgba(255, 76, 124, 0.25);
+			}
+		}
+	}
+	
+	/* 通用卡片样式 */
+	.common-card {
+		background: #fff;
+		border-radius: 16upx;
+		margin: 20upx;
+		padding: 30upx;
+		box-shadow: 0 4upx 12upx rgba(255, 76, 124, 0.1);
+		border: 1px solid rgba(255, 76, 124, 0.05);
+		
+		.card-title {
+			font-size: 32upx;
+			color: #303133;
+			font-weight: bold;
+			margin-bottom: 20upx;
+			position: relative;
+			
+			&::after {
+				content: '';
+				position: absolute;
+				bottom: -8upx;
+				left: 0;
+				width: 40upx;
+				height: 4upx;
+				background: linear-gradient(to right, #FF4C7C, #FF85A2);
+				border-radius: 2upx;
+			}
+		}
+	}
+	
+	/* 通用列表样式 */
+	.list-cell {
+		position: relative;
+		display: flex;
+		align-items: center;
+		padding: 20upx 30upx;
+		line-height: 60upx;
+		background: #fff;
+		
+		&:after {
+			position: absolute;
+			z-index: 3;
+			right: 0;
+			bottom: 0;
+			left: 30upx;
+			height: 0;
+			content: '';
+			transform: scaleY(.5);
+			border-bottom: 1px solid $border-color-base;
+		}
+		
+		&:hover {
+			background-color: rgba(255, 76, 124, 0.05);
+		}
+	}
+	
+	/* 粉色价格文字 */
+	.price-text {
+		font-size: 32upx;
+		font-weight: bold;
+		background: linear-gradient(to right, #FF4C7C, #FF85A2);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	
+	/* 动画效果 */
+	@keyframes fadeIn {
+		from { opacity: 0; transform: translateY(20upx); }
+		to { opacity: 1; transform: translateY(0); }
+	}
+	
+	.fade-in {
+		animation: fadeIn 0.8s ease-out;
+	}
+	
+	/* 输入框样式 */
+	input {
+		&:focus {
+			border-color: #FF4C7C !important;
+		}
 	}
 </style>
