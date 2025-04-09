@@ -108,7 +108,7 @@
 				}
 			};
 		},
-		onLoad() {
+		onLoad(options) {
 			this.loadHistory();
 			this.loadHotKeywords();
 		},

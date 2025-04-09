@@ -1,26 +1,40 @@
 <template>
 	<view class="container">
+		<!-- 自定义导航栏 -->
+		<view class="custom-navbar">
+			<!-- 状态栏占位 -->
+			<view class="status-bar" :style="{ height: statusBarHeight + 'px' }"></view>
+			<!-- 自定义搜索框 -->
+			<view class="custom-search-box" @click="navToSearchPage">
+				<view class="search-input-box">
+					<text class="search-icon">🔍</text>
+					<text class="search-placeholder">请输入商品 如：手机</text>
+				</view>
+				<text class="message-icon" @click.stop="navToMessagePage">💬</text>
+			</view>
+		</view>
+		
 		<!-- 小程序头部兼容 -->
 		<!-- #ifdef MP -->
 		<view class="mp-search-box">
 			<input class="ser-input" type="text" v-model="searchKeyword" placeholder="输入关键字搜索" @confirm="handleSearch" @click="navToSearchPage" />
 		</view>
 		<!-- #endif -->
-		<!-- #ifndef MP -->
-		<view class="search-box">
-			<input class="ser-input" type="text" v-model="searchKeyword" placeholder="输入关键字搜索" @confirm="handleSearch" @click="navToSearchPage" />
-		</view>
-		<!-- #endif -->
-
+		
 		<!-- 头部轮播 -->
 		<view class="carousel-section">
 			<!-- 标题栏和状态栏占位符 -->
 			<view class="titleNview-placing"></view>
 			<!-- 背景色区域 -->
 			<view class="titleNview-background" :style="{backgroundColor:titleNViewBackground}"></view>
-			<swiper class="carousel" circular @change="swiperChange">
+			<swiper class="carousel" 
+				circular 
+				autoplay 
+				interval="3000" 
+				duration="500" 
+				@change="swiperChange">
 				<swiper-item v-for="(item, index) in advertiseList" :key="index" class="carousel-item" @click="navToAdvertisePage(item)">
-					<image :src="item.pic" />
+					<image :src="item.pic" mode="aspectFill" />
 				</swiper-item>
 			</swiper>
 			<!-- 自定义swiper指示器 -->
@@ -188,6 +202,7 @@
 		},
 		data() {
 			return {
+				statusBarHeight: 0,
 				apiBaseUrl: API_BASE_URL,
 				titleNViewBackground: '',
 				titleNViewBackgroundList: ['rgb(203, 87, 60)', 'rgb(205, 215, 218)'],
@@ -199,6 +214,18 @@
 					id: 1,
 					name: '广告1',
 					pic: 'https://img14.360buyimg.com/n0/jfs/t1/183854/8/33432/254558/63fe2d27Fd5c97f68/d2134c38c30c9789.jpg'
+				}, {
+					id: 2,
+					name: '广告2',
+					pic: 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13-ultra6amf8/section01.png'
+				}, {
+					id: 3,
+					name: '广告3',
+					pic: 'https://consumer.huawei.com/content/dam/huawei-cbg-site/cn/mkt/plp/phones/series-products/p60-pro-white.png'
+				}, {
+					id: 4,
+					name: '广告4',
+					pic: 'https://www.apple.com.cn/v/iphone-15-pro/a/images/overview/welcome/hero_static__cj5vew245zki_large.jpg'
 				}],
 				brandList: [{
 					id: 1, 
@@ -247,6 +274,12 @@
 			};
 		},
 		onLoad() {
+			// 获取状态栏高度
+			this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
+			
+			// 初始化轮播图长度
+			this.swiperLength = this.advertiseList.length;
+			
 			this.loadData();
 		},
 		//下拉刷新
@@ -642,25 +675,19 @@
 					url: '/pages/product/search'
 				});
 			},
+			// 跳转到消息页面
+			navToMessagePage() {
+				uni.navigateTo({
+					url: '/pages/notice/notice'
+				});
+			},
 			// 处理搜索
 			handleSearch() {
-				if (!this.searchKeyword) {
-					uni.showToast({
-						title: '请输入搜索关键词',
-						icon: 'none'
-					});
-					return;
-				}
-				uni.navigateTo({
-					url: '/pages/product/search?keyword=' + encodeURIComponent(this.searchKeyword)
-				});
+				// 首页不再支持搜索，直接跳转到搜索页面
+				this.navToSearchPage();
 			},
 		},
 		// #ifndef MP
-		// 标题栏input搜索框点击
-		onNavigationBarSearchInputClicked: async function(e) {
-			this.navToSearchPage();
-		},
 		//点击导航栏 buttons 时触发
 		onNavigationBarButtonTap(e) {
 			const index = e.index;
@@ -737,27 +764,61 @@
 
 	/* #endif */
 
-	/* #ifndef MP */
-	.search-box {
-		position: absolute;
+	/* 自定义导航栏样式 */
+	.custom-navbar {
+		position: fixed;
+		top: 0;
 		left: 0;
-		top: 30upx;
-		z-index: 9999;
 		width: 100%;
-		padding: 0 80upx;
-
-		.ser-input {
-			flex: 1;
-			height: 56upx;
-			line-height: 56upx;
-			text-align: center;
-			font-size: 28upx;
-			color: $font-color-base;
-			border-radius: 20px;
-			background: rgba(255, 255, 255, .6);
-		}
+		z-index: 999;
 	}
-	/* #endif */
+	
+	.status-bar {
+		background-color: #FF4C7C;
+		width: 100%;
+	}
+	
+	/* 自定义搜索框样式 */
+	.custom-search-box {
+		width: 100%;
+		padding: 15upx 30upx;
+		background-color: #FF4C7C;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	
+	.search-input-box {
+		flex: 1;
+		height: 70upx;
+		background-color: #FFFFFF;
+		border-radius: 35upx;
+		display: flex;
+		align-items: center;
+		padding: 0 30upx;
+		margin-right: 20upx;
+	}
+	
+	.search-icon {
+		font-size: 34upx;
+		color: #909399;
+		margin-right: 10upx;
+	}
+	
+	.search-placeholder {
+		font-size: 28upx;
+		color: #909399;
+	}
+	
+	.message-icon {
+		font-size: 40upx;
+		color: #FFFFFF;
+	}
+
+	/* 内容区样式 */
+	.container {
+		padding-top: 120upx; /* 为导航栏预留空间 */
+	}
 
 	page {
 		background: #f5f5f5;
@@ -770,11 +831,11 @@
 	/* 头部 轮播图 */
 	.carousel-section {
 		position: relative;
-		padding-top: 10px;
+		padding-top: 0; /* 已经在container中设置了padding-top，这里不需要再设置 */
 
 		.titleNview-placing {
-			height: var(--status-bar-height);
-			padding-top: 44px;
+			height: 0; /* 不再需要为系统导航栏预留空间 */
+			padding-top: 0;
 			box-sizing: content-box;
 		}
 
@@ -790,7 +851,7 @@
 
 	.carousel {
 		width: 100%;
-		height: 350upx;
+		height: 400upx; /* 增加轮播图高度 */
 
 		.carousel-item {
 			width: 100%;
