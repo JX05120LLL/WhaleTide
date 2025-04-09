@@ -1,0 +1,1207 @@
+<template>
+	<view class="container">
+		<!-- 小程序头部兼容 -->
+		<!-- #ifdef MP -->
+		<view class="mp-search-box">
+			<input class="ser-input" type="text" v-model="searchKeyword" placeholder="输入关键字搜索" @confirm="handleSearch" @click="navToSearchPage" />
+		</view>
+		<!-- #endif -->
+		<!-- #ifndef MP -->
+		<view class="search-box">
+			<input class="ser-input" type="text" v-model="searchKeyword" placeholder="输入关键字搜索" @confirm="handleSearch" @click="navToSearchPage" />
+		</view>
+		<!-- #endif -->
+
+		<!-- 头部轮播 -->
+		<view class="carousel-section">
+			<!-- 标题栏和状态栏占位符 -->
+			<view class="titleNview-placing"></view>
+			<!-- 背景色区域 -->
+			<view class="titleNview-background" :style="{backgroundColor:titleNViewBackground}"></view>
+			<swiper class="carousel" circular @change="swiperChange">
+				<swiper-item v-for="(item, index) in advertiseList" :key="index" class="carousel-item" @click="navToAdvertisePage(item)">
+					<image :src="item.pic" />
+				</swiper-item>
+			</swiper>
+			<!-- 自定义swiper指示器 -->
+			<view class="swiper-dots">
+				<text class="num">{{swiperCurrent+1}}</text>
+				<text class="sign">/</text>
+				<text class="num">{{swiperLength}}</text>
+			</view>
+		</view>
+		<!-- 头部功能区 -->
+		<view class="cate-section">
+			<view class="cate-item">
+				<image src="/static/temp/c3.png"></image>
+				<text>专题</text>
+			</view>
+			<view class="cate-item">
+				<image src="/static/temp/c5.png"></image>
+				<text>话题</text>
+			</view>
+			<view class="cate-item">
+				<image src="/static/temp/c6.png"></image>
+				<text>优选</text>
+			</view>
+			<view class="cate-item">
+				<image src="/static/temp/c7.png"></image>
+				<text>特惠</text>
+			</view>
+		</view>
+
+		<!-- 品牌制造商直供 -->
+		<view class="f-header m-t" @click="navToRecommendBrandPage()">
+			<image src="/static/icon_home_brand.png"></image>
+			<view class="tit-box">
+				<text class="tit">品牌制造商直供</text>
+				<text class="tit2">工厂直达消费者，剔除品牌溢价</text>
+			</view>
+			<text class="yticon icon-you"></text>
+		</view>
+
+		<view class="guess-section">
+			<view v-for="(item, index) in brandList" :key="index" class="guess-item" @click="navToBrandDetailPage(item)">
+				<view class="image-wrapper-brand">
+					<image :src="item.logo" mode="aspectFit"></image>
+				</view>
+				<text class="title clamp">{{item.name}}</text>
+				<text class="title2">商品数量：{{item.productCount}}</text>
+			</view>
+		</view>
+
+		<!-- 秒杀专区 -->
+		<view class="f-header m-t" v-if="homeFlashPromotion!==null">
+			<image src="/static/icon_flash_promotion.png"></image>
+			<view class="tit-box">
+				<text class="tit">秒杀专区</text>
+				<text class="tit2">下一场 {{homeFlashPromotion.nextStartTime | formatTime}} 开始</text>
+			</view>
+			<view class="tit-box">
+				<text class="tit2" style="text-align: right;">本场结束剩余：</text>
+				<view style="text-align: right;">
+					<text class="hour timer">{{cutDownTime.endHour}}</text>
+					<text>:</text>
+					<text class="minute timer">{{cutDownTime.endMinute}}</text>
+					<text>:</text>
+					<text class="second timer">{{cutDownTime.endSecond}}</text>
+				</view>
+			</view>
+			<text class="yticon icon-you" v-show="false"></text>
+		</view>
+
+		<view class="guess-section">
+			<view v-for="(item, index) in homeFlashPromotion.productList" :key="index" class="guess-item" @click="navToDetailPage(item)">
+				<view class="image-wrapper">
+					<image :src="item.pic" mode="aspectFill"></image>
+				</view>
+				<text class="title clamp">{{item.name}}</text>
+				<text class="title2 clamp">{{item.subTitle}}</text>
+				<text class="price">￥{{item.price}}</text>
+			</view>
+		</view>
+
+		<!-- 新鲜好物 -->
+		<view class="f-header m-t" @click="navToNewProudctListPage()">
+			<image src="/static/icon_new_product.png"></image>
+			<view class="tit-box">
+				<text class="tit">新鲜好物</text>
+				<text class="tit2">为你寻觅世间好物</text>
+			</view>
+			<text class="yticon icon-you"></text>
+		</view>
+		<view class="seckill-section">
+			<scroll-view class="floor-list" scroll-x>
+				<view class="scoll-wrapper">
+					<view v-for="(item, index) in newProductList" :key="index" class="floor-item" @click="navToDetailPage(item)">
+						<image :src="item.pic" mode="aspectFill"></image>
+						<text class="title clamp">{{item.name}}</text>
+						<text class="title2 clamp">{{item.subTitle}}</text>
+						<text class="price">￥{{item.price}}</text>
+					</view>
+				</view>
+			</scroll-view>
+		</view>
+
+		<!-- 人气推荐楼层 -->
+		<view class="f-header m-t" @click="navToHotProudctListPage()">
+			<image src="/static/icon_hot_product.png"></image>
+			<view class="tit-box">
+				<text class="tit">人气推荐</text>
+				<text class="tit2">大家都赞不绝口的</text>
+			</view>
+			<text class="yticon icon-you"></text>
+		</view>
+
+		<view class="hot-section">
+			<view v-for="(item, index) in hotProductList" :key="index" class="guess-item" @click="navToDetailPage(item)">
+				<view class="image-wrapper">
+					<image :src="item.pic" mode="aspectFill"></image>
+				</view>
+				<view class="txt">
+					<text class="title clamp">{{item.name}}</text>
+					<text class="title2">{{item.subTitle}}</text>
+					<text class="price">￥{{item.price}}</text>
+				</view>
+			</view>
+		</view>
+
+		<!-- 猜你喜欢-->
+		<view class="f-header m-t">
+			<image src="/static/icon_recommend_product.png"></image>
+			<view class="tit-box">
+				<text class="tit">猜你喜欢</text>
+				<text class="tit2">你喜欢的都在这里了</text>
+			</view>
+			<text class="yticon icon-you" v-show="false"></text>
+		</view>
+
+		<view class="guess-section">
+			<view v-for="(item, index) in recommendProductList" :key="index" class="guess-item" @click="navToDetailPage(item)">
+				<view class="image-wrapper">
+					<image :src="item.pic" mode="aspectFill" @error="handleImageError(item, index)"></image>
+				</view>
+				<text class="title clamp">{{item.name}}</text>
+				<text class="title2 clamp">{{item.subTitle || ''}}</text>
+				<text class="price">￥{{item.price}}</text>
+			</view>
+		</view>
+		<uni-load-more :status="loadingType"></uni-load-more>
+	</view>
+</template>
+
+<script>
+	import {
+		fetchContent,
+		fetchRecommendProductList
+	} from '@/api/home.js';
+	import {
+		formatDate
+	} from '@/utils/date';
+	import { getFullImageUrl, extractApiData } from '@/utils/requestUtil.js';
+	import { API_BASE_URL } from '@/utils/appConfig.js';
+	import uniLoadMore from '@/components/uni-load-more/uni-load-more.vue';
+	import { searchProductList } from '@/api/product.js';
+	export default {
+		components: {
+			uniLoadMore	
+		},
+		data() {
+			return {
+				apiBaseUrl: API_BASE_URL,
+				titleNViewBackground: '',
+				titleNViewBackgroundList: ['rgb(203, 87, 60)', 'rgb(205, 215, 218)'],
+				swiperCurrent: 0,
+				swiperLength: 0,
+				carouselList: [],
+				goodsList: [],
+				advertiseList: [{
+					id: 1,
+					name: '广告1',
+					pic: 'https://img14.360buyimg.com/n0/jfs/t1/183854/8/33432/254558/63fe2d27Fd5c97f68/d2134c38c30c9789.jpg'
+				}],
+				brandList: [{
+					id: 1, 
+					name: '小米',
+					logo: 'https://cdn.cnbj1.fds.api.mi-img.com/mi-mall/1a2e4ae612a2c071dd62602ec2583a0a.png',
+					productCount: 10
+				}],
+				homeFlashPromotion: {
+					nextStartTime: new Date().getTime(),
+					endTime: new Date(new Date().getTime() + 3600000),
+					productList: [{
+						id: 1,
+						name: '小米手机',
+						subTitle: '骁龙888处理器',
+						pic: 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png',
+						price: 3999
+					}]
+				},
+				newProductList: [{
+					id: 2,
+					name: '新品手机',
+					subTitle: '全新上市',
+					pic: 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png',
+					price: 4999
+				}],
+				hotProductList: [{
+					id: 3,
+					name: '热门手机',
+					subTitle: '畅销产品',
+					pic: 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png',
+					price: 2999
+				}],
+				recommendProductList: [{
+					id: 4,
+					name: '推荐手机',
+					subTitle: '为你推荐',
+					pic: 'https://cdn.cnbj1.fds.api.mi-img.com/product-images/xiaomi-13kb7buy/11262.png',
+					price: 1999
+				}],
+				recommendParams: {
+					pageNum: 1,
+					pageSize: 4
+				},
+				loadingType:'more',
+				searchKeyword: ''
+			};
+		},
+		onLoad() {
+			this.loadData();
+		},
+		//下拉刷新
+		onPullDownRefresh(){
+			this.recommendParams.pageNum=1;
+			this.loadData();
+		},
+		//加载更多
+		onReachBottom(){
+			this.recommendParams.pageNum++;
+			this.loadingType = 'loading';
+			fetchRecommendProductList(this.recommendParams).then(response => {
+				console.log("加载更多响应:", response);
+				
+				// 检查如果响应是包含list字段的对象
+				if (response && response.list) {
+					const addProductList = response.list;
+					if (addProductList.length === 0) {
+						// 没有更多了
+						this.recommendParams.pageNum--;
+						this.loadingType = 'nomore';
+					} else {
+						// 处理图片
+						const processedList = this.processImages(addProductList);
+						this.recommendProductList = this.recommendProductList.concat(processedList);
+						this.loadingType = 'more';
+					}
+				} else {
+					// 没有数据或者响应格式不正确
+					console.error("加载更多数据格式不正确:", response);
+					this.recommendParams.pageNum--;
+					this.loadingType = 'nomore';
+				}
+			}).catch(error => {
+				console.error("加载更多失败:", error);
+				this.recommendParams.pageNum--;
+				this.loadingType = 'more';
+			});
+		},
+		computed: {
+			cutDownTime() {
+				let endTime = new Date(this.homeFlashPromotion.endTime);
+				let endDateTime = new Date();
+				let startDateTime = new Date();
+				endDateTime.setHours(endTime.getHours());
+				endDateTime.setMinutes(endTime.getMinutes());
+				endDateTime.setSeconds(endTime.getSeconds());
+				let offsetTime = (endDateTime.getTime() - startDateTime.getTime());
+				let endHour = Math.floor(offsetTime / (60 * 60 * 1000));
+				let offsetMinute = offsetTime % (60 * 60 * 1000);
+				let endMinute = Math.floor(offsetMinute / (60 * 1000));
+				let offsetSecond = offsetTime % (60 * 1000);
+				let endSecond = Math.floor(offsetSecond / 1000);
+				return {
+					endHour: endHour,
+					endMinute: endMinute,
+					endSecond: endSecond
+				}
+			}
+		},
+		filters: {
+			formatTime(time) {
+				if (time == null || time === '') {
+					return 'N/A';
+				}
+				let date = new Date(time);
+				return formatDate(date, 'hh:mm:ss')
+			},
+		},
+		methods: {
+			// 添加一个单独的图片处理函数，供其他方法调用
+			processImages(items) {
+				if (!items || !Array.isArray(items)) return [];
+				
+				console.log("处理前的图片数据:", JSON.stringify(items.slice(0, 1)));
+				
+				return items.map(item => {
+					if (item) {
+						// 处理图片路径 - 检查多种可能的字段名
+						if (item.pic) {
+							console.log("原始pic URL:", item.pic);
+							item.pic = getFullImageUrl(item.pic);
+							console.log("处理后pic URL:", item.pic);
+						}
+						else if (item.mainImage) {
+							console.log("发现mainImage字段:", item.mainImage);
+							// 如果存在mainImage但没有pic字段，将mainImage复制到pic
+							item.pic = getFullImageUrl(item.mainImage);
+							console.log("从mainImage生成pic:", item.pic);
+						}
+						else {
+							// 如果既没有pic也没有mainImage，使用默认图片
+							console.warn("商品缺少图片字段:", item.id, item.name);
+							item.pic = '/static/temp/product.jpg';
+						}
+						
+						if (item.logo) {
+							item.logo = getFullImageUrl(item.logo);
+						}
+					}
+					return item;
+				});
+			},
+			/**
+			 * 获取推荐产品列表
+			 */
+			async getRecommendProductList() {
+				try {
+					const response = await fetchRecommendProductList();
+					console.log('首页推荐产品原始响应:', response);
+					
+					// 使用工具函数从响应中提取产品列表
+					const productList = extractApiData(response, '推荐产品');
+					
+					if (productList.length === 0) {
+						console.log('未找到推荐产品，使用默认数据');
+						this.showDefaultRecommendProducts();
+						return;
+					}
+					
+					console.log('提取到的推荐产品数量:', productList.length);
+					
+					// 处理产品数据，确保图片URL是完整的
+					const processedList = productList.map(item => {
+						// 处理图片URL
+						if (item.pic) {
+							item.pic = getFullImageUrl(item.pic);
+						} else if (item.mainImage) {
+							item.pic = getFullImageUrl(item.mainImage);
+						} else {
+							item.pic = '/static/errorImage.jpg';
+						}
+						return item;
+					});
+					
+					this.recommendProductList = processedList;
+					console.log('处理后的推荐产品:', this.recommendProductList);
+				} catch (error) {
+					console.error('获取推荐产品失败:', error);
+					this.showDefaultRecommendProducts();
+				}
+			},
+			/**
+			 * 显示默认推荐产品（网络错误或数据为空时）
+			 */
+			showDefaultRecommendProducts() {
+				this.recommendProductList = [{
+					id: 1,
+					name: '默认产品',
+					pic: '/static/errorImage.jpg',
+					price: 0
+				}];
+			},
+			/**
+			 * 处理图片加载错误
+			 */
+			handleImageError(item, index) {
+				console.error(`商品[${index}]图片加载失败:`, item.name, item.pic);
+				// 设置默认图片
+				this.$set(this.recommendProductList[index], 'pic', '/static/errorImage.jpg');
+			},
+			/**
+			 * 处理可能的分页数据结构
+			 * @param {Object|Array} data 可能是分页对象或数组的数据
+			 * @param {Array} defaultData 默认数据
+			 * @param {Function} processor 数据处理函数
+			 * @returns {Array} 处理后的数据数组
+			 */
+			processPageableData(data, defaultData, processor) {
+				if (!data) return defaultData;
+				
+				// 检查是否是对象而非数组
+				if (typeof data === 'object' && !Array.isArray(data)) {
+					// 检查常见的分页字段
+					if (data.list && Array.isArray(data.list)) {
+						console.log("使用分页list字段:", data.list.length);
+						return data.list.length > 0 ? processor(data.list) : defaultData;
+					} else if (data.records && Array.isArray(data.records)) {
+						console.log("使用分页records字段:", data.records.length);
+						return data.records.length > 0 ? processor(data.records) : defaultData;
+					} else if (data.content && Array.isArray(data.content)) {
+						console.log("使用分页content字段:", data.content.length);
+						return data.content.length > 0 ? processor(data.content) : defaultData;
+					} else if (data.data && Array.isArray(data.data)) {
+						console.log("使用分页data字段:", data.data.length);
+						return data.data.length > 0 ? processor(data.data) : defaultData;
+					} else if (data.items && Array.isArray(data.items)) {
+						console.log("使用分页items字段:", data.items.length);
+						return data.items.length > 0 ? processor(data.items) : defaultData;
+					}
+					// 没有找到有效字段
+					return defaultData;
+				}
+				
+				// 数据本身是数组
+				return Array.isArray(data) && data.length > 0 ? processor(data) : defaultData;
+			},
+			/**
+			 * 加载数据
+			 */
+			async loadData() {
+				// 记录初始模拟数据
+				const defaultData = {
+					advertiseList: this.advertiseList,
+					brandList: this.brandList,
+					homeFlashPromotion: this.homeFlashPromotion,
+					newProductList: this.newProductList,
+					hotProductList: this.hotProductList,
+					recommendProductList: this.recommendProductList
+				};
+				
+				// 可能的字段名映射，以适应不同的后端命名习惯
+				const fieldMappings = {
+					advertiseList: ['advertiseList', 'bannerList', 'carousel', 'sliders'],
+					brandList: ['brandList', 'brands'],
+					homeFlashPromotion: ['homeFlashPromotion', 'flashPromotion', 'seckill'],
+					newProductList: ['newProductList', 'newProducts'],
+					hotProductList: ['hotProductList', 'hotProducts', 'recommendProducts']
+				};
+				
+				// 通用的字段提取函数，尝试不同的字段名
+				const extractField = (data, fieldNames) => {
+					if (!data) return null;
+					
+					for (const name of fieldNames) {
+						if (data[name] !== undefined) {
+							return data[name];
+						}
+					}
+					return null;
+				};
+				
+				// 处理图片URL的函数 - 使用新的方法
+				const processImages = this.processImages;
+				
+				fetchContent().then(response => {
+					console.log("首页内容完整响应(JSON):", JSON.stringify(response));
+					
+					// 检查响应是否为null/undefined
+					if (!response) {
+						console.error("首页响应为null或undefined，使用默认数据");
+						this.setDefaultData(defaultData);
+						uni.stopPullDownRefresh();
+						return;
+					}
+					
+					// 根据返回格式调整数据结构
+					let responseData = response;
+					// 兼容可能的响应格式: response, response.data, response.data.data
+					if (response && response.data) {
+						console.log("检测到response.data结构");
+						responseData = response.data;
+					}
+					if (responseData && responseData.data) {
+						console.log("检测到responseData.data结构");
+						responseData = responseData.data;
+					}
+					
+					// 检查响应数据是否正确
+					console.log("处理后的响应数据(JSON):", JSON.stringify(responseData));
+					
+					// 尝试设置数据，如果数据不存在则使用默认数据
+					if (responseData) {
+						// 广告列表
+						const advList = extractField(responseData, fieldMappings.advertiseList) || [];
+						console.log("广告列表提取字段:", JSON.stringify(fieldMappings.advertiseList));
+						console.log("广告列表(JSON):", JSON.stringify(advList));
+						this.advertiseList = this.processPageableData(advList, defaultData.advertiseList, processImages);
+						console.log("处理后的广告列表:", this.advertiseList.length);
+						this.swiperLength = this.advertiseList.length;
+						this.titleNViewBackground = this.titleNViewBackgroundList[0];
+						
+						// 品牌列表
+						const brdList = extractField(responseData, fieldMappings.brandList) || [];
+						console.log("品牌列表提取字段:", JSON.stringify(fieldMappings.brandList));
+						console.log("品牌列表(JSON):", JSON.stringify(brdList));
+						this.brandList = this.processPageableData(brdList, defaultData.brandList, processImages);
+						console.log("处理后的品牌列表:", this.brandList.length);
+						
+						// 秒杀专区
+						const flashPromo = extractField(responseData, fieldMappings.homeFlashPromotion);
+						console.log("秒杀专区提取字段:", JSON.stringify(fieldMappings.homeFlashPromotion));
+						console.log("秒杀专区(JSON):", JSON.stringify(flashPromo));
+						this.homeFlashPromotion = flashPromo ? flashPromo : defaultData.homeFlashPromotion;
+						if (this.homeFlashPromotion && this.homeFlashPromotion.productList) {
+							this.homeFlashPromotion.productList = processImages(this.homeFlashPromotion.productList);
+							console.log("处理后的秒杀产品列表:", this.homeFlashPromotion.productList.length);
+						}
+						
+						// 新品列表
+						const newList = extractField(responseData, fieldMappings.newProductList) || [];
+						console.log("新品列表提取字段:", JSON.stringify(fieldMappings.newProductList));
+						console.log("新品列表(JSON):", JSON.stringify(newList));
+						this.newProductList = this.processPageableData(newList, defaultData.newProductList, processImages);
+						console.log("处理后的新品列表:", this.newProductList.length);
+						
+						// 热门列表
+						const hotList = extractField(responseData, fieldMappings.hotProductList) || [];
+						console.log("热门列表提取字段:", JSON.stringify(fieldMappings.hotProductList));
+						console.log("热门列表(JSON):", JSON.stringify(hotList));
+						this.hotProductList = this.processPageableData(hotList, defaultData.hotProductList, processImages);
+						console.log("处理后的热门列表:", this.hotProductList.length);
+						
+						// 加载推荐列表
+						this.getRecommendProductList().then(() => {
+							uni.stopPullDownRefresh();
+						}).catch(error => {
+							console.error("获取推荐商品失败:", error);
+							this.showDefaultRecommendProducts();
+							uni.stopPullDownRefresh();
+						});
+					} else {
+						console.error("首页数据格式不正确，使用模拟数据:", responseData);
+						this.setDefaultData(defaultData);
+						uni.showToast({
+							title: '使用本地数据',
+							icon: 'none'
+						});
+						uni.stopPullDownRefresh();
+					}
+				}).catch(error => {
+					console.error("加载首页数据失败，使用模拟数据:", error);
+					this.setDefaultData(defaultData);
+					uni.showToast({
+						title: '使用本地数据',
+						icon: 'none'
+					});
+					uni.stopPullDownRefresh();
+				});
+			},
+			//轮播图切换修改背景色
+			swiperChange(e) {
+				const index = e.detail.current;
+				this.swiperCurrent = index;
+				let changeIndex = index % this.titleNViewBackgroundList.length;
+				this.titleNViewBackground = this.titleNViewBackgroundList[changeIndex];
+			},
+			//商品详情页
+			navToDetailPage(item) {
+				let id = item.id;
+				uni.navigateTo({
+					url: `/pages/product/product?id=${id}`
+				})
+			},
+			//广告详情页
+			navToAdvertisePage(item) {
+				let id = item.id;
+				console.log("navToAdvertisePage",item)
+			},
+			//品牌详情页
+			navToBrandDetailPage(item) {
+				let id = item.id;
+				uni.navigateTo({
+					url: `/pages/brand/brandDetail?id=${id}`
+				})
+			},
+			//推荐品牌列表页
+			navToRecommendBrandPage() {
+				uni.navigateTo({
+					url: `/pages/brand/list`
+				})
+			},
+			//新鲜好物列表页
+			navToNewProudctListPage() {
+				uni.navigateTo({
+					url: `/pages/product/newProductList`
+				})
+			},
+			//人气推荐列表页
+			navToHotProudctListPage() {
+				uni.navigateTo({
+					url: `/pages/product/hotProductList`
+				})
+			},
+			// 添加设置默认数据的方法
+			setDefaultData(defaultData) {
+				// 确保使用默认模拟数据
+				this.advertiseList = defaultData.advertiseList;
+				this.swiperLength = this.advertiseList.length;
+				this.titleNViewBackground = this.titleNViewBackgroundList[0];
+				
+				this.brandList = defaultData.brandList;
+				this.homeFlashPromotion = defaultData.homeFlashPromotion;
+				this.newProductList = defaultData.newProductList;
+				this.hotProductList = defaultData.hotProductList;
+				this.recommendProductList = defaultData.recommendProductList;
+				
+				console.log("已设置所有默认数据");
+			},
+			// 跳转到搜索页面
+			navToSearchPage() {
+				uni.navigateTo({
+					url: '/pages/product/search'
+				});
+			},
+			// 处理搜索
+			handleSearch() {
+				if (!this.searchKeyword) {
+					uni.showToast({
+						title: '请输入搜索关键词',
+						icon: 'none'
+					});
+					return;
+				}
+				uni.navigateTo({
+					url: '/pages/product/search?keyword=' + encodeURIComponent(this.searchKeyword)
+				});
+			},
+		},
+		// #ifndef MP
+		// 标题栏input搜索框点击
+		onNavigationBarSearchInputClicked: async function(e) {
+			this.navToSearchPage();
+		},
+		//点击导航栏 buttons 时触发
+		onNavigationBarButtonTap(e) {
+			const index = e.index;
+			if (index === 0) {
+				this.$api.msg('点击了扫描');
+			} else if (index === 1) {
+				// #ifdef APP-PLUS
+				const pages = getCurrentPages();
+				const page = pages[pages.length - 1];
+				const currentWebview = page.$getAppWebview();
+				currentWebview.hideTitleNViewButtonRedDot({
+					index
+				});
+				// #endif
+				uni.navigateTo({
+					url: '/pages/notice/notice'
+				})
+			}
+		}
+		// #endif
+	}
+</script>
+
+<style lang="scss">
+	/* #ifdef MP */
+	.mp-search-box {
+		position: absolute;
+		left: 0;
+		top: 30upx;
+		z-index: 9999;
+		width: 100%;
+		padding: 0 80upx;
+
+		.ser-input {
+			flex: 1;
+			height: 56upx;
+			line-height: 56upx;
+			text-align: center;
+			font-size: 28upx;
+			color: $font-color-base;
+			border-radius: 20px;
+			background: rgba(255, 255, 255, .6);
+		}
+	}
+
+	page {
+		.cate-section {
+			position: relative;
+			z-index: 5;
+			border-radius: 16upx 16upx 0 0;
+			margin-top: -20upx;
+		}
+
+		.carousel-section {
+			padding: 0;
+
+			.titleNview-placing {
+				padding-top: 0;
+				height: 0;
+			}
+
+			.carousel {
+				.carousel-item {
+					padding: 0;
+				}
+			}
+
+			.swiper-dots {
+				left: 45upx;
+				bottom: 40upx;
+			}
+		}
+	}
+
+	/* #endif */
+
+	/* #ifndef MP */
+	.search-box {
+		position: absolute;
+		left: 0;
+		top: 30upx;
+		z-index: 9999;
+		width: 100%;
+		padding: 0 80upx;
+
+		.ser-input {
+			flex: 1;
+			height: 56upx;
+			line-height: 56upx;
+			text-align: center;
+			font-size: 28upx;
+			color: $font-color-base;
+			border-radius: 20px;
+			background: rgba(255, 255, 255, .6);
+		}
+	}
+	/* #endif */
+
+	page {
+		background: #f5f5f5;
+	}
+
+	.m-t {
+		margin-top: 16upx;
+	}
+
+	/* 头部 轮播图 */
+	.carousel-section {
+		position: relative;
+		padding-top: 10px;
+
+		.titleNview-placing {
+			height: var(--status-bar-height);
+			padding-top: 44px;
+			box-sizing: content-box;
+		}
+
+		.titleNview-background {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 426upx;
+			transition: .4s;
+		}
+	}
+
+	.carousel {
+		width: 100%;
+		height: 350upx;
+
+		.carousel-item {
+			width: 100%;
+			height: 100%;
+			padding: 0 28upx;
+			overflow: hidden;
+		}
+
+		image {
+			width: 100%;
+			height: 100%;
+			border-radius: 10upx;
+		}
+	}
+
+	.swiper-dots {
+		display: flex;
+		position: absolute;
+		left: 60upx;
+		bottom: 15upx;
+		width: 72upx;
+		height: 36upx;
+		background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAABkCAYAAADDhn8LAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTMyIDc5LjE1OTI4NCwgMjAxNi8wNC8xOS0xMzoxMzo0MCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTk4MzlBNjE0NjU1MTFFOUExNjRFQ0I3RTQ0NEExQjMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTk4MzlBNjA0NjU1MTFFOUExNjRFQ0I3RTQ0NEExQjMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTcgKFdpbmRvd3MpIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6Q0E3RUNERkE0NjExMTFFOTg5NzI4MTM2Rjg0OUQwOEUiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6Q0E3RUNERkI0NjExMTFFOTg5NzI4MTM2Rjg0OUQwOEUiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4Gh5BPAAACTUlEQVR42uzcQW7jQAwFUdN306l1uWwNww5kqdsmm6/2MwtVCp8CosQtP9vg/2+/gY+DRAMBgqnjIp2PaCxCLLldpPARRIiFj1yBbMV+cHZh9PURRLQNhY8kgWyL/WDtwujjI8hoE8rKLqb5CDJaRMJHokC6yKgSCR9JAukmokIknCQJpLOIrJFwMsBJELFcKHwM9BFkLBMKFxNcBCHlQ+FhoocgpVwwnv0Xn30QBJGMC0QcaBVJiAMiec/dcwKuL4j1QMsVCXFAJE4s4NQA3K/8Y6DzO4g40P7UcmIBJxbEesCKWBDg8wWxHrAiFgT4fEGsB/CwIhYE+AeBAAdPLOcV8HRmWRDAiQVcO7GcV8CLM8uCAE4sQCDAlHcQ7x+ABQEEAggEEAggEEAggEAAgQACASAQQCCAQACBAAIBBAIIBBAIIBBAIABe4e9iAe/xd7EAJxYgEGDeO4j3EODp/cOCAE4sYMyJ5cwCHs4rCwI4sYBxJ5YzC84rCwKcXxArAuthQYDzC2JF0H49LAhwYUGsCFqvx5EF2T07dMaJBetx4cRyaqFtHJ8EIhK0i8OJBQxcECuCVutxJhCRoE0cZwMRyRcFefa/ffZBVPogePihhyCnbBhcfMFFEFM+DD4m+ghSlgmDkwlOgpAl4+BkkJMgZdk4+EgaSCcpVX7bmY9kgXQQU+1TgE0c+QJZUUz1b2T4SBbIKmJW+3iMj2SBVBWz+leVfCQLpIqYbp8b85EskIxyfIOfK5Sf+wiCRJEsllQ+oqEkQfBxmD8BBgA5hVjXyrBNUQAAAABJRU5ErkJggg==);
+		background-size: 100% 100%;
+
+		.num {
+			width: 36upx;
+			height: 36upx;
+			border-radius: 50px;
+			font-size: 24upx;
+			color: #fff;
+			text-align: center;
+			line-height: 36upx;
+		}
+
+		.sign {
+			position: absolute;
+			top: 0;
+			left: 50%;
+			line-height: 36upx;
+			font-size: 12upx;
+			color: #fff;
+			transform: translateX(-50%);
+		}
+	}
+
+	/* 分类 */
+	.cate-section {
+		display: flex;
+		justify-content: space-around;
+		align-items: center;
+		flex-wrap: wrap;
+		padding: 30upx 22upx;
+		background: #fff;
+
+		.cate-item {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			font-size: $font-sm + 2upx;
+			color: $font-color-dark;
+		}
+
+		/* 原图标颜色太深,不想改图了,所以加了透明度 */
+		image {
+			width: 88upx;
+			height: 88upx;
+			margin-bottom: 14upx;
+			border-radius: 50%;
+			opacity: .7;
+			box-shadow: 4upx 4upx 20upx rgba(250, 67, 106, 0.3);
+		}
+	}
+
+	.ad-1 {
+		width: 100%;
+		height: 210upx;
+		padding: 10upx 0;
+		background: #fff;
+
+		image {
+			width: 100%;
+			height: 100%;
+		}
+	}
+
+	/* 秒杀专区 */
+	.seckill-section {
+		padding: 4upx 30upx 24upx;
+		background: #fff;
+
+		.s-header {
+			display: flex;
+			align-items: center;
+			height: 92upx;
+			line-height: 1;
+
+			.s-img {
+				width: 140upx;
+				height: 30upx;
+			}
+
+			.tip {
+				font-size: $font-base;
+				color: $font-color-light;
+				margin: 0 20upx 0 40upx;
+			}
+
+			.timer {
+				display: inline-block;
+				width: 40upx;
+				height: 36upx;
+				text-align: center;
+				line-height: 36upx;
+				margin-right: 14upx;
+				font-size: $font-sm+2upx;
+				color: #fff;
+				border-radius: 2px;
+				background: rgba(0, 0, 0, .8);
+			}
+
+			.icon-you {
+				font-size: $font-lg;
+				color: $font-color-light;
+				flex: 1;
+				text-align: right;
+			}
+		}
+
+		.floor-list {
+			white-space: nowrap;
+		}
+
+		.scoll-wrapper {
+			display: flex;
+			align-items: flex-start;
+		}
+
+		.floor-item {
+			width: 300upx;
+			margin-right: 20upx;
+			font-size: $font-sm+2upx;
+			color: $font-color-dark;
+			line-height: 1.8;
+
+			image {
+				width: 300upx;
+				height: 300upx;
+				border-radius: 6upx;
+			}
+
+			.price {
+				color: $uni-color-primary;
+			}
+		}
+
+		.title2 {
+			font-size: $font-sm;
+			color: $font-color-light;
+			line-height: 40upx;
+		}
+	}
+
+	.f-header {
+		display: flex;
+		align-items: center;
+		height: 140upx;
+		padding: 6upx 30upx 8upx;
+		background: #fff;
+
+		image {
+			flex-shrink: 0;
+			width: 80upx;
+			height: 80upx;
+			margin-right: 20upx;
+		}
+
+		.tit-box {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.tit {
+			font-size: $font-lg + 2upx;
+			color: $font-color-dark;
+			line-height: 1.3;
+		}
+
+		.tit2 {
+			font-size: $font-sm;
+			color: $font-color-light;
+		}
+
+		.icon-you {
+			font-size: $font-lg +2upx;
+			color: $font-color-light;
+		}
+
+		.timer {
+			display: inline-block;
+			width: 40upx;
+			height: 36upx;
+			text-align: center;
+			line-height: 36upx;
+			margin-right: 14upx;
+			font-size: $font-sm+2upx;
+			color: #fff;
+			border-radius: 2px;
+			background: rgba(0, 0, 0, .8);
+		}
+	}
+
+	/* 分类推荐楼层 */
+	.hot-floor {
+		width: 100%;
+		overflow: hidden;
+		margin-bottom: 20upx;
+
+		.floor-img-box {
+			width: 100%;
+			height: 320upx;
+			position: relative;
+
+			&:after {
+				content: '';
+				position: absolute;
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				background: linear-gradient(rgba(255, 255, 255, .06) 30%, #f8f8f8);
+			}
+		}
+
+		.floor-img {
+			width: 100%;
+			height: 100%;
+		}
+
+		.floor-list {
+			white-space: nowrap;
+			padding: 20upx;
+			padding-right: 50upx;
+			border-radius: 6upx;
+			margin-top: -140upx;
+			margin-left: 30upx;
+			background: #fff;
+			box-shadow: 1px 1px 5px rgba(0, 0, 0, .2);
+			position: relative;
+			z-index: 1;
+		}
+
+		.scoll-wrapper {
+			display: flex;
+			align-items: flex-start;
+		}
+
+		.floor-item {
+			width: 180upx;
+			margin-right: 20upx;
+			font-size: $font-sm+2upx;
+			color: $font-color-dark;
+			line-height: 1.8;
+
+			image {
+				width: 180upx;
+				height: 180upx;
+				border-radius: 6upx;
+			}
+
+			.price {
+				color: $uni-color-primary;
+			}
+		}
+
+		.more {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			flex-shrink: 0;
+			width: 180upx;
+			height: 180upx;
+			border-radius: 6upx;
+			background: #f3f3f3;
+			font-size: $font-base;
+			color: $font-color-light;
+
+			text:first-child {
+				margin-bottom: 4upx;
+			}
+		}
+	}
+
+	/* 猜你喜欢 */
+	.guess-section {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0 30upx;
+		background: #fff;
+
+		.guess-item {
+			display: flex;
+			flex-direction: column;
+			width: 48%;
+			padding-bottom: 40upx;
+
+			&:nth-child(2n+1) {
+				margin-right: 4%;
+			}
+		}
+
+		.image-wrapper {
+			width: 100%;
+			height: 330upx;
+			border-radius: 3px;
+			overflow: hidden;
+
+			image {
+				width: 100%;
+				height: 100%;
+				opacity: 1;
+			}
+		}
+		
+		.image-wrapper-brand {
+			width: 100%;
+			height: 150upx;
+			border-radius: 3px;
+			overflow: hidden;
+		
+			image {
+				width: 100%;
+				height: 100%;
+				opacity: 1;
+			}
+		}
+
+		.title {
+			font-size: $font-lg;
+			color: $font-color-dark;
+			line-height: 80upx;
+		}
+
+		.title2 {
+			font-size: $font-sm;
+			color: $font-color-light;
+			line-height: 40upx;
+		}
+
+		.price {
+			font-size: $font-lg;
+			color: $uni-color-primary;
+			line-height: 1;
+		}
+	}
+
+	.hot-section {
+		display: flex;
+		flex-wrap: wrap;
+		padding: 0 30upx;
+		background: #fff;
+
+		.guess-item {
+			display: flex;
+			flex-direction: row;
+			width: 100%;
+			padding-bottom: 40upx;
+		}
+
+		.image-wrapper {
+			width: 30%;
+			height: 250upx;
+			border-radius: 3px;
+			overflow: hidden;
+
+			image {
+				width: 100%;
+				height: 100%;
+				opacity: 1;
+			}
+		}
+
+		.title {
+			font-size: $font-lg;
+			color: $font-color-dark;
+			line-height: 80upx;
+		}
+
+		.title2 {
+			font-size: $font-sm;
+			color: $font-color-light;
+			line-height: 40upx;
+			height: 80upx;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: block;
+		}
+
+		.price {
+			font-size: $font-lg;
+			color: $uni-color-primary;
+			line-height: 80upx;
+		}
+
+		.txt {
+			width: 70%;
+			display: flex;
+			flex-direction: column;
+			padding-left: 40upx;
+		}
+	}
+</style>
