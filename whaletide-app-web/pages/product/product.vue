@@ -333,7 +333,24 @@
 			};
 		},
 		async onLoad(options) {
+			// 检查商品ID是否存在
+			if (!options || !options.id) {
+				console.error('商品ID不存在:', options);
+				uni.showToast({
+					title: '商品ID不存在',
+					icon: 'none',
+					duration: 2000
+				});
+				
+				// 2秒后返回上一页
+				setTimeout(() => {
+					uni.navigateBack();
+				}, 2000);
+				return;
+			}
+			
 			let id = options.id;
+			console.log('加载商品详情，ID:', id);
 			this.shareList = defaultShareList;
 			this.loadData(id);
 		},
@@ -361,7 +378,25 @@
 		},
 		methods: {
 			async loadData(id) {
-				fetchProductDetail(id).then(response => {
+				// 检查ID是否有效
+				if (!id) {
+					console.error('无效的商品ID:', id);
+					uni.showToast({
+						title: '商品ID无效',
+						icon: 'none'
+					});
+					setTimeout(() => {
+						uni.navigateBack();
+					}, 1500);
+					return;
+				}
+				
+				console.log('请求商品详情API，ID:', id);
+				
+				// 确保id是数字类型
+				const productId = Number(id) || id;
+				
+				fetchProductDetail(productId).then(response => {
 					if (!response || !response.data) {
 						uni.showToast({
 							title: '获取商品详情失败',
@@ -407,7 +442,7 @@
 					this.initProductDesc();
 					this.handleReadHistory();
 					this.initProductCollection();
-					this.loadCommentData(id);
+					this.loadCommentData(productId);
 				}).catch(error => {
 					console.error('获取商品详情失败:', error);
 					uni.showToast({

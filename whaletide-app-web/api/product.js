@@ -42,9 +42,10 @@ export function fetchCategoryTreeList() {
 }
 
 export function fetchProductDetail(id) {
+	// 构建与后端API完全匹配的URL格式: /product/detail/{id}
 	return request({
 		method: 'GET',
-		url: '/product/detail/'+id
+		url: `/product/detail/${id}`
 	})
 }
 
