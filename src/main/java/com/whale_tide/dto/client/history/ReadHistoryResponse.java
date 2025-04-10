@@ -12,19 +12,22 @@ import java.util.Date;
 @Data
 @ApiModel("搜索历史记录响应参数")
 public class ReadHistoryResponse {
-    
+
     @ApiModelProperty("搜索历史ID")
     private Long id;
-    
-    @ApiModelProperty("搜索关键词")
-    private String keyword;
-    
+
+    @ApiModelProperty("商品ID")
+    private Long productId;
+
+    @ApiModelProperty("商品名称")
+    private String productName;
+
     @ApiModelProperty("搜索次数")
-    private Integer searchCount;
-    
+    private Integer browseCount;
+
     @ApiModelProperty("最后搜索时间")
-    private Date lastSearchTime;
-    
+    private Date lastBrowseTime;
+
     @ApiModelProperty("创建时间")
     private Date createTime;
 } 

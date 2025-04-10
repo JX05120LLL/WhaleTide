@@ -13,8 +13,12 @@ import javax.validation.constraints.NotNull;
 @Data
 @ApiModel("添加搜索历史记录请求参数")
 public class ReadHistoryCreateRequest {
-    
-    @NotBlank(message = "搜索关键词不能为空")
-    @ApiModelProperty(value = "搜索关键词", required = true)
-    private String keyword;
+
+    @NotBlank(message = "商品名称不能为空")
+    @ApiModelProperty(value = "商品名称关键词", required = true)
+    private String productName;
+
+    @NotNull(message = "商品ID不能为空")
+    @ApiModelProperty(value = "商品ID", required = true)
+    private Long productId;
 } 

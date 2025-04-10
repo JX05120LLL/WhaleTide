@@ -15,9 +15,9 @@
 					<text class="yticon icon-shop"></text>
 				</view>
 				<view class="txt">
-					<text class="title">{{item.keyword}}</text>
+					<text class="title">{{item.productName}}</text>
 					<view class="hor-txt">
-						<text class="view-time">浏览时间: {{item.lastSearchTime | formatDateTime}}</text>
+						<text class="view-time">浏览时间: {{item.lastBrowseTime | formatDateTime}}</text>
 					</view>
 				</view>
 				<text class="arrow-right yticon icon-you"></text>
@@ -46,7 +46,7 @@
 			return {
 				loadingType: 'more',
 				productList: [],
-				searchParam: {
+				browseParam: {
 					pageNum: 1,
 					pageSize: 6
 				}
@@ -61,7 +61,7 @@
 		},
 		//加载更多
 		onReachBottom() {
-			this.searchParam.pageNum++;
+			this.browseParam.pageNum++;
 			this.loadData();
 		},
 		// #ifndef MP
@@ -106,19 +106,19 @@
 				}
 
 				if (type === 'refresh') {
-					this.searchParam.pageNum = 1;
+					this.browseParam.pageNum = 1;
 					this.productList = [];
 				}
-				fetchReadHistoryList(this.searchParam).then(response => {
+				fetchReadHistoryList(this.browseParam).then(response => {
 					let dataList = response.data.list;
 					if (dataList.length === 0) {
 						//没有更多了
 						this.loadingType = 'nomore';
-						this.searchParam.pageNum--;
+						this.browseParam.pageNum--;
 					} else {
-						if (dataList.length < this.searchParam.pageSize) {
+						if (dataList.length < this.browseParam.pageSize) {
 							this.loadingType = 'nomore';
-							this.searchParam.pageNum--;
+							this.browseParam.pageNum--;
 						} else {
 							this.loadingType = 'more';
 						}
@@ -138,7 +138,7 @@
 				console.log('点击商品浏览记录:', item);
 				
 				// 检查关键词是否存在
-				if (!item || !item.keyword) {
+				if (!item || !item.productId) {
 					uni.showToast({
 						title: '商品信息不存在',
 						icon: 'none'
@@ -148,7 +148,7 @@
 				
 				// 使用item.id作为商品ID - 这里假设id字段可以直接用作商品ID
 				// 如果不行，可能需要后端支持直接返回productId字段
-				let productId = item.id;
+				let productId = item.productId;
 				
 				console.log('跳转到商品详情，ID:', productId);
 				

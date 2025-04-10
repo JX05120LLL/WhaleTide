@@ -1785,6 +1785,30 @@ INSERT INTO `ums_user_search_history` VALUES (12, 12, '松下冰箱NR-W56S1', 2,
 INSERT INTO `ums_user_search_history` VALUES (13, 12, '小米智能空气净化器Pro 3', 1, '2025-04-06 17:26:44', '2025-04-06 17:26:44');
 
 -- ----------------------------
+-- Table structure for ums_browse_history
+-- ----------------------------
+DROP TABLE IF EXISTS `ums_user_browse_history`;
+CREATE TABLE `ums_user_browse_history`
+(
+    `id`             bigint(0)                                                     NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id`         bigint(0)                                                     NOT NULL COMMENT '用户ID',
+    `product_id`      bigint(0)                                                     NOT NULL COMMENT '商品ID',
+    `product_name`    varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品名称',
+    `browse_count`    int(0)                                                        NOT NULL DEFAULT 1 COMMENT '浏览次数',
+    `last_browse_time` datetime(0)                                                   NOT NULL COMMENT '最后浏览时间',
+    `create_time`     datetime(0)                                                   NOT NULL COMMENT '创建时间',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_user_id` (`user_id`) USING BTREE,
+    INDEX `idx_product_id` (`product_id`) USING BTREE,
+    INDEX `idx_browse_time` (`last_browse_time`) USING BTREE
+) ENGINE = InnoDB
+  AUTO_INCREMENT = 1
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '会员商品浏览历史记录'
+  ROW_FORMAT = Dynamic;
+
+
+-- ----------------------------
 -- Table structure for ums_users
 -- ----------------------------
 DROP TABLE IF EXISTS `ums_users`;

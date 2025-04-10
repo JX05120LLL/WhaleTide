@@ -801,7 +801,8 @@
 			handleReadHistory() {
 				if (this.hasLogin) {
 					let data = {
-						keyword: this.product.name,
+            productName: this.product.name,
+            productId: this.product.id
 					}
 					createReadHistory(data);
 				}

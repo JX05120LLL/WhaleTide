@@ -6,17 +6,13 @@ import com.whale_tide.dto.client.history.ReadHistoryCreateRequest;
 import com.whale_tide.dto.client.history.ReadHistoryDeleteRequest;
 import com.whale_tide.dto.client.history.ReadHistoryResponse;
 
-import java.util.List;
-
 /**
  * 搜索历史服务接口
  */
-public interface IHistoryService {
+public interface IReadHistoryService {
     
     /**
      * 获取搜索历史记录
-     * @param pageNum 页码
-     * @param pageSize 每页记录数
      * @return 分页搜索历史记录
      */
     PageResponse<ReadHistoryResponse> getList(PageRequest pageRequest);
