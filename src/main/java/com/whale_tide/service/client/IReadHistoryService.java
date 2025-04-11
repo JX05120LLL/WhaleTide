@@ -2,9 +2,9 @@ package com.whale_tide.service.client;
 
 import com.whale_tide.common.api.PageRequest;
 import com.whale_tide.common.api.PageResponse;
-import com.whale_tide.dto.client.history.ReadHistoryCreateRequest;
-import com.whale_tide.dto.client.history.ReadHistoryDeleteRequest;
-import com.whale_tide.dto.client.history.ReadHistoryResponse;
+import com.whale_tide.dto.client.readHistory.ReadHistoryCreateRequest;
+import com.whale_tide.dto.client.readHistory.ReadHistoryDeleteRequest;
+import com.whale_tide.dto.client.readHistory.ReadHistoryResponse;
 
 /**
  * 搜索历史服务接口

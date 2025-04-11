@@ -1,4 +1,4 @@
-package com.whale_tide.dto.client.history;
+package com.whale_tide.dto.client.readHistory;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,6 +21,9 @@ public class ReadHistoryResponse {
 
     @ApiModelProperty("商品名称")
     private String productName;
+
+    @ApiModelProperty("商品图片")
+    private String productPic;
 
     @ApiModelProperty("搜索次数")
     private Integer browseCount;
