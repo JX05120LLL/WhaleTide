@@ -1,4 +1,4 @@
-package com.whale_tide.dto.client.history;
+package com.whale_tide.dto.client.readHistory;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

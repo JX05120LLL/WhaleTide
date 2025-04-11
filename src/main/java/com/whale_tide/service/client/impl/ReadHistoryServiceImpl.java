@@ -5,11 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.whale_tide.common.api.PageRequest;
 import com.whale_tide.common.api.PageResponse;
 import com.whale_tide.common.exception.auth.CouponNotBelongToUserException;
-import com.whale_tide.dto.client.history.ReadHistoryCreateRequest;
-import com.whale_tide.dto.client.history.ReadHistoryDeleteRequest;
-import com.whale_tide.dto.client.history.ReadHistoryResponse;
+import com.whale_tide.dto.client.readHistory.ReadHistoryCreateRequest;
+import com.whale_tide.dto.client.readHistory.ReadHistoryDeleteRequest;
+import com.whale_tide.dto.client.readHistory.ReadHistoryResponse;
 import com.whale_tide.entity.ums.UmsUserBrowseHistory;
 import com.whale_tide.entity.ums.UmsUsers;
+import com.whale_tide.mapper.pms.PmsProductsMapper;
 import com.whale_tide.mapper.ums.UmsUserBrowseHistoryMapper;
 import com.whale_tide.mapper.ums.UmsUsersMapper;
 import com.whale_tide.service.client.IReadHistoryService;
@@ -38,6 +39,9 @@ public class ReadHistoryServiceImpl implements IReadHistoryService {
 
     @Autowired
     private UmsUsersMapper umsUsersMapper;
+
+    @Autowired
+    private PmsProductsMapper productsMapper;
 
     @Autowired
     private JwtUtil jwtUtil;
@@ -69,6 +73,7 @@ public class ReadHistoryServiceImpl implements IReadHistoryService {
             response.setId(item.getId());
             response.setProductId(item.getProductId());
             response.setProductName(item.getProductName());
+            response.setProductPic(productsMapper.selectById(item.getProductId()).getMainImage());
             response.setBrowseCount(item.getBrowseCount());
             response.setLastBrowseTime(convertToDate(item.getLastBrowseTime()));
             response.setCreateTime(convertToDate(item.getCreateTime()));

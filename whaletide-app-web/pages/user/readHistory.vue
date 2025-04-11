@@ -10,10 +10,10 @@
 				hover-class="item-hover"
 				@click="navToProductDetail(item)"
 			>
-				<!-- 商品图片占位符 -->
-				<view class="product-image">
-					<text class="yticon icon-shop"></text>
-				</view>
+				<!-- 商品图片 -->
+        <image class="product-image" :src="item.productPic" mode="aspectFill"></image>
+
+        <!-- 商品信息 -->
 				<view class="txt">
 					<text class="title">{{item.productName}}</text>
 					<view class="hor-txt">

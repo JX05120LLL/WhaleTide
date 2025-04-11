@@ -12,6 +12,7 @@ import com.whale_tide.mapper.pms.*;
 import com.whale_tide.service.client.IProductService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -43,6 +44,12 @@ public class ProductServiceImpl implements IProductService {
     private PmsProductAttributesMapper pmsProductAttributesMapper;
     @Autowired
     private PmsBrandsMapper pmsBrandsMapper;
+    
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+    
+    // Redis中商品浏览量的key前缀
+    private static final String PRODUCT_VIEW_COUNT_KEY = "product:view:";
 
     /**
      * 获取热门搜索关键词
@@ -323,6 +330,9 @@ public class ProductServiceImpl implements IProductService {
             }
         }
         
+        // 使用Redis增加商品浏览量
+        incrementProductViewCount(id);
+        
         // 封装结果
         ProductDetailResponse response = new ProductDetailResponse();
         response.setId(product.getId());
@@ -337,7 +347,42 @@ public class ProductServiceImpl implements IProductService {
         response.setProductAttributeList(attributes);
         response.setDescription(product.getBrief());
         
+        // 获取并设置浏览量
+        Integer viewCount = getProductViewCount(id);
+        response.setViewCount(viewCount);
+        
         // 返回详情
         return response;
+    }
+    
+    /**
+     * 增加商品浏览量
+     * @param productId 商品ID
+     */
+    private void incrementProductViewCount(Long productId) {
+        String key = PRODUCT_VIEW_COUNT_KEY + productId;
+        try {
+            // Redis中自增浏览量
+            Long count = redisTemplate.opsForValue().increment(key, 1);
+            log.info("商品[{}]浏览量增加, 当前浏览量: {}", productId, count);
+        } catch (Exception e) {
+            log.error("更新商品浏览量失败: {}", e.getMessage(), e);
+        }
+    }
+    
+    /**
+     * 获取商品浏览量
+     * @param productId 商品ID
+     * @return 浏览量
+     */
+    private Integer getProductViewCount(Long productId) {
+        String key = PRODUCT_VIEW_COUNT_KEY + productId;
+        try {
+            Object count = redisTemplate.opsForValue().get(key);
+            return count != null ? Integer.parseInt(count.toString()) : 0;
+        } catch (Exception e) {
+            log.error("获取商品浏览量失败: {}", e.getMessage(), e);
+            return 0;
+        }
     }
 }
