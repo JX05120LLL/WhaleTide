@@ -99,34 +99,10 @@ public class MemberController {
             return CommonResult.failed(e.getMessage());
         }
     }
-    /**
-     * 上传头像
-     * @param file 头像文件
-     * @return
-     */
-    @ApiImplicitParam(name = "Authorization", value = "身份认证Token", required = true, paramType = "header")
-    @PostMapping("/avatar/upload")
-    public CommonResult<String> avatarUpload(@RequestHeader(value = "Authorization", required = false) String authHeader, @RequestParam("file") MultipartFile file) {
-        try {
-            // 验证token有效性
-            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-                return CommonResult.failed("未授权，请先登录");
-            }
-            
-            String token = authHeader.substring(7);
-            try {
-                // 验证token有效性
-                jwtUtil.getUsernameFromToken(token);
-            } catch (Exception e) {
-                return CommonResult.failed("Token验证失败: " + e.getMessage());
-            }
-            
-            String url = memberService.avatarUpload(file);
-            return CommonResult.success(url);
-        } catch (Exception e) {
-            return CommonResult.failed(e.getMessage());
-        }
-    }
+
+
+
+
     /**
      * 获取积分详情
      * @return

@@ -28,6 +28,8 @@ public class ProductDetailResponse {
     private Integer sale;
     @ApiModelProperty("商品库存")
     private Integer stock;
+    @ApiModelProperty("商品浏览量")
+    private Integer viewCount;
     @ApiModelProperty("品牌信息")
     private BrandInfo brand;
     @ApiModelProperty("商品分类ID")
