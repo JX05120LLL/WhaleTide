@@ -1,0 +1,128 @@
+# WhaleTide通用配置
+
+# Spring配置
+spring:
+  # 数据源配置
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/whale_tide_db?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: 123456
+    druid:
+      # 连接池配置
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      # 连接等待超时时间
+      max-wait: 60000
+      # 检测连接是否有效的间隔时间
+      time-between-eviction-runs-millis: 60000
+      # 连接在池中最小生存的时间
+      min-evictable-idle-time-millis: 300000
+      # 连接在池中最大生存的时间
+      max-evictable-idle-time-millis: 900000
+      # 检测连接是否有效
+      validation-query: SELECT 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      # 配置监控统计拦截的filters
+      filters: stat,wall,slf4j
+      # 打开PSCache，并且指定每个连接上PSCache的大小
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 20
+      # 合并多个DruidDataSource的监控数据
+      use-global-data-source-stat: true
+  
+  # Redis配置
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 10000
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+  
+  # 缓存配置
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3600000
+      use-key-prefix: true
+      cache-null-values: true
+      
+  # 禁用RabbitMQ自动配置
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+# 管理端点配置
+management:
+  health:
+    rabbit:
+      enabled: false
+
+# MyBatis Plus配置
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: com.whaletide.common.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+  global-config:
+    db-config:
+      id-type: auto
+      table-underline: true
+      logic-delete-field: deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+# JWT配置
+jwt:
+  # JWT加密密钥 - 使用更强的密钥
+  secret: WhaleTide_Secret_Key_2025_Strong_Authentication_123456789
+  # 令牌过期时间（单位：秒），24小时
+  expiration: 86400
+  # 请求头名称
+  tokenHeader: Authorization
+  # 令牌前缀
+  tokenPrefix: "Bearer "
+
+# 线程池配置
+thread-pool:
+  # 核心线程数
+  corePoolSize: 10
+  # 最大线程数
+  maxPoolSize: 20
+  # 队列容量
+  queueCapacity: 200
+  # 线程存活时间（秒）
+  keepAliveSeconds: 60
+  # 线程名称前缀
+  threadNamePrefix: WhaleTide-Task-
+
+# 日志配置
+logging:
+  level:
+    root: info
+    com.whaletide: debug
+  file:
+    path: ./logs
+    name: ${logging.file.path}/whale-tide-common.log
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+
+
+# 上传文件配置
+file:
+  upload:
+    path: ./upload
+    maxSize: 10485760 # 10MB
+    allowTypes: jpg,jpeg,png,gif,mp4,pdf,doc,docx,xls,xlsx,zip 

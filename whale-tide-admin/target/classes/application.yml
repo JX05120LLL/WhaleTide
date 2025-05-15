@@ -1,0 +1,73 @@
+# WhaleTide管理端应用配置
+
+# 应用名称
+spring:
+  application:
+    name: whale-tide-admin
+  # 引入公共配置
+  profiles:
+    include: common
+  # 管理端特有配置
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 200MB
+
+# 服务器配置
+server:
+  port: 8082
+  servlet:
+    context-path: /api/admin
+
+# 管理端特有日志配置
+logging:
+  file:
+    name: ./logs/whale-tide-admin.log
+
+# Swagger文档配置
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  packages-to-scan: com.whaletide.admin.controller
+  group-configs:
+    - group: admin-api
+      paths-to-match: /api/admin/**
+
+# 对象存储配置
+oss:
+  type: aliyun # 使用的OSS类型: aliyun, qiniu, minio
+  aliyun:
+    endpoint: https://oss-cn-hangzhou.aliyuncs.com
+    access-key-id: your-access-key-id
+    access-key-secret: your-access-key-secret
+    bucket-name: whale-tide-bucket
+    domain: https://whale-tide-bucket.oss-cn-hangzhou.aliyuncs.com
+  # 如需使用其他OSS，可以添加相应配置
+  
+# 管理端业务配置
+admin:
+  # 安全配置
+  security:
+    # 密码连续错误锁定配置
+    password-retry-limit: 5
+    # 锁定时间（分钟）
+    lock-duration-minutes: 30
+  # 导出配置
+  export:
+    # Excel导出最大行数
+    excel-max-row: 10000
+    # 临时文件保存目录
+    temp-dir: ./temp/export
+  # 系统监控
+  monitor:
+    # 系统负载告警阈值
+    load-threshold: 0.8
+    # 内存使用告警阈值（百分比）
+    memory-threshold: 90
+    # 磁盘使用告警阈值（百分比）
+    disk-threshold: 90

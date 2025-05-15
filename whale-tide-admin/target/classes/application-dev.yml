@@ -1,0 +1,27 @@
+# 管理端开发环境配置
+
+# 开发环境端口
+server:
+  port: 9090
+
+# 开发环境特有配置
+spring:
+  profiles:
+    active: dev
+    include: common
+
+# 开发环境对象存储配置
+oss:
+  type: minio # 开发环境使用本地MinIO更方便
+  minio:
+    endpoint: http://localhost:9000
+    access-key: minioadmin
+    secret-key: minioadmin
+    bucket-name: whale-tide-dev
+
+# 开发环境下允许Swagger文档
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true

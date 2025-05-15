@@ -1,0 +1,51 @@
+# WhaleTide客户端应用配置
+
+# 应用名称
+spring:
+  application:
+    name: whale-tide-client
+  # 引入公共配置
+  profiles:
+    include: common
+  # 客户端特有配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+
+# 服务器配置
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+# 客户端特有日志配置
+logging:
+  file:
+    name: ./logs/whale-tide-client.log
+
+# Swagger文档配置
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  packages-to-scan: com.whaletide.client
+  group-configs:
+    - group: client-api
+      paths-to-match: /api/**
+
+# Knife4j配置
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: 实体类列表
+    enable-swagger-models: true
+    enable-document-manage: true
+    enable-home-custom: false
+    enable-footer: false
+
