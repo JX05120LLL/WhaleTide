@@ -1,0 +1,24 @@
+# 客户端开发环境配置
+
+# 开发环境端口
+server:
+  port: 8080
+
+# 开发环境特有配置
+spring:
+  profiles:
+    active: dev
+    include: common
+
+# 开发环境下的Swagger配置
+springdoc:
+  swagger-ui:
+    enabled: true
+  api-docs:
+    enabled: true
+
+# 开发环境下启用Knife4j
+knife4j:
+  enable: true
+  production: false  # 非生产环境模式
+
